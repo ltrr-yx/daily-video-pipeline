@@ -1,0 +1,26 @@
+[
+  {
+    "title": "A small team ships a faster research workflow",
+    "url": "https://example.com/research-workflow",
+    "source_name": "Demo Source A",
+    "published_at": "2026-06-09T01:00:00Z",
+    "summary": "The update reduces manual review time and adds clearer checkpoints before publishing a daily briefing.",
+    "tags": ["workflow", "product"]
+  },
+  {
+    "title": "New open dataset improves benchmark repeatability",
+    "url": "https://example.com/open-dataset",
+    "source_name": "Demo Source B",
+    "published_at": "2026-06-09T02:00:00Z",
+    "summary": "The release includes source metadata, reproducible collection notes, and a changelog for downstream users.",
+    "tags": ["data", "research"]
+  },
+  {
+    "title": "Creator tooling adds one-click audio mixing",
+    "url": "https://example.com/audio-mixing",
+    "source_name": "Demo Source C",
+    "published_at": "2026-06-09T03:00:00Z",
+    "summary": "The feature loops user-provided background music under generated narration and exports a mobile vertical video.",
+    "tags": ["video", "audio"]
+  }
+]

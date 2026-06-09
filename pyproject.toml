@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "daily-video-pipeline"
+version = "0.1.0"
+description = "A privacy-first daily source-to-short-video pipeline with user-owned sources and BGM."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "ltrr-yx" }]
+dependencies = [
+  "feedparser>=6.0.11",
+  "Pillow>=10.0.0",
+  "PyYAML>=6.0.1",
+]
+
+[project.optional-dependencies]
+tts = ["edge-tts>=6.1.19"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+daily-video = "daily_video_pipeline.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

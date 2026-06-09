@@ -1,0 +1,49 @@
+project:
+  name: "My Daily Brief"
+  language: "zh-CN"
+  timezone: "Asia/Shanghai"
+  output_dir: "outputs"
+
+selection:
+  max_items: 5
+  freshness_hours: 72
+  # Put your own public topic words here in configs/project.local.yml.
+  keywords: []
+
+privacy:
+  # Terms here are excluded from generated scripts. Keep personal terms in a
+  # local config or .privacy-blocklist.local, not in the public repository.
+  blocked_terms: []
+
+video:
+  width: 1080
+  height: 1920
+  fps: 30
+  seconds_per_scene: 5
+  # Optional: set a local font path if your language needs a specific font.
+  font_path: ""
+  palette:
+    background: [18, 22, 24]
+    foreground: [245, 245, 240]
+    accent: [68, 180, 166]
+    muted: [160, 168, 166]
+
+narration:
+  enabled: false
+  engine: "auto"  # auto, edge-tts, say
+  voice: "zh-CN-YunyangNeural"
+
+music:
+  # Use your own licensed BGM path in configs/project.local.yml.
+  path: ""
+  volume: 0.18
+  # Demo mode can synthesize a plain tone so the render path includes BGM audio.
+  generate_demo_tone_if_missing: true
+
+sources:
+  - name: "Example RSS feed"
+    type: "rss"
+    url: "https://example.com/feed.xml"
+    enabled: false
+    priority: 1.0
+    tags: ["example"]
