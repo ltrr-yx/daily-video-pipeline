@@ -6,17 +6,17 @@
   <title>Daily Video Pipeline - Gallery / 模板图库</title>
   <style>
     :root {
-      --bg: #edf2f4;
-      --surface: #fbfcfb;
-      --surface-2: #f4f8f7;
-      --ink: #101418;
-      --text: #26323a;
-      --muted: #5f6c73;
-      --line: #cfd8dd;
-      --line-strong: #aebdc5;
-      --green: #0e9f6e;
-      --green-dark: #087957;
-      --blue: #1d63d8;
+      --bg: #eef3f6;
+      --surface: #ffffff;
+      --surface-2: #f6f9fa;
+      --ink: #111821;
+      --text: #26343d;
+      --muted: #63717b;
+      --line: #d5e0e6;
+      --line-strong: #b8c7d0;
+      --green: #247a74;
+      --green-dark: #17615e;
+      --blue: #2467d8;
       --gold: #b7791f;
       --red: #c64f45;
       --radius: 8px;
@@ -28,7 +28,7 @@
       margin: 0;
       color: var(--ink);
       background:
-        linear-gradient(180deg, #f7faf9 0%, var(--bg) 42%, #e6edf0 100%);
+        linear-gradient(180deg, #fbfcfd 0%, var(--bg) 46%, #e7eef2 100%);
     }
     .shell {
       width: min(1240px, calc(100% - 40px));
@@ -36,30 +36,29 @@
       padding: 34px 0 72px;
     }
     .hero {
-      color: #eef8f2;
-      background: #071014;
-      border: 1px solid #20343a;
+      color: var(--ink);
+      background: linear-gradient(180deg, #ffffff 0%, #f5f8fa 100%);
+      border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 30px;
+      padding: 24px;
       display: grid;
-      grid-template-columns: minmax(260px, .82fr) minmax(420px, 1.18fr);
+      grid-template-columns: minmax(260px, .66fr) minmax(460px, 1.34fr);
       gap: 28px;
       align-items: center;
     }
     .hero h1 {
-      margin: 0 0 14px;
-      font-size: 48px;
-      line-height: 1.08;
+      margin: 0;
+      font-size: 40px;
+      line-height: 1.12;
       letter-spacing: 0;
       text-wrap: balance;
     }
-    .hero p {
-      margin: 0;
-      max-width: 56ch;
-      color: #b7c9c5;
-      font-size: 17px;
-      line-height: 1.62;
-      text-wrap: pretty;
+    .hero-flow {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 720;
     }
     .hero-meta {
       margin-top: 22px;
@@ -72,36 +71,37 @@
       align-items: baseline;
       gap: 8px;
       padding: 8px 10px;
-      background: #0e2025;
-      border: 1px solid #244047;
+      background: #f1f6f6;
+      border: 1px solid #d7e3e5;
       border-radius: var(--radius);
-      color: #dff8ec;
+      color: #455761;
       font-size: 13px;
     }
-    .metric-chip strong { font-size: 20px; color: #ffffff; }
+    .metric-chip strong { font-size: 20px; color: var(--ink); }
     .process {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
+      gap: 7px;
     }
     .process-step {
-      min-height: 152px;
-      padding: 16px;
+      min-height: 0;
+      padding: 10px 12px;
       border-radius: var(--radius);
-      background: #0e2025;
-      border: 1px solid #25464c;
+      background: rgba(255, 255, 255, .82);
+      border: 1px solid #d8e3e8;
       position: relative;
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
     }
     .process-step::after {
-      content: "→";
+      content: "";
       position: absolute;
-      right: -15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6fe0aa;
-      font-size: 26px;
-      font-weight: 800;
-      z-index: 1;
+      left: 26px;
+      top: calc(100% + 1px);
+      width: 1px;
+      height: 7px;
+      background: #b8cbd0;
     }
     .process-step:last-child::after { display: none; }
     .process-step span {
@@ -110,46 +110,84 @@
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      color: #06120f;
-      background: #24d293;
+      color: #0d4f4b;
+      background: #dff1ef;
       font-weight: 850;
-      margin-bottom: 18px;
     }
     .process-step h2 {
-      margin: 0 0 7px;
-      font-size: 18px;
-      line-height: 1.16;
-      color: #ffffff;
-    }
-    .process-step p {
       margin: 0;
-      color: #91aaa4;
-      font-size: 13px;
-      line-height: 1.45;
+      font-size: 15px;
+      line-height: 1.2;
+      color: var(--text);
     }
-    nav {
+    nav.gallery-filter {
       position: sticky;
       top: 0;
       z-index: 5;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 24px 0 42px;
-      padding: 10px;
-      background: rgba(237, 242, 244, .92);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      backdrop-filter: blur(14px);
+      flex-wrap: nowrap;
+      align-items: center;
+      width: 100vw;
+      max-width: none;
+      gap: 4px;
+      margin: 18px calc(50% - 50vw) 38px;
+      padding: 7px max(20px, calc((100vw - 1240px) / 2 + 20px));
+      background: linear-gradient(180deg, rgba(251, 252, 251, .96), rgba(246, 250, 249, .86));
+      box-shadow:
+        0 1px 0 rgba(46, 68, 78, .10),
+        0 12px 24px rgba(30, 48, 58, .08);
+      backdrop-filter: blur(18px) saturate(1.04);
+      isolation: isolate;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
-    nav a {
+    nav.gallery-filter::-webkit-scrollbar {
+      display: none;
+    }
+    nav.gallery-filter::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -16px;
+      height: 16px;
+      background: linear-gradient(180deg, rgba(30, 48, 58, .08), rgba(30, 48, 58, 0));
+      pointer-events: none;
+      z-index: -1;
+    }
+    .filter-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 760;
+      line-height: 1;
+      padding: 0 9px 0 7px;
+      border-right: 1px solid rgba(95, 108, 115, .20);
+      flex: 0 0 auto;
+    }
+    nav.gallery-filter a {
+      display: inline-flex;
+      align-items: baseline;
+      flex: 0 0 auto;
+      gap: 4px;
       text-decoration: none;
-      color: var(--ink);
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 13px;
-      font-weight: 750;
+      color: var(--text);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 12px;
+      font-weight: 730;
+      line-height: 1;
+    }
+    nav.gallery-filter a:hover,
+    nav.gallery-filter a:focus-visible {
+      color: #0b6d51;
+      background: #eef7f2;
+      border-color: rgba(14, 159, 110, .20);
+      outline: none;
+    }
+    .nav-en {
+      color: var(--muted);
+      font-weight: 620;
     }
     section { margin-top: 56px; }
     .section-head {
@@ -186,7 +224,7 @@
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 14px;
     }
-    .story-card, .scene-card, .theme-card {
+    .story-card, .scene-card, .theme-card, .motion-card {
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -206,14 +244,37 @@
       font-size: 12px;
       font-weight: 780;
     }
-    .story-card h3, .scene-card h4, .theme-card h3 {
+    .story-card h3, .scene-card h4, .theme-card h3, .motion-card h3 {
       margin: 0;
       color: var(--ink);
       line-height: 1.2;
       text-wrap: balance;
     }
     .story-card h3 { font-size: 22px; }
-    .story-card p, .scene-card p, .theme-card p {
+    .story-title {
+      min-height: 56px;
+      display: grid;
+      gap: 5px;
+      align-content: start;
+      text-wrap: auto;
+    }
+    .story-title .title-zh {
+      display: block;
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.12;
+      font-weight: 840;
+    }
+    .story-title .title-en {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.24;
+      font-weight: 690;
+      word-break: keep-all;
+      overflow-wrap: normal;
+    }
+    .story-card p, .scene-card p, .theme-card p, .motion-card p {
       margin: 0;
       color: var(--muted);
       line-height: 1.52;
@@ -292,8 +353,8 @@
       flex-direction: column;
     }
     .svg-wrap {
-      background: #071014;
-      border-bottom: 1px solid #233a40;
+      background: #f6f9fa;
+      border-bottom: 1px solid var(--line);
     }
     svg { display: block; width: 100%; height: auto; }
     .scene-card .svg-wrap {
@@ -336,7 +397,50 @@
       grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
       gap: 16px;
     }
+    .motion-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+    }
+    .motion-card {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    .motion-steps {
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .motion-steps b {
+      color: var(--text);
+    }
     .theme-card h3 { font-size: 21px; margin-top: 10px; }
+    .style-spec-list {
+      display: grid;
+      gap: 7px;
+      margin: 14px 0 0;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+    .style-spec-list div {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 8px;
+      font-size: 12px;
+      line-height: 1.42;
+    }
+    .style-spec-list dt {
+      color: var(--muted);
+      font-weight: 790;
+    }
+    .style-spec-list dd {
+      margin: 0;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
     .swatch-row {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -367,35 +471,32 @@
       border-top: 1px solid var(--line);
     }
     .composition-head {
-      display: grid;
-      grid-template-columns: minmax(220px, .45fr) minmax(360px, .55fr);
-      gap: 16px;
-      align-items: start;
       margin-bottom: 14px;
+      max-width: 1040px;
     }
     .composition-head h3 {
       margin: 0;
       font-size: 24px;
     }
-    .composition-head span {
+    .composition-head h3 span {
       color: var(--muted);
       font-weight: 760;
+      font-size: 15px;
+      margin-left: 6px;
     }
-    .case-bullets {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 7px;
-    }
-    .case-bullets li {
-      color: var(--text);
-      background: #f5f9f8;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 8px 10px;
+    .case-choice-line {
+      margin: 7px 0 0;
+      color: var(--muted);
       font-size: 13px;
-      line-height: 1.45;
+      line-height: 1.55;
+    }
+    .case-choice-line b {
+      color: var(--text);
+      font-weight: 790;
+    }
+    .choice-sep {
+      color: var(--line-strong);
+      margin: 0 8px;
     }
     .result-frames {
       display: grid;
@@ -437,16 +538,13 @@
     }
     @media (max-width: 980px) {
       .hero, .section-head { grid-template-columns: 1fr; }
-      .process { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .process-step:nth-child(2)::after { display: none; }
-      .composition-head { grid-template-columns: 1fr; }
       .result-frames { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 620px) {
       .shell { width: min(100% - 24px, 1240px); padding-top: 18px; }
       .hero { padding: 20px; }
       .hero h1 { font-size: 34px; }
-      .process, .scene-grid, .result-frames { grid-template-columns: 1fr; }
+      .scene-grid, .result-frames { grid-template-columns: 1fr; }
       .process-step::after { display: none; }
       .scene-card {
         width: 100%;
@@ -458,9 +556,10 @@
       .scene-card .svg-wrap svg {
         height: auto;
       }
-      .theme-grid { grid-template-columns: 1fr; }
-      .composition-head { display: block; }
-      nav { position: static; }
+      .theme-grid, .motion-grid { grid-template-columns: 1fr; }
+      nav.gallery-filter {
+        padding-inline: 12px;
+      }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -471,27 +570,31 @@
   <main class="shell">
     <header class="hero">
       <div>
-        <h1>三步选出视频方向</h1>
-        <p>先选叙事模板，再选每个画面的镜头类型，最后套上视觉皮肤。用户只需要替换成本地信源、BGM 和配置，就能生成自己的短视频。</p>
+        <h1>五步生成视频方向</h1>
+        <p class="hero-flow">Story -> Scene -> Visual -> Motion -> Render</p>
         <div class="hero-meta" aria-label="Gallery counts">
           <span class="metric-chip"><strong>12</strong> 叙事模板</span>
           <span class="metric-chip"><strong>34</strong> 镜头类型</span>
           <span class="metric-chip"><strong>6</strong> 视觉皮肤</span>
+          <span class="metric-chip"><strong>6</strong> 出场语法</span>
         </div>
       </div>
       <div class="process" aria-label="Video direction process">
-        <article class="process-step"><span>1</span><h2>Story Template<br>叙事模板</h2><p>决定故事顺序：开场、证据、机制、风险、结论。</p></article>
-        <article class="process-step"><span>2</span><h2>Scene Component<br>镜头类型</h2><p>决定单个画面怎么承载信息：账本、轨道、图表、对比。</p></article>
-        <article class="process-step"><span>3</span><h2>Visual Theme<br>视觉皮肤</h2><p>决定气质：市场终端、产品发布会、数据杂志、社媒高能。</p></article>
-        <article class="process-step"><span>4</span><h2>Rendered Video<br>输出视频</h2><p>组合成带 BGM 的竖版视频，并保留审片图 / contact sheet。</p></article>
+        <article class="process-step"><span>1</span><h2>Story Template / 叙事模板</h2></article>
+        <article class="process-step"><span>2</span><h2>Scene Component / 镜头类型</h2></article>
+        <article class="process-step"><span>3</span><h2>Visual Theme / 视觉皮肤</h2></article>
+        <article class="process-step"><span>4</span><h2>Motion Grammar / 出场语法</h2></article>
+        <article class="process-step"><span>5</span><h2>Rendered Video / 输出视频</h2></article>
       </div>
     </header>
 
-    <nav aria-label="Gallery sections">
-      <a href="#story-templates">叙事模板 Story</a>
-      <a href="#scene-components">镜头类型 Scene</a>
-      <a href="#visual-themes">视觉皮肤 Visual</a>
-      <a href="#composition-rule">组合示例 Composition</a>
+    <nav class="gallery-filter" aria-label="Gallery sections">
+      <span class="filter-label">筛选</span>
+      <a href="#story-templates"><span>叙事模板</span><span class="nav-en">Story</span></a>
+      <a href="#scene-components"><span>镜头类型</span><span class="nav-en">Scene</span></a>
+      <a href="#visual-themes"><span>视觉皮肤</span><span class="nav-en">Visual</span></a>
+      <a href="#motion-grammars"><span>出场语法</span><span class="nav-en">Motion</span></a>
+      <a href="#composition-rule"><span>组合示例</span><span class="nav-en">Composition</span></a>
     </nav>
 
     <section id="story-templates">
@@ -502,7 +605,7 @@
       <div class="story-grid"><article class="story-card">
   <div class="card-meta"><span><code>daily_briefing</code></span><span>5 scenes</span></div>
   <div>
-    <h3>每日简报 / Daily Briefing</h3>
+    <h3 class="story-title"><span class="title-zh">每日简报</span><span class="title-en">Daily Briefing</span></h3>
     <p>适合 3 到 5 条公开信号的快速整理。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>开场钩子 / Cover Hook</span></li>
@@ -515,7 +618,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>single_event_deep_dive</code></span><span>5 scenes</span></div>
   <div>
-    <h3>单事件深讲 / Single Event Deep Dive</h3>
+    <h3 class="story-title"><span class="title-zh">单事件深讲</span><span class="title-en">Single Event Deep Dive</span></h3>
     <p>适合把一个事件讲清楚：背景、机制、证据、结论。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>开场钩子 / Cover Hook</span></li>
@@ -528,7 +631,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>breaking_update</code></span><span>4 scenes</span></div>
   <div>
-    <h3>突发更新 / Breaking Update</h3>
+    <h3 class="story-title"><span class="title-zh">突发更新</span><span class="title-en">Breaking Update</span></h3>
     <p>适合短时间内说明一个新事实和下一步验证。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>冲击标题 / Impact Headline</span></li>
@@ -540,7 +643,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>product_launch</code></span><span>5 scenes</span></div>
   <div>
-    <h3>产品发布 / Product Launch</h3>
+    <h3 class="story-title"><span class="title-zh">产品发布</span><span class="title-en">Product Launch</span></h3>
     <p>适合说明产品是什么、解决谁的问题、工作流如何改变。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>产品主视觉 / Product Plate</span></li>
@@ -553,7 +656,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>company_update</code></span><span>5 scenes</span></div>
   <div>
-    <h3>公司动态 / Company Update</h3>
+    <h3 class="story-title"><span class="title-zh">公司动态</span><span class="title-en">Company Update</span></h3>
     <p>适合围绕一个主体讲动作、证据、指标和风险。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>主体关系图 / Entity Map</span></li>
@@ -566,7 +669,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>market_radar</code></span><span>5 scenes</span></div>
   <div>
-    <h3>市场雷达 / Market Radar</h3>
+    <h3 class="story-title"><span class="title-zh">市场雷达</span><span class="title-en">Market Radar</span></h3>
     <p>适合把多组指标放在同一张冷静的信息板上。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>市场账本 / Market Ledger</span></li>
@@ -579,7 +682,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>evidence_chain</code></span><span>5 scenes</span></div>
   <div>
-    <h3>证据链 / Evidence Chain</h3>
+    <h3 class="story-title"><span class="title-zh">证据链</span><span class="title-en">Evidence Chain</span></h3>
     <p>适合从来源、主张、验证路径一路讲到可信结论。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>验证轨道 / Verification Rail</span></li>
@@ -592,7 +695,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>comparison</code></span><span>4 scenes</span></div>
   <div>
-    <h3>横向比较 / Comparison</h3>
+    <h3 class="story-title"><span class="title-zh">横向比较</span><span class="title-en">Comparison</span></h3>
     <p>适合比较两个工具、公司、方案或信号。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>对比分屏 / Compare Split</span></li>
@@ -604,7 +707,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>timeline</code></span><span>4 scenes</span></div>
   <div>
-    <h3>时间线 / Timeline</h3>
+    <h3 class="story-title"><span class="title-zh">时间线</span><span class="title-en">Timeline</span></h3>
     <p>适合讲一个过程怎样一步步演化。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>时间丝带 / Timeline Ribbon</span></li>
@@ -616,7 +719,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>risk_watch</code></span><span>4 scenes</span></div>
   <div>
-    <h3>风险观察 / Risk Watch</h3>
+    <h3 class="story-title"><span class="title-zh">风险观察</span><span class="title-en">Risk Watch</span></h3>
     <p>适合把机会、不确定性、反证和检查点拆开。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>风险矩阵 / Risk Matrix</span></li>
@@ -628,7 +731,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>top_five</code></span><span>4 scenes</span></div>
   <div>
-    <h3>榜单盘点 / Top Five</h3>
+    <h3 class="story-title"><span class="title-zh">榜单盘点</span><span class="title-en">Top Five</span></h3>
     <p>适合做每日或每周 Top 列表，强调排序与证据。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>排名板 / Ranking Board</span></li>
@@ -640,7 +743,7 @@
 <article class="story-card">
   <div class="card-meta"><span><code>weekly_review</code></span><span>5 scenes</span></div>
   <div>
-    <h3>周度复盘 / Weekly Review</h3>
+    <h3 class="story-title"><span class="title-zh">周度复盘</span><span class="title-en">Weekly Review</span></h3>
     <p>适合把一周的主题、变化和下周观察收束在一起。</p>
   </div>
   <ol class="story-flow"><li><b>1</b><span>周历 / Week Calendar</span></li>
@@ -661,9 +764,9 @@
   <div class="family-title"><h3>开场与冲击</h3><span>Opening and impact</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="cover hook">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">cover hook</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">cover hook</text>
   <rect x="42" y="55" width="86" height="13" rx="7" fill="#23d293"/><rect x="42" y="94" width="236" height="24" rx="6" fill="#edf9f3"/><rect x="42" y="128" width="184" height="16" rx="5" fill="#86a59f"/><circle cx="315" cy="135" r="51" fill="#17343a" stroke="#f0c85a" stroke-width="4"/><path d="M286 135h58M315 106v58" stroke="#23d293" stroke-width="5"/>
 </svg></div>
   <div class="scene-body">
@@ -675,9 +778,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="impact">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">impact</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">impact</text>
   <rect x="42" y="56" width="64" height="13" rx="7" fill="#f0c85a"/><rect x="42" y="89" width="276" height="38" rx="7" fill="#edf9f3"/><rect x="42" y="143" width="230" height="18" rx="5" fill="#86a59f"/><rect x="42" y="184" width="330" height="24" rx="6" fill="#19323a" stroke="#e65b54"/><circle cx="342" cy="104" r="18" fill="#e65b54"/>
 </svg></div>
   <div class="scene-body">
@@ -692,9 +795,9 @@
   <div class="family-title"><h3>背景与洞察</h3><span>Context and insight</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="context">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">context</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">context</text>
   <rect x="46" y="58" width="110" height="144" rx="10" fill="#112c33" stroke="#23d293"/><rect x="178" y="72" width="178" height="24" rx="6" fill="#edf9f3"/><rect x="178" y="114" width="128" height="12" rx="6" fill="#86a59f"/><rect x="178" y="144" width="156" height="12" rx="6" fill="#86a59f"/><path d="M156 130h36" stroke="#f0c85a" stroke-width="4"/>
 </svg></div>
   <div class="scene-body">
@@ -706,9 +809,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="insights">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">insights</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">insights</text>
   <rect x="86" y="70" width="228" height="50" rx="9" fill="#112c33" stroke="#31555d"/><rect x="108" y="88" width="116" height="8" rx="4" fill="#edf9f3"/><rect x="66" y="104" width="228" height="50" rx="9" fill="#112c33" stroke="#31555d"/><rect x="88" y="122" width="116" height="8" rx="4" fill="#edf9f3"/><rect x="106" y="138" width="228" height="50" rx="9" fill="#112c33" stroke="#23d293"/><rect x="128" y="156" width="116" height="8" rx="4" fill="#edf9f3"/>
 </svg></div>
   <div class="scene-body">
@@ -723,9 +826,9 @@
   <div class="family-title"><h3>多信号组织</h3><span>Signal groups</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="signal grid">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">signal grid</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">signal grid</text>
   <rect x="42" y="60" width="150" height="62" rx="9" fill="#112c33" stroke="#31555d"/><circle cx="66" cy="89" r="8" fill="#23d293"/><rect x="86" y="80" width="74" height="9" rx="5" fill="#edf9f3"/><rect x="86" y="98" width="52" height="7" rx="4" fill="#86a59f"/><rect x="214" y="60" width="150" height="62" rx="9" fill="#112c33" stroke="#31555d"/><circle cx="238" cy="89" r="8" fill="#23d293"/><rect x="258" y="80" width="74" height="9" rx="5" fill="#edf9f3"/><rect x="258" y="98" width="52" height="7" rx="4" fill="#86a59f"/><rect x="42" y="144" width="150" height="62" rx="9" fill="#112c33" stroke="#31555d"/><circle cx="66" cy="173" r="8" fill="#23d293"/><rect x="86" y="164" width="74" height="9" rx="5" fill="#edf9f3"/><rect x="86" y="182" width="52" height="7" rx="4" fill="#86a59f"/><rect x="214" y="144" width="150" height="62" rx="9" fill="#112c33" stroke="#31555d"/><circle cx="238" cy="173" r="8" fill="#f0c85a"/><rect x="258" y="164" width="74" height="9" rx="5" fill="#edf9f3"/><rect x="258" y="182" width="52" height="7" rx="4" fill="#86a59f"/>
 </svg></div>
   <div class="scene-body">
@@ -737,9 +840,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="use cases">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">use cases</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">use cases</text>
   <rect x="50" y="62" width="120" height="48" rx="9" fill="#112c33" stroke="#31555d"/><rect x="70" y="81" width="58" height="8" rx="4" fill="#edf9f3"/><rect x="250" y="62" width="120" height="48" rx="9" fill="#112c33" stroke="#31555d"/><rect x="270" y="81" width="58" height="8" rx="4" fill="#edf9f3"/><rect x="50" y="158" width="120" height="48" rx="9" fill="#112c33" stroke="#31555d"/><rect x="70" y="177" width="58" height="8" rx="4" fill="#edf9f3"/><rect x="250" y="158" width="120" height="48" rx="9" fill="#112c33" stroke="#31555d"/><rect x="270" y="177" width="58" height="8" rx="4" fill="#edf9f3"/><circle cx="210" cy="130" r="32" fill="#17343a" stroke="#23d293" stroke-width="4"/>
 </svg></div>
   <div class="scene-body">
@@ -751,9 +854,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="3 takeaways">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">3 takeaways</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">3 takeaways</text>
   <rect x="48" y="76" width="92" height="118" rx="10" fill="#112c33" stroke="#31555d"/><text x="68" y="110" font-size="23" font-weight="900" fill="#23d293">1</text><rect x="68" y="135" width="48" height="9" rx="5" fill="#edf9f3"/><rect x="68" y="158" width="36" height="7" rx="4" fill="#86a59f"/><rect x="160" y="76" width="92" height="118" rx="10" fill="#112c33" stroke="#31555d"/><text x="180" y="110" font-size="23" font-weight="900" fill="#23d293">2</text><rect x="180" y="135" width="48" height="9" rx="5" fill="#edf9f3"/><rect x="180" y="158" width="36" height="7" rx="4" fill="#86a59f"/><rect x="272" y="76" width="92" height="118" rx="10" fill="#112c33" stroke="#31555d"/><text x="292" y="110" font-size="23" font-weight="900" fill="#23d293">3</text><rect x="292" y="135" width="48" height="9" rx="5" fill="#edf9f3"/><rect x="292" y="158" width="36" height="7" rx="4" fill="#86a59f"/>
 </svg></div>
   <div class="scene-body">
@@ -768,9 +871,9 @@
   <div class="family-title"><h3>数字与图表</h3><span>Numbers and charts</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="metrics">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">metrics</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">metrics</text>
   <rect x="46" y="58" width="328" height="39" rx="9" fill="#112c33" stroke="#31555d"/><text x="70" y="86" font-size="25" font-weight="850" fill="#23d293">+2.4</text><rect x="162" y="73" width="74" height="9" rx="5" fill="#86a59f"/><path d="M270 84l22 -10 20 11 24 -18 24 12" fill="none" stroke="#f0c85a" stroke-width="3"/><rect x="46" y="108" width="328" height="39" rx="9" fill="#112c33" stroke="#31555d"/><text x="70" y="136" font-size="25" font-weight="850" fill="#edf9f3">81%</text><rect x="162" y="123" width="74" height="9" rx="5" fill="#86a59f"/><path d="M270 134l22 -10 20 11 24 -18 24 12" fill="none" stroke="#f0c85a" stroke-width="3"/><rect x="46" y="158" width="328" height="39" rx="9" fill="#112c33" stroke="#31555d"/><text x="70" y="186" font-size="25" font-weight="850" fill="#edf9f3">14</text><rect x="162" y="173" width="74" height="9" rx="5" fill="#86a59f"/><path d="M270 184l22 -10 20 11 24 -18 24 12" fill="none" stroke="#f0c85a" stroke-width="3"/>
 </svg></div>
   <div class="scene-body">
@@ -782,9 +885,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="big number">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">big number</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">big number</text>
   <text x="52" y="142" font-size="78" font-weight="900" fill="#23d293">204</text><rect x="58" y="160" width="166" height="12" rx="6" fill="#edf9f3"/><rect x="58" y="187" width="246" height="9" rx="5" fill="#86a59f"/><circle cx="322" cy="132" r="42" fill="#17343a" stroke="#f0c85a" stroke-width="4"/>
 </svg></div>
   <div class="scene-body">
@@ -796,9 +899,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="mini chart">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">mini chart</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">mini chart</text>
   <rect x="50" y="62" width="316" height="142" rx="10" fill="#112c33" stroke="#31555d"/><path d="M78 176h252M78 82v94" stroke="#31555d" stroke-width="3"/><path d="M84 158l42 -34 35 18 50 -56 44 44 66 -70" fill="none" stroke="#23d293" stroke-width="6"/><path d="M84 160l42 -36 35 18 50 -54 44 44 66 -70v96H84z" fill="#23d293" opacity=".12"/><circle cx="321" cy="60" r="8" fill="#f0c85a"/>
 </svg></div>
   <div class="scene-body">
@@ -810,9 +913,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="pulse">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">pulse</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">pulse</text>
   <rect x="48" y="70" width="324" height="120" rx="10" fill="#112c33" stroke="#31555d"/><path d="M70 130h44l18 -36 26 72 22 -52 18 16h42l24 -30 20 58 22 -28h44" fill="none" stroke="#23d293" stroke-width="5"/><rect x="70" y="86" width="86" height="9" rx="5" fill="#edf9f3"/><circle cx="344" cy="94" r="8" fill="#f0c85a"/>
 </svg></div>
   <div class="scene-body">
@@ -827,9 +930,9 @@
   <div class="family-title"><h3>账本与表格</h3><span>Ledgers and tables</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="ledger">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">ledger</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">ledger</text>
   <rect x="46" y="58" width="328" height="29" rx="7" fill="#112c33" stroke="#31555d"/><text x="64" y="78" font-size="13" font-weight="850" fill="#23d293">01</text><rect x="105" y="68" width="126" height="8" rx="4" fill="#edf9f3"/><rect x="300" y="68" width="48" height="8" rx="4" fill="#f0c85a"/><rect x="46" y="96" width="328" height="29" rx="7" fill="#112c33" stroke="#31555d"/><text x="64" y="116" font-size="13" font-weight="850" fill="#23d293">02</text><rect x="105" y="106" width="126" height="8" rx="4" fill="#edf9f3"/><rect x="300" y="106" width="48" height="8" rx="4" fill="#f0c85a"/><rect x="46" y="134" width="328" height="29" rx="7" fill="#112c33" stroke="#31555d"/><text x="64" y="154" font-size="13" font-weight="850" fill="#23d293">03</text><rect x="105" y="144" width="126" height="8" rx="4" fill="#edf9f3"/><rect x="300" y="144" width="48" height="8" rx="4" fill="#f0c85a"/><rect x="46" y="172" width="328" height="29" rx="7" fill="#112c33" stroke="#31555d"/><text x="64" y="192" font-size="13" font-weight="850" fill="#23d293">04</text><rect x="105" y="182" width="126" height="8" rx="4" fill="#edf9f3"/><rect x="300" y="182" width="48" height="8" rx="4" fill="#f0c85a"/>
 </svg></div>
   <div class="scene-body">
@@ -841,9 +944,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="table">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">table</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">table</text>
   <rect x="48" y="58" width="324" height="144" rx="10" fill="#112c33" stroke="#31555d"/><path d="M150 58v144" stroke="#31555d" stroke-width="2"/><path d="M250 58v144" stroke="#31555d" stroke-width="2"/><path d="M48 92h324" stroke="#31555d" stroke-width="2"/><path d="M48 128h324" stroke="#31555d" stroke-width="2"/><path d="M48 164h324" stroke="#31555d" stroke-width="2"/><rect x="70" y="72" width="54" height="8" rx="4" fill="#23d293"/><rect x="170" y="72" width="54" height="8" rx="4" fill="#23d293"/><rect x="270" y="72" width="54" height="8" rx="4" fill="#23d293"/><rect x="70" y="105" width="58" height="7" rx="4" fill="#edf9f3"/><rect x="170" y="105" width="58" height="7" rx="4" fill="#edf9f3"/><rect x="270" y="105" width="58" height="7" rx="4" fill="#edf9f3"/><rect x="70" y="141" width="58" height="7" rx="4" fill="#edf9f3"/><rect x="170" y="141" width="58" height="7" rx="4" fill="#edf9f3"/><rect x="270" y="141" width="58" height="7" rx="4" fill="#edf9f3"/><rect x="70" y="177" width="58" height="7" rx="4" fill="#edf9f3"/><rect x="170" y="177" width="58" height="7" rx="4" fill="#edf9f3"/><rect x="270" y="177" width="58" height="7" rx="4" fill="#edf9f3"/>
 </svg></div>
   <div class="scene-body">
@@ -858,9 +961,9 @@
   <div class="family-title"><h3>来源证明</h3><span>Source proof</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="source proof">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">source proof</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">source proof</text>
   <rect x="48" y="64" width="318" height="122" rx="10" fill="#112c33" stroke="#23d293"/><rect x="70" y="84" width="88" height="12" rx="6" fill="#23d293"/><rect x="70" y="116" width="226" height="12" rx="6" fill="#edf9f3"/><rect x="70" y="144" width="178" height="9" rx="5" fill="#86a59f"/><path d="M294 147l18 18 38 -48" fill="none" stroke="#f0c85a" stroke-width="6"/>
 </svg></div>
   <div class="scene-body">
@@ -872,9 +975,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="quote">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">quote</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">quote</text>
   <rect x="50" y="58" width="320" height="142" rx="10" fill="#112c33" stroke="#31555d"/><text x="74" y="105" font-size="54" fill="#23d293" font-weight="900">“</text><rect x="116" y="90" width="194" height="14" rx="7" fill="#edf9f3"/><rect x="116" y="119" width="220" height="10" rx="5" fill="#86a59f"/><rect x="116" y="145" width="156" height="10" rx="5" fill="#86a59f"/><rect x="246" y="176" width="88" height="14" rx="7" fill="#f0c85a"/>
 </svg></div>
   <div class="scene-body">
@@ -889,9 +992,9 @@
   <div class="family-title"><h3>证据标签</h3><span>Proof chips</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="proof chips">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">proof chips</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">proof chips</text>
   <rect x="46" y="66" width="116" height="36" rx="18" fill="#112c33" stroke="#23d293"/><circle cx="68" cy="84" r="7" fill="#23d293"/><rect x="86" y="80" width="48" height="8" rx="4" fill="#edf9f3"/><rect x="178" y="66" width="148" height="36" rx="18" fill="#112c33" stroke="#64c7ff"/><circle cx="200" cy="84" r="7" fill="#64c7ff"/><rect x="218" y="80" width="80" height="8" rx="4" fill="#edf9f3"/><rect x="46" y="126" width="142" height="36" rx="18" fill="#112c33" stroke="#f0c85a"/><circle cx="68" cy="144" r="7" fill="#f0c85a"/><rect x="86" y="140" width="74" height="8" rx="4" fill="#edf9f3"/><rect x="205" y="126" width="116" height="36" rx="18" fill="#112c33" stroke="#23d293"/><circle cx="227" cy="144" r="7" fill="#23d293"/><rect x="245" y="140" width="48" height="8" rx="4" fill="#edf9f3"/><rect x="94" y="186" width="186" height="36" rx="18" fill="#112c33" stroke="#e65b54"/><circle cx="116" cy="204" r="7" fill="#e65b54"/><rect x="134" y="200" width="118" height="8" rx="4" fill="#edf9f3"/>
 </svg></div>
   <div class="scene-body">
@@ -906,9 +1009,9 @@
   <div class="family-title"><h3>验证轨道</h3><span>Validation rails</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="verify">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">verify</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">verify</text>
   <path d="M68 90h276" stroke="#23d293" stroke-width="5"/><circle cx="68" cy="90" r="12" fill="#23d293"/><rect x="30" y="124" width="76" height="42" rx="7" fill="#112c33" stroke="#31555d"/><rect x="44" y="142" width="48" height="7" rx="4" fill="#86a59f"/><circle cx="160" cy="90" r="12" fill="#23d293"/><rect x="122" y="124" width="76" height="42" rx="7" fill="#112c33" stroke="#31555d"/><rect x="136" y="142" width="48" height="7" rx="4" fill="#86a59f"/><circle cx="252" cy="90" r="12" fill="#23d293"/><rect x="214" y="124" width="76" height="42" rx="7" fill="#112c33" stroke="#31555d"/><rect x="228" y="142" width="48" height="7" rx="4" fill="#86a59f"/><circle cx="344" cy="90" r="12" fill="#f0c85a"/><rect x="306" y="124" width="76" height="42" rx="7" fill="#112c33" stroke="#31555d"/><rect x="320" y="142" width="48" height="7" rx="4" fill="#86a59f"/>
 </svg></div>
   <div class="scene-body">
@@ -923,9 +1026,9 @@
   <div class="family-title"><h3>时间结构</h3><span>Timelines</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="timeline">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">timeline</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">timeline</text>
   <path d="M70 110h252" stroke="#23d293" stroke-width="5"/><circle cx="70" cy="110" r="12" fill="#23d293"/><rect x="38" y="142" width="64" height="24" rx="6" fill="#112c33" stroke="#31555d"/><circle cx="154" cy="110" r="12" fill="#23d293"/><rect x="122" y="162" width="64" height="24" rx="6" fill="#112c33" stroke="#31555d"/><circle cx="238" cy="110" r="12" fill="#23d293"/><rect x="206" y="142" width="64" height="24" rx="6" fill="#112c33" stroke="#31555d"/><circle cx="322" cy="110" r="12" fill="#f0c85a"/><rect x="290" y="162" width="64" height="24" rx="6" fill="#112c33" stroke="#31555d"/>
 </svg></div>
   <div class="scene-body">
@@ -937,9 +1040,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="milestones">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">milestones</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">milestones</text>
   <rect x="78" y="58" width="256" height="35" rx="8" fill="#112c33" stroke="#31555d"/><rect x="100" y="71" width="96" height="8" rx="4" fill="#edf9f3"/><rect x="102" y="112" width="208" height="35" rx="8" fill="#112c33" stroke="#31555d"/><rect x="124" y="125" width="96" height="8" rx="4" fill="#edf9f3"/><rect x="126" y="166" width="160" height="35" rx="8" fill="#112c33" stroke="#23d293"/><rect x="148" y="179" width="96" height="8" rx="4" fill="#edf9f3"/>
 </svg></div>
   <div class="scene-body">
@@ -951,9 +1054,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="week">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">week</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">week</text>
   <rect x="52" y="70" width="58" height="44" rx="7" fill="#112c33" stroke="#31555d"/><rect x="65" y="86" width="32" height="8" rx="4" fill="#edf9f3"/><rect x="132" y="70" width="58" height="44" rx="7" fill="#112c33" stroke="#23d293"/><rect x="145" y="86" width="32" height="8" rx="4" fill="#edf9f3"/><rect x="212" y="70" width="58" height="44" rx="7" fill="#112c33" stroke="#31555d"/><rect x="225" y="86" width="32" height="8" rx="4" fill="#edf9f3"/><rect x="292" y="70" width="58" height="44" rx="7" fill="#112c33" stroke="#31555d"/><rect x="305" y="86" width="32" height="8" rx="4" fill="#edf9f3"/><rect x="52" y="136" width="58" height="44" rx="7" fill="#112c33" stroke="#23d293"/><rect x="65" y="152" width="32" height="8" rx="4" fill="#edf9f3"/><rect x="132" y="136" width="58" height="44" rx="7" fill="#112c33" stroke="#31555d"/><rect x="145" y="152" width="32" height="8" rx="4" fill="#edf9f3"/><rect x="212" y="136" width="58" height="44" rx="7" fill="#112c33" stroke="#23d293"/><rect x="225" y="152" width="32" height="8" rx="4" fill="#edf9f3"/>
 </svg></div>
   <div class="scene-body">
@@ -968,9 +1071,9 @@
   <div class="family-title"><h3>机制解释</h3><span>Mechanisms</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="x-ray">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">x-ray</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">x-ray</text>
   <circle cx="210" cy="130" r="58" fill="#17343a" stroke="#23d293" stroke-width="4"/><ellipse cx="210" cy="130" rx="96" ry="24" fill="none" stroke="#31555d" stroke-width="3"/><path d="M92 130h76M252 130h76" stroke="#f0c85a" stroke-width="5"/><rect x="56" y="94" width="74" height="28" rx="7" fill="#112c33" stroke="#31555d"/><rect x="290" y="138" width="74" height="28" rx="7" fill="#112c33" stroke="#31555d"/>
 </svg></div>
   <div class="scene-body">
@@ -982,9 +1085,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="layers">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">layers</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">layers</text>
   <rect x="72" y="72" width="276" height="32" rx="8" fill="#112c33" stroke="#31555d"/><rect x="96" y="84" width="90" height="8" rx="4" fill="#edf9f3"/><rect x="96" y="112" width="228" height="32" rx="8" fill="#112c33" stroke="#31555d"/><rect x="120" y="124" width="90" height="8" rx="4" fill="#edf9f3"/><rect x="120" y="152" width="180" height="32" rx="8" fill="#112c33" stroke="#23d293"/><rect x="144" y="164" width="90" height="8" rx="4" fill="#edf9f3"/>
 </svg></div>
   <div class="scene-body">
@@ -996,9 +1099,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="funnel">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">funnel</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">funnel</text>
   <path d="M82 66h256l-52 58H134z" fill="#112c33" stroke="#31555d" stroke-width="3"/><path d="M134 124h152l-42 52h-68z" fill="#123238" stroke="#23d293" stroke-width="3"/><rect x="176" y="184" width="68" height="16" rx="8" fill="#f0c85a"/><rect x="126" y="87" width="72" height="8" rx="4" fill="#edf9f3"/>
 </svg></div>
   <div class="scene-body">
@@ -1013,9 +1116,9 @@
   <div class="family-title"><h3>对比结构</h3><span>Comparisons</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="compare">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">compare</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">compare</text>
   <rect x="48" y="62" width="134" height="128" rx="10" fill="#112c33" stroke="#31555d"/><rect x="238" y="62" width="134" height="128" rx="10" fill="#112c33" stroke="#23d293"/><rect x="72" y="98" width="70" height="12" rx="6" fill="#edf9f3"/><rect x="262" y="98" width="70" height="12" rx="6" fill="#edf9f3"/><path d="M191 126h39" stroke="#f0c85a" stroke-width="5"/><path d="M222 113l14 13 -14 13" fill="none" stroke="#f0c85a" stroke-width="5"/>
 </svg></div>
   <div class="scene-body">
@@ -1027,9 +1130,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="before after">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">before after</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">before after</text>
   <rect x="46" y="68" width="138" height="112" rx="10" fill="#162831" stroke="#e65b54"/><rect x="236" y="68" width="138" height="112" rx="10" fill="#112c33" stroke="#23d293"/><text x="75" y="104" font-size="15" font-weight="850" fill="#e65b54">BEFORE</text><text x="266" y="104" font-size="15" font-weight="850" fill="#23d293">AFTER</text><rect x="76" y="130" width="72" height="9" rx="5" fill="#86a59f"/><rect x="266" y="130" width="72" height="9" rx="5" fill="#edf9f3"/>
 </svg></div>
   <div class="scene-body">
@@ -1044,9 +1147,9 @@
   <div class="family-title"><h3>风险结构</h3><span>Risk matrices</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="risk matrix">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">risk matrix</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">risk matrix</text>
   <rect x="48" y="62" width="150" height="58" rx="9" fill="#112c33" stroke="#23d293"/><text x="68" y="98" font-size="17" font-weight="850" fill="#edf9f3">UP</text><rect x="220" y="62" width="150" height="58" rx="9" fill="#112c33" stroke="#e65b54"/><text x="240" y="98" font-size="17" font-weight="850" fill="#edf9f3">RISK</text><rect x="48" y="144" width="150" height="58" rx="9" fill="#112c33" stroke="#64c7ff"/><text x="68" y="180" font-size="17" font-weight="850" fill="#edf9f3">OPEN</text><rect x="220" y="144" width="150" height="58" rx="9" fill="#112c33" stroke="#f0c85a"/><text x="240" y="180" font-size="17" font-weight="850" fill="#edf9f3">CHECK</text>
 </svg></div>
   <div class="scene-body">
@@ -1061,9 +1164,9 @@
   <div class="family-title"><h3>排名结构</h3><span>Rankings</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="ranking">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">ranking</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">ranking</text>
   <text x="56" y="76" font-size="15" font-weight="850" fill="#23d293">1</text><rect x="90" y="56" width="246" height="22" rx="7" fill="#112c33" stroke="#31555d"/><rect x="90" y="56" width="170" height="22" rx="7" fill="#23d293" opacity=".45"/><text x="56" y="110" font-size="15" font-weight="850" fill="#23d293">2</text><rect x="90" y="90" width="208" height="22" rx="7" fill="#112c33" stroke="#31555d"/><rect x="90" y="90" width="132" height="22" rx="7" fill="#23d293" opacity=".45"/><text x="56" y="144" font-size="15" font-weight="850" fill="#23d293">3</text><rect x="90" y="124" width="172" height="22" rx="7" fill="#112c33" stroke="#31555d"/><rect x="90" y="124" width="96" height="22" rx="7" fill="#23d293" opacity=".45"/><text x="56" y="178" font-size="15" font-weight="850" fill="#23d293">4</text><rect x="90" y="158" width="126" height="22" rx="7" fill="#112c33" stroke="#31555d"/><rect x="90" y="158" width="50" height="22" rx="7" fill="#23d293" opacity=".45"/><text x="56" y="212" font-size="15" font-weight="850" fill="#23d293">5</text><rect x="90" y="192" width="90" height="22" rx="7" fill="#112c33" stroke="#31555d"/><rect x="90" y="192" width="38" height="22" rx="7" fill="#23d293" opacity=".45"/>
 </svg></div>
   <div class="scene-body">
@@ -1078,9 +1181,9 @@
   <div class="family-title"><h3>观察清单</h3><span>Watch lists</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="watchlist">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">watchlist</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">watchlist</text>
   <circle cx="76" cy="70" r="8" fill="#23d293"/><rect x="102" y="64" width="230" height="12" rx="6" fill="#edf9f3"/><circle cx="76" cy="108" r="8" fill="#23d293"/><rect x="102" y="102" width="202" height="12" rx="6" fill="#edf9f3"/><circle cx="76" cy="146" r="8" fill="#23d293"/><rect x="102" y="140" width="174" height="12" rx="6" fill="#edf9f3"/><circle cx="76" cy="184" r="8" fill="#f0c85a"/><rect x="102" y="178" width="146" height="12" rx="6" fill="#edf9f3"/>
 </svg></div>
   <div class="scene-body">
@@ -1092,9 +1195,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="next watch">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">next watch</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">next watch</text>
   <path d="M70 178c48 -38 86 -38 134 0s86 38 146 0" fill="none" stroke="#31555d" stroke-width="4"/><circle cx="102" cy="156" r="11" fill="#23d293"/><circle cx="210" cy="178" r="11" fill="#f0c85a"/><circle cx="322" cy="148" r="11" fill="#64c7ff"/><rect x="72" y="66" width="240" height="18" rx="6" fill="#edf9f3"/><rect x="72" y="102" width="166" height="11" rx="6" fill="#86a59f"/>
 </svg></div>
   <div class="scene-body">
@@ -1109,9 +1212,9 @@
   <div class="family-title"><h3>主体与地图</h3><span>Entity maps</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="entity map">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">entity map</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">entity map</text>
   <circle cx="210" cy="130" r="35" fill="#112c33" stroke="#23d293" stroke-width="4"/><circle cx="100" cy="84" r="22" fill="#17343a" stroke="#f0c85a" stroke-width="3"/><circle cx="318" cy="82" r="22" fill="#17343a" stroke="#64c7ff" stroke-width="3"/><circle cx="111" cy="188" r="22" fill="#17343a" stroke="#23d293" stroke-width="3"/><circle cx="318" cy="184" r="22" fill="#17343a" stroke="#f0c85a" stroke-width="3"/><path d="M121 92l58 25M297 91l-58 25M130 178l50 -30M298 175l-56 -28" stroke="#31555d" stroke-width="4"/>
 </svg></div>
   <div class="scene-body">
@@ -1123,9 +1226,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="map">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">map</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">map</text>
   <path d="M86 88c42 -38 92 -20 114 14 34 -34 86 -24 116 12 34 40 2 92 -48 98 -54 7 -82 -24 -118 -10 -56 21 -102 -12 -98 -58 2 -22 14 -40 34 -56z" fill="#112c33" stroke="#31555d" stroke-width="3"/><circle cx="160" cy="120" r="9" fill="#23d293"/><circle cx="250" cy="146" r="9" fill="#f0c85a"/><circle cx="292" cy="104" r="9" fill="#64c7ff"/><path d="M160 120c32 18 58 22 90 26" fill="none" stroke="#23d293" stroke-width="3"/>
 </svg></div>
   <div class="scene-body">
@@ -1140,9 +1243,9 @@
   <div class="family-title"><h3>产品展示</h3><span>Product plates</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="product">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">product</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">product</text>
   <rect x="82" y="54" width="256" height="150" rx="14" fill="#112c33" stroke="#23d293" stroke-width="3"/><circle cx="210" cy="128" r="45" fill="#17343a" stroke="#f0c85a" stroke-width="4"/><rect x="176" y="118" width="68" height="22" rx="11" fill="#23d293"/><path d="M108 128h58M254 128h58" stroke="#64c7ff" stroke-width="3"/><rect x="148" y="214" width="124" height="8" rx="4" fill="#86a59f"/>
 </svg></div>
   <div class="scene-body">
@@ -1157,9 +1260,9 @@
   <div class="family-title"><h3>结论收束</h3><span>Conclusions</span></div>
   <div class="scene-grid"><article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="stamp">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">stamp</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">stamp</text>
   <rect x="74" y="72" width="272" height="100" rx="12" fill="#112c33" stroke="#23d293" stroke-width="4"/><text x="210" y="116" text-anchor="middle" font-size="24" font-weight="900" fill="#23d293">VERDICT</text><rect x="126" y="136" width="168" height="10" rx="5" fill="#edf9f3"/><circle cx="88" cy="204" r="7" fill="#23d293"/><rect x="108" y="198" width="200" height="10" rx="5" fill="#86a59f"/>
 </svg></div>
   <div class="scene-body">
@@ -1171,9 +1274,9 @@
 </article>
 <article class="scene-card">
   <div class="svg-wrap"><svg viewBox="0 0 420 260" role="img" aria-label="cta">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
-  <text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">cta</text>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
+  <text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">cta</text>
   <rect x="72" y="70" width="276" height="120" rx="12" fill="#112c33" stroke="#31555d"/><rect x="112" y="104" width="196" height="18" rx="6" fill="#edf9f3"/><rect x="136" y="144" width="148" height="32" rx="16" fill="#23d293"/><path d="M270 160h-28M260 148l14 12 -14 12" fill="none" stroke="#06120f" stroke-width="4"/><circle cx="318" cy="84" r="10" fill="#f0c85a"/>
 </svg></div>
   <div class="scene-body">
@@ -1192,43 +1295,80 @@
         <p>Visual 层不改变事实和结构，只改变色彩、密度、对比和质感。这里的预览用同一套信息构图展示不同皮肤落地后的效果。</p>
       </div>
       <div class="theme-grid"><article class="theme-card">
-  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="深色编辑部 preview">
+  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="深色编辑部 preview" style="font-family:Noto Serif SC, Source Han Serif SC, Newsreader, Georgia, serif">
   <rect width="640" height="420" fill="rgb(13, 18, 20)"/>
   <rect x="32" y="24" width="232" height="372" rx="14" fill="rgb(24, 31, 34)" stroke="rgb(34, 42, 45)" stroke-width="1.5"/>
   <rect x="32" y="24" width="232" height="7" rx="3.5" fill="rgb(70, 188, 172)"/>
-  <text x="52" y="62" font-size="10" font-weight="800" fill="rgb(70, 188, 172)">DAILY VIDEO</text>
-  <rect x="52" y="82" width="158" height="10" rx="5" fill="rgb(244, 242, 235)"/>
-  <rect x="52" y="102" width="126" height="7" rx="3.5" fill="rgb(160, 168, 166)"/>
-  <path d="M52 132h172M52 242h172M52 332h172" stroke="rgb(34, 42, 45)" stroke-width="1"/>
-  <rect x="52" y="150" width="172" height="64" rx="8" fill="rgb(34, 42, 45)"/>
-  <text x="68" y="174" font-size="10" fill="rgb(160, 168, 166)">01</text>
-  <rect x="94" y="166" width="78" height="6" rx="3" fill="rgb(244, 242, 235)"/>
-  <rect x="94" y="185" width="106" height="5" rx="2.5" fill="rgb(160, 168, 166)"/>
-  <rect x="94" y="201" width="64" height="5" rx="2.5" fill="rgb(160, 168, 166)"/>
-  <rect x="52" y="262" width="172" height="44" rx="7" fill="rgb(34, 42, 45)"/>
-  <path d="M70 290l22 -12 18 13 26 -21 34 16" fill="none" stroke="rgb(230, 184, 91)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="52" y="348" width="82" height="6" rx="3" fill="rgb(160, 168, 166)"/>
-  <rect x="166" y="348" width="58" height="6" rx="3" fill="rgb(70, 188, 172)"/>
-  <rect x="292" y="48" width="296" height="72" rx="10" fill="rgb(24, 31, 34)" stroke="rgb(34, 42, 45)" stroke-width="1.5"/>
-  <text x="314" y="78" font-size="12" font-weight="800" fill="rgb(244, 242, 235)">text hierarchy</text>
-  <rect x="314" y="94" width="118" height="6" rx="3" fill="rgb(160, 168, 166)"/>
-  <rect x="464" y="86" width="72" height="18" rx="9" fill="rgb(70, 188, 172)"/>
-  <rect x="292" y="146" width="296" height="94" rx="10" fill="rgb(24, 31, 34)" stroke="rgb(34, 42, 45)" stroke-width="1.5"/>
-  <text x="314" y="176" font-size="12" font-weight="800" fill="rgb(244, 242, 235)">fine data layer</text>
-  <path d="M314 206h230" stroke="rgb(34, 42, 45)" stroke-width="1"/>
-  <rect x="314" y="218" width="96" height="5" rx="2.5" fill="rgb(160, 168, 166)"/>
-  <rect x="436" y="218" width="54" height="5" rx="2.5" fill="rgb(230, 184, 91)"/>
-  <rect x="314" y="194" width="42" height="5" rx="2.5" fill="rgb(70, 188, 172)"/>
-  <circle cx="552" cy="172" r="6" fill="rgb(219, 101, 83)"/>
-  <rect x="292" y="266" width="296" height="82" rx="10" fill="rgb(24, 31, 34)" stroke="rgb(34, 42, 45)" stroke-width="1.5"/>
-  <text x="314" y="296" font-size="12" font-weight="800" fill="rgb(244, 242, 235)">motion hold</text>
-  <rect x="314" y="316" width="206" height="5" rx="2.5" fill="rgb(160, 168, 166)"/>
-  <rect x="314" y="332" width="148" height="5" rx="2.5" fill="rgb(70, 188, 172)"/>
+  <rect x="50" y="45" width="58" height="6" rx="3" fill="rgb(160, 168, 166)"/>
+  <circle cx="216" cy="48" r="3" fill="rgb(70, 188, 172)"/>
+  <circle cx="228" cy="48" r="3" fill="rgb(230, 184, 91)"/>
+  <text x="52" y="72" font-size="10" font-weight="800" fill="rgb(70, 188, 172)">DAILY VIDEO</text>
+  <text x="52" y="99" font-size="15" font-weight="850" fill="rgb(244, 242, 235)">视觉 Aa</text>
+  <text x="52" y="120" font-size="10" font-weight="650" fill="rgb(160, 168, 166)">type scale / 字号</text>
+  <rect x="52" y="129" width="100" height="3" rx="1.5" fill="rgb(230, 184, 91)"/>
+  <path d="M52 139h172M52 229h172M52 319h172" stroke="rgb(34, 42, 45)" stroke-width="1"/>
+  <rect x="52" y="154" width="172" height="52" rx="8" fill="rgb(34, 42, 45)"/>
+  <text x="68" y="175" font-size="10" font-weight="800" fill="rgb(70, 188, 172)">01</text>
+  <text x="94" y="173" font-size="8" font-weight="820" fill="rgb(244, 242, 235)">label chip</text>
+  <rect x="94" y="184" width="61" height="5" rx="2.5" fill="rgb(160, 168, 166)"/>
+  <rect x="66" y="192" width="36" height="5" rx="2.5" fill="rgb(230, 184, 91)"/>
+  <rect x="158" y="192" width="42" height="5" rx="2.5" fill="rgb(219, 101, 83)"/>
+  <rect x="52" y="246" width="78" height="48" rx="7" fill="rgb(34, 42, 45)"/>
+  <path d="M66 276l16 -10 14 12 18 -19 10 8" fill="none" stroke="rgb(230, 184, 91)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="144" y="246" width="80" height="48" rx="7" fill="rgb(34, 42, 45)"/>
+  <rect x="158" y="262" width="59" height="5" rx="2.5" fill="rgb(244, 242, 235)"/>
+  <rect x="158" y="278" width="34" height="5" rx="2.5" fill="rgb(160, 168, 166)"/>
+  <circle cx="208" cy="280" r="5" fill="rgb(70, 188, 172)"/>
+  <rect x="52" y="337" width="44" height="6" rx="3" fill="rgb(160, 168, 166)"/>
+  <rect x="108" y="337" width="52" height="6" rx="3" fill="rgb(34, 42, 45)"/>
+  <rect x="174" y="337" width="50" height="6" rx="3" fill="rgb(70, 188, 172)"/>
+  <rect x="52" y="360" width="172" height="1" fill="rgb(34, 42, 45)"/>
+  <rect x="52" y="376" width="72" height="5" rx="2.5" fill="rgb(160, 168, 166)"/>
+  <rect x="152" y="376" width="72" height="5" rx="2.5" fill="rgb(230, 184, 91)"/>
+  <rect x="292" y="40" width="142" height="88" rx="10" fill="rgb(24, 31, 34)" stroke="rgb(34, 42, 45)" stroke-width="1.5"/>
+  <text x="312" y="66" font-size="11" font-weight="800" fill="rgb(244, 242, 235)">type system</text>
+  <text x="312" y="86" font-size="8" font-weight="760" fill="rgb(70, 188, 172)">Noto Serif SC</text>
+  <text x="312" y="105" font-size="8" font-weight="760" fill="rgb(160, 168, 166)">Newsreader</text>
+  <rect x="312" y="113" width="84" height="3" rx="1.5" fill="rgb(230, 184, 91)"/>
+  <rect x="446" y="40" width="142" height="88" rx="10" fill="rgb(24, 31, 34)" stroke="rgb(34, 42, 45)" stroke-width="1.5"/>
+  <text x="466" y="66" font-size="11" font-weight="800" fill="rgb(244, 242, 235)">text / media</text>
+  <rect x="470" y="82" width="61" height="16" rx="5" fill="rgb(244, 242, 235)"/>
+  <rect x="537" y="82" width="35" height="16" rx="5" fill="rgb(230, 184, 91)"/>
+  <text x="470" y="113" font-size="9" font-weight="760" fill="rgb(160, 168, 166)">64% / 36%</text>
+  <circle cx="570" cy="112" r="5" fill="rgb(219, 101, 83)"/>
+  <rect x="292" y="150" width="296" height="112" rx="10" fill="rgb(24, 31, 34)" stroke="rgb(34, 42, 45)" stroke-width="1.5"/>
+  <text x="314" y="178" font-size="12" font-weight="800" fill="rgb(244, 242, 235)">decor + underline</text>
+  <path d="M314 202h230M314 226h230" stroke="rgb(34, 42, 45)" stroke-width="1"/>
+  <rect x="314" y="194" width="52" height="5" rx="2.5" fill="rgb(70, 188, 172)"/>
+  <rect x="382" y="194" width="74" height="5" rx="2.5" fill="rgb(160, 168, 166)"/>
+  <rect x="494" y="194" width="38" height="5" rx="2.5" fill="rgb(230, 184, 91)"/>
+  <rect x="314" y="218" width="86" height="5" rx="2.5" fill="rgb(160, 168, 166)"/>
+  <rect x="424" y="218" width="48" height="5" rx="2.5" fill="rgb(219, 101, 83)"/>
+  <rect x="314" y="234" width="100" height="4" rx="2" fill="rgb(230, 184, 91)"/>
+  <path d="M314 246l26 -12 22 10 32 -28 26 18 38 -30 34 20 32 -26" fill="none" stroke="rgb(230, 184, 91)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="292" y="284" width="142" height="80" rx="10" fill="rgb(24, 31, 34)" stroke="rgb(34, 42, 45)" stroke-width="1.5"/>
+  <text x="312" y="312" font-size="12" font-weight="800" fill="rgb(244, 242, 235)">scene rhythm</text>
+  <rect x="312" y="328" width="24" height="18" rx="4" fill="rgb(70, 188, 172)"/>
+  <rect x="342" y="328" width="24" height="18" rx="4" fill="rgb(34, 42, 45)"/>
+  <rect x="372" y="328" width="24" height="18" rx="4" fill="rgb(230, 184, 91)"/>
+  <rect x="402" y="328" width="14" height="18" rx="4" fill="rgb(160, 168, 166)"/>
+  <rect x="446" y="284" width="142" height="80" rx="10" fill="rgb(24, 31, 34)" stroke="rgb(34, 42, 45)" stroke-width="1.5"/>
+  <text x="466" y="312" font-size="12" font-weight="800" fill="rgb(244, 242, 235)">scale map</text>
+  <text x="466" y="331" font-size="8.5" font-weight="700" fill="rgb(160, 168, 166)">H 76 / B 40 / L 24</text>
+  <rect x="524" y="328" width="44" height="5" rx="2.5" fill="rgb(70, 188, 172)"/>
+  <rect x="466" y="344" width="102" height="5" rx="2.5" fill="rgb(34, 42, 45)"/>
 </svg></div>
   <div class="theme-body">
     <div class="card-meta"><span><code>editorial_dark</code></span><span>Editorial Dark</span></div>
     <h3>深色编辑部 / Editorial Dark</h3>
     <p>适合严肃新闻、研究札记、夜间复盘。</p>
+    <dl class="style-spec-list" aria-label="Visual style dimensions">
+      <div><dt>字体</dt><dd>Noto Serif SC / Source Han Serif SC + Newsreader / Georgia</dd></div>
+<div><dt>字号</dt><dd>标题 76 / 正文 40 / 标签 24</dd></div>
+<div><dt>图文</dt><dd>文字 64% / 画面 36%</dd></div>
+<div><dt>装饰</dt><dd>青绿色小色块，配少量金色证据点。</dd></div>
+<div><dt>划线</dt><dd>只给关键判断加一条短强调线。</dd></div>
+    </dl>
     <div class="swatch-row"><span class="swatch dark-label" title="background" style="background:rgb(13, 18, 20)">bg</span>
 <span class="swatch dark-label" title="panel" style="background:rgb(24, 31, 34)">panel</span>
 <span class="swatch" title="foreground" style="background:rgb(244, 242, 235)">ink</span>
@@ -1238,43 +1378,80 @@
   </div>
 </article>
 <article class="theme-card">
-  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="高管浅色 preview">
+  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="高管浅色 preview" style="font-family:Inter, Noto Sans SC, Source Han Sans SC, system-ui, sans-serif">
   <rect width="640" height="420" fill="rgb(246, 241, 231)"/>
   <rect x="32" y="24" width="232" height="372" rx="14" fill="rgb(255, 251, 242)" stroke="rgb(235, 228, 215)" stroke-width="1.5"/>
   <rect x="32" y="24" width="232" height="7" rx="3.5" fill="rgb(25, 103, 210)"/>
-  <text x="52" y="62" font-size="10" font-weight="800" fill="rgb(25, 103, 210)">DAILY VIDEO</text>
-  <rect x="52" y="82" width="158" height="10" rx="5" fill="rgb(13, 25, 38)"/>
-  <rect x="52" y="102" width="126" height="7" rx="3.5" fill="rgb(87, 99, 111)"/>
-  <path d="M52 132h172M52 242h172M52 332h172" stroke="rgb(235, 228, 215)" stroke-width="1"/>
-  <rect x="52" y="150" width="172" height="64" rx="8" fill="rgb(235, 228, 215)"/>
-  <text x="68" y="174" font-size="10" fill="rgb(87, 99, 111)">01</text>
-  <rect x="94" y="166" width="78" height="6" rx="3" fill="rgb(13, 25, 38)"/>
-  <rect x="94" y="185" width="106" height="5" rx="2.5" fill="rgb(87, 99, 111)"/>
-  <rect x="94" y="201" width="64" height="5" rx="2.5" fill="rgb(87, 99, 111)"/>
-  <rect x="52" y="262" width="172" height="44" rx="7" fill="rgb(235, 228, 215)"/>
-  <path d="M70 290l22 -12 18 13 26 -21 34 16" fill="none" stroke="rgb(176, 122, 50)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="52" y="348" width="82" height="6" rx="3" fill="rgb(87, 99, 111)"/>
-  <rect x="166" y="348" width="58" height="6" rx="3" fill="rgb(25, 103, 210)"/>
-  <rect x="292" y="48" width="296" height="72" rx="10" fill="rgb(255, 251, 242)" stroke="rgb(235, 228, 215)" stroke-width="1.5"/>
-  <text x="314" y="78" font-size="12" font-weight="800" fill="rgb(13, 25, 38)">text hierarchy</text>
-  <rect x="314" y="94" width="118" height="6" rx="3" fill="rgb(87, 99, 111)"/>
-  <rect x="464" y="86" width="72" height="18" rx="9" fill="rgb(25, 103, 210)"/>
-  <rect x="292" y="146" width="296" height="94" rx="10" fill="rgb(255, 251, 242)" stroke="rgb(235, 228, 215)" stroke-width="1.5"/>
-  <text x="314" y="176" font-size="12" font-weight="800" fill="rgb(13, 25, 38)">fine data layer</text>
-  <path d="M314 206h230" stroke="rgb(235, 228, 215)" stroke-width="1"/>
-  <rect x="314" y="218" width="96" height="5" rx="2.5" fill="rgb(87, 99, 111)"/>
-  <rect x="436" y="218" width="54" height="5" rx="2.5" fill="rgb(176, 122, 50)"/>
-  <rect x="314" y="194" width="42" height="5" rx="2.5" fill="rgb(25, 103, 210)"/>
-  <circle cx="552" cy="172" r="6" fill="rgb(184, 75, 63)"/>
-  <rect x="292" y="266" width="296" height="82" rx="10" fill="rgb(255, 251, 242)" stroke="rgb(235, 228, 215)" stroke-width="1.5"/>
-  <text x="314" y="296" font-size="12" font-weight="800" fill="rgb(13, 25, 38)">motion hold</text>
-  <rect x="314" y="316" width="206" height="5" rx="2.5" fill="rgb(87, 99, 111)"/>
-  <rect x="314" y="332" width="148" height="5" rx="2.5" fill="rgb(25, 103, 210)"/>
+  <rect x="50" y="45" width="58" height="6" rx="3" fill="rgb(87, 99, 111)"/>
+  <circle cx="216" cy="48" r="3" fill="rgb(25, 103, 210)"/>
+  <circle cx="228" cy="48" r="3" fill="rgb(176, 122, 50)"/>
+  <text x="52" y="72" font-size="10" font-weight="800" fill="rgb(25, 103, 210)">DAILY VIDEO</text>
+  <text x="52" y="99" font-size="14" font-weight="850" fill="rgb(13, 25, 38)">视觉 Aa</text>
+  <text x="52" y="120" font-size="9" font-weight="650" fill="rgb(87, 99, 111)">type scale / 字号</text>
+  <rect x="52" y="129" width="98" height="3" rx="1.5" fill="rgb(176, 122, 50)"/>
+  <path d="M52 139h172M52 229h172M52 319h172" stroke="rgb(235, 228, 215)" stroke-width="1"/>
+  <rect x="52" y="154" width="172" height="52" rx="8" fill="rgb(235, 228, 215)"/>
+  <text x="68" y="175" font-size="10" font-weight="800" fill="rgb(25, 103, 210)">01</text>
+  <text x="94" y="173" font-size="8" font-weight="820" fill="rgb(13, 25, 38)">label chip</text>
+  <rect x="94" y="184" width="54" height="5" rx="2.5" fill="rgb(87, 99, 111)"/>
+  <rect x="66" y="192" width="36" height="5" rx="2.5" fill="rgb(176, 122, 50)"/>
+  <rect x="158" y="192" width="42" height="5" rx="2.5" fill="rgb(184, 75, 63)"/>
+  <rect x="52" y="246" width="78" height="48" rx="7" fill="rgb(235, 228, 215)"/>
+  <path d="M66 276l16 -10 14 12 18 -19 10 8" fill="none" stroke="rgb(176, 122, 50)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="144" y="246" width="80" height="48" rx="7" fill="rgb(235, 228, 215)"/>
+  <rect x="158" y="262" width="66" height="5" rx="2.5" fill="rgb(13, 25, 38)"/>
+  <rect x="158" y="278" width="34" height="5" rx="2.5" fill="rgb(87, 99, 111)"/>
+  <circle cx="208" cy="280" r="5" fill="rgb(25, 103, 210)"/>
+  <rect x="52" y="337" width="44" height="6" rx="3" fill="rgb(87, 99, 111)"/>
+  <rect x="108" y="337" width="52" height="6" rx="3" fill="rgb(235, 228, 215)"/>
+  <rect x="174" y="337" width="50" height="6" rx="3" fill="rgb(25, 103, 210)"/>
+  <rect x="52" y="360" width="172" height="1" fill="rgb(235, 228, 215)"/>
+  <rect x="52" y="376" width="72" height="5" rx="2.5" fill="rgb(87, 99, 111)"/>
+  <rect x="152" y="376" width="72" height="5" rx="2.5" fill="rgb(176, 122, 50)"/>
+  <rect x="292" y="40" width="142" height="88" rx="10" fill="rgb(255, 251, 242)" stroke="rgb(235, 228, 215)" stroke-width="1.5"/>
+  <text x="312" y="66" font-size="11" font-weight="800" fill="rgb(13, 25, 38)">type system</text>
+  <text x="312" y="86" font-size="8" font-weight="760" fill="rgb(25, 103, 210)">Noto Sans SC</text>
+  <text x="312" y="105" font-size="8" font-weight="760" fill="rgb(87, 99, 111)">Inter</text>
+  <rect x="312" y="113" width="84" height="3" rx="1.5" fill="rgb(176, 122, 50)"/>
+  <rect x="446" y="40" width="142" height="88" rx="10" fill="rgb(255, 251, 242)" stroke="rgb(235, 228, 215)" stroke-width="1.5"/>
+  <text x="466" y="66" font-size="11" font-weight="800" fill="rgb(13, 25, 38)">text / media</text>
+  <rect x="470" y="82" width="54" height="16" rx="5" fill="rgb(13, 25, 38)"/>
+  <rect x="530" y="82" width="42" height="16" rx="5" fill="rgb(176, 122, 50)"/>
+  <text x="470" y="113" font-size="9" font-weight="760" fill="rgb(87, 99, 111)">56% / 44%</text>
+  <circle cx="570" cy="112" r="5" fill="rgb(184, 75, 63)"/>
+  <rect x="292" y="150" width="296" height="112" rx="10" fill="rgb(255, 251, 242)" stroke="rgb(235, 228, 215)" stroke-width="1.5"/>
+  <text x="314" y="178" font-size="12" font-weight="800" fill="rgb(13, 25, 38)">decor + underline</text>
+  <path d="M314 202h230M314 226h230" stroke="rgb(235, 228, 215)" stroke-width="1"/>
+  <rect x="314" y="194" width="52" height="5" rx="2.5" fill="rgb(25, 103, 210)"/>
+  <rect x="382" y="194" width="74" height="5" rx="2.5" fill="rgb(87, 99, 111)"/>
+  <rect x="494" y="194" width="38" height="5" rx="2.5" fill="rgb(176, 122, 50)"/>
+  <rect x="314" y="218" width="86" height="5" rx="2.5" fill="rgb(87, 99, 111)"/>
+  <rect x="424" y="218" width="48" height="5" rx="2.5" fill="rgb(184, 75, 63)"/>
+  <rect x="314" y="234" width="98" height="4" rx="2" fill="rgb(176, 122, 50)"/>
+  <path d="M314 246l26 -12 22 10 32 -28 26 18 38 -30 34 20 32 -26" fill="none" stroke="rgb(176, 122, 50)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="292" y="284" width="142" height="80" rx="10" fill="rgb(255, 251, 242)" stroke="rgb(235, 228, 215)" stroke-width="1.5"/>
+  <text x="312" y="312" font-size="12" font-weight="800" fill="rgb(13, 25, 38)">scene rhythm</text>
+  <rect x="312" y="328" width="24" height="18" rx="4" fill="rgb(25, 103, 210)"/>
+  <rect x="342" y="328" width="24" height="18" rx="4" fill="rgb(235, 228, 215)"/>
+  <rect x="372" y="328" width="24" height="18" rx="4" fill="rgb(176, 122, 50)"/>
+  <rect x="402" y="328" width="14" height="18" rx="4" fill="rgb(87, 99, 111)"/>
+  <rect x="446" y="284" width="142" height="80" rx="10" fill="rgb(255, 251, 242)" stroke="rgb(235, 228, 215)" stroke-width="1.5"/>
+  <text x="466" y="312" font-size="12" font-weight="800" fill="rgb(13, 25, 38)">scale map</text>
+  <text x="466" y="331" font-size="8.5" font-weight="700" fill="rgb(87, 99, 111)">H 68 / B 38 / L 24</text>
+  <rect x="524" y="328" width="44" height="5" rx="2.5" fill="rgb(25, 103, 210)"/>
+  <rect x="466" y="344" width="102" height="5" rx="2.5" fill="rgb(235, 228, 215)"/>
 </svg></div>
   <div class="theme-body">
     <div class="card-meta"><span><code>executive_light</code></span><span>Executive Light</span></div>
     <h3>高管浅色 / Executive Light</h3>
     <p>适合周报、简报、面向决策者的解释。</p>
+    <dl class="style-spec-list" aria-label="Visual style dimensions">
+      <div><dt>字体</dt><dd>Noto Sans SC / Source Han Sans SC + Inter / SF Pro</dd></div>
+<div><dt>字号</dt><dd>标题 68 / 正文 38 / 标签 24</dd></div>
+<div><dt>图文</dt><dd>文字 56% / 画面 44%</dd></div>
+<div><dt>装饰</dt><dd>克制蓝色标签，配少量金色确认点。</dd></div>
+<div><dt>划线</dt><dd>只在结论行下方放一条细蓝线。</dd></div>
+    </dl>
     <div class="swatch-row"><span class="swatch" title="background" style="background:rgb(246, 241, 231)">bg</span>
 <span class="swatch" title="panel" style="background:rgb(255, 251, 242)">panel</span>
 <span class="swatch dark-label" title="foreground" style="background:rgb(13, 25, 38)">ink</span>
@@ -1284,43 +1461,80 @@
   </div>
 </article>
 <article class="theme-card">
-  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="市场终端 preview">
+  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="市场终端 preview" style="font-family:IBM Plex Mono, SFMono-Regular, Noto Sans Mono CJK SC, monospace">
   <rect width="640" height="420" fill="rgb(5, 13, 18)"/>
   <rect x="32" y="24" width="232" height="372" rx="14" fill="rgb(11, 28, 35)" stroke="rgb(18, 44, 52)" stroke-width="1.5"/>
   <rect x="32" y="24" width="232" height="7" rx="3.5" fill="rgb(23, 214, 132)"/>
-  <text x="52" y="62" font-size="10" font-weight="800" fill="rgb(23, 214, 132)">DAILY VIDEO</text>
-  <rect x="52" y="82" width="158" height="10" rx="5" fill="rgb(231, 247, 238)"/>
-  <rect x="52" y="102" width="126" height="7" rx="3.5" fill="rgb(124, 154, 146)"/>
-  <path d="M52 132h172M52 242h172M52 332h172" stroke="rgb(18, 44, 52)" stroke-width="1"/>
-  <rect x="52" y="150" width="172" height="64" rx="8" fill="rgb(18, 44, 52)"/>
-  <text x="68" y="174" font-size="10" fill="rgb(124, 154, 146)">01</text>
-  <rect x="94" y="166" width="78" height="6" rx="3" fill="rgb(231, 247, 238)"/>
-  <rect x="94" y="185" width="106" height="5" rx="2.5" fill="rgb(124, 154, 146)"/>
-  <rect x="94" y="201" width="64" height="5" rx="2.5" fill="rgb(124, 154, 146)"/>
-  <rect x="52" y="262" width="172" height="44" rx="7" fill="rgb(18, 44, 52)"/>
-  <path d="M70 290l22 -12 18 13 26 -21 34 16" fill="none" stroke="rgb(236, 198, 83)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="52" y="348" width="82" height="6" rx="3" fill="rgb(124, 154, 146)"/>
-  <rect x="166" y="348" width="58" height="6" rx="3" fill="rgb(23, 214, 132)"/>
-  <rect x="292" y="48" width="296" height="72" rx="10" fill="rgb(11, 28, 35)" stroke="rgb(18, 44, 52)" stroke-width="1.5"/>
-  <text x="314" y="78" font-size="12" font-weight="800" fill="rgb(231, 247, 238)">text hierarchy</text>
-  <rect x="314" y="94" width="118" height="6" rx="3" fill="rgb(124, 154, 146)"/>
-  <rect x="464" y="86" width="72" height="18" rx="9" fill="rgb(23, 214, 132)"/>
-  <rect x="292" y="146" width="296" height="94" rx="10" fill="rgb(11, 28, 35)" stroke="rgb(18, 44, 52)" stroke-width="1.5"/>
-  <text x="314" y="176" font-size="12" font-weight="800" fill="rgb(231, 247, 238)">fine data layer</text>
-  <path d="M314 206h230" stroke="rgb(18, 44, 52)" stroke-width="1"/>
-  <rect x="314" y="218" width="96" height="5" rx="2.5" fill="rgb(124, 154, 146)"/>
-  <rect x="436" y="218" width="54" height="5" rx="2.5" fill="rgb(236, 198, 83)"/>
-  <rect x="314" y="194" width="42" height="5" rx="2.5" fill="rgb(23, 214, 132)"/>
-  <circle cx="552" cy="172" r="6" fill="rgb(234, 82, 82)"/>
-  <rect x="292" y="266" width="296" height="82" rx="10" fill="rgb(11, 28, 35)" stroke="rgb(18, 44, 52)" stroke-width="1.5"/>
-  <text x="314" y="296" font-size="12" font-weight="800" fill="rgb(231, 247, 238)">motion hold</text>
-  <rect x="314" y="316" width="206" height="5" rx="2.5" fill="rgb(124, 154, 146)"/>
-  <rect x="314" y="332" width="148" height="5" rx="2.5" fill="rgb(23, 214, 132)"/>
+  <rect x="50" y="45" width="58" height="6" rx="3" fill="rgb(124, 154, 146)"/>
+  <circle cx="216" cy="48" r="3" fill="rgb(23, 214, 132)"/>
+  <circle cx="228" cy="48" r="3" fill="rgb(236, 198, 83)"/>
+  <text x="52" y="72" font-size="10" font-weight="800" fill="rgb(23, 214, 132)">DAILY VIDEO</text>
+  <text x="52" y="99" font-size="13" font-weight="850" fill="rgb(231, 247, 238)">视觉 Aa</text>
+  <text x="52" y="120" font-size="8" font-weight="650" fill="rgb(124, 154, 146)">type scale / 字号</text>
+  <rect x="52" y="129" width="84" height="3" rx="1.5" fill="rgb(236, 198, 83)"/>
+  <path d="M52 139h172M52 229h172M52 319h172" stroke="rgb(18, 44, 52)" stroke-width="1"/>
+  <rect x="52" y="154" width="172" height="52" rx="8" fill="rgb(18, 44, 52)"/>
+  <text x="68" y="175" font-size="10" font-weight="800" fill="rgb(23, 214, 132)">01</text>
+  <text x="94" y="173" font-size="7" font-weight="820" fill="rgb(231, 247, 238)">label chip</text>
+  <rect x="94" y="184" width="46" height="5" rx="2.5" fill="rgb(124, 154, 146)"/>
+  <rect x="66" y="192" width="36" height="5" rx="2.5" fill="rgb(236, 198, 83)"/>
+  <rect x="158" y="192" width="42" height="5" rx="2.5" fill="rgb(234, 82, 82)"/>
+  <rect x="52" y="246" width="78" height="48" rx="7" fill="rgb(18, 44, 52)"/>
+  <path d="M66 276l16 -10 14 12 18 -19 10 8" fill="none" stroke="rgb(236, 198, 83)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="144" y="246" width="80" height="48" rx="7" fill="rgb(18, 44, 52)"/>
+  <rect x="158" y="262" width="74" height="5" rx="2.5" fill="rgb(231, 247, 238)"/>
+  <rect x="158" y="278" width="34" height="5" rx="2.5" fill="rgb(124, 154, 146)"/>
+  <circle cx="208" cy="280" r="5" fill="rgb(23, 214, 132)"/>
+  <rect x="52" y="337" width="44" height="6" rx="3" fill="rgb(124, 154, 146)"/>
+  <rect x="108" y="337" width="52" height="6" rx="3" fill="rgb(18, 44, 52)"/>
+  <rect x="174" y="337" width="50" height="6" rx="3" fill="rgb(23, 214, 132)"/>
+  <rect x="52" y="360" width="172" height="1" fill="rgb(18, 44, 52)"/>
+  <rect x="52" y="376" width="72" height="5" rx="2.5" fill="rgb(124, 154, 146)"/>
+  <rect x="152" y="376" width="72" height="5" rx="2.5" fill="rgb(236, 198, 83)"/>
+  <rect x="292" y="40" width="142" height="88" rx="10" fill="rgb(11, 28, 35)" stroke="rgb(18, 44, 52)" stroke-width="1.5"/>
+  <text x="312" y="66" font-size="11" font-weight="800" fill="rgb(231, 247, 238)">type system</text>
+  <text x="312" y="86" font-size="7" font-weight="760" fill="rgb(23, 214, 132)">Noto Sans Mono CJK SC</text>
+  <text x="312" y="105" font-size="7" font-weight="760" fill="rgb(124, 154, 146)">IBM Plex Mono</text>
+  <rect x="312" y="113" width="84" height="3" rx="1.5" fill="rgb(236, 198, 83)"/>
+  <rect x="446" y="40" width="142" height="88" rx="10" fill="rgb(11, 28, 35)" stroke="rgb(18, 44, 52)" stroke-width="1.5"/>
+  <text x="466" y="66" font-size="11" font-weight="800" fill="rgb(231, 247, 238)">text / media</text>
+  <rect x="470" y="82" width="46" height="16" rx="5" fill="rgb(231, 247, 238)"/>
+  <rect x="522" y="82" width="50" height="16" rx="5" fill="rgb(236, 198, 83)"/>
+  <text x="470" y="113" font-size="9" font-weight="760" fill="rgb(124, 154, 146)">48% / 52%</text>
+  <circle cx="570" cy="112" r="5" fill="rgb(234, 82, 82)"/>
+  <rect x="292" y="150" width="296" height="112" rx="10" fill="rgb(11, 28, 35)" stroke="rgb(18, 44, 52)" stroke-width="1.5"/>
+  <text x="314" y="178" font-size="12" font-weight="800" fill="rgb(231, 247, 238)">decor + underline</text>
+  <path d="M314 202h230M314 226h230" stroke="rgb(18, 44, 52)" stroke-width="1"/>
+  <rect x="314" y="194" width="52" height="5" rx="2.5" fill="rgb(23, 214, 132)"/>
+  <rect x="382" y="194" width="74" height="5" rx="2.5" fill="rgb(124, 154, 146)"/>
+  <rect x="494" y="194" width="38" height="5" rx="2.5" fill="rgb(236, 198, 83)"/>
+  <rect x="314" y="218" width="86" height="5" rx="2.5" fill="rgb(124, 154, 146)"/>
+  <rect x="424" y="218" width="48" height="5" rx="2.5" fill="rgb(234, 82, 82)"/>
+  <rect x="314" y="234" width="84" height="4" rx="2" fill="rgb(236, 198, 83)"/>
+  <path d="M314 246l26 -12 22 10 32 -28 26 18 38 -30 34 20 32 -26" fill="none" stroke="rgb(236, 198, 83)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="292" y="284" width="142" height="80" rx="10" fill="rgb(11, 28, 35)" stroke="rgb(18, 44, 52)" stroke-width="1.5"/>
+  <text x="312" y="312" font-size="12" font-weight="800" fill="rgb(231, 247, 238)">scene rhythm</text>
+  <rect x="312" y="328" width="24" height="18" rx="4" fill="rgb(23, 214, 132)"/>
+  <rect x="342" y="328" width="24" height="18" rx="4" fill="rgb(18, 44, 52)"/>
+  <rect x="372" y="328" width="24" height="18" rx="4" fill="rgb(236, 198, 83)"/>
+  <rect x="402" y="328" width="14" height="18" rx="4" fill="rgb(124, 154, 146)"/>
+  <rect x="446" y="284" width="142" height="80" rx="10" fill="rgb(11, 28, 35)" stroke="rgb(18, 44, 52)" stroke-width="1.5"/>
+  <text x="466" y="312" font-size="12" font-weight="800" fill="rgb(231, 247, 238)">scale map</text>
+  <text x="466" y="331" font-size="8.5" font-weight="700" fill="rgb(124, 154, 146)">H 60 / B 34 / L 22</text>
+  <rect x="524" y="328" width="44" height="5" rx="2.5" fill="rgb(23, 214, 132)"/>
+  <rect x="466" y="344" width="102" height="5" rx="2.5" fill="rgb(18, 44, 52)"/>
 </svg></div>
   <div class="theme-body">
     <div class="card-meta"><span><code>market_terminal</code></span><span>Market Terminal</span></div>
     <h3>市场终端 / Market Terminal</h3>
     <p>适合金融、KPI、市场宽度和密集数字。</p>
+    <dl class="style-spec-list" aria-label="Visual style dimensions">
+      <div><dt>字体</dt><dd>Noto Sans Mono CJK SC / Sarasa Gothic SC + IBM Plex Mono / SF Mono</dd></div>
+<div><dt>字号</dt><dd>标题 60 / 正文 34 / 标签 22</dd></div>
+<div><dt>图文</dt><dd>文字 48% / 画面 52%</dd></div>
+<div><dt>装饰</dt><dd>终端括号、状态点和紧凑数据轨。</dd></div>
+<div><dt>划线</dt><dd>用绿色指标轨强调正在变化的数值。</dd></div>
+    </dl>
     <div class="swatch-row"><span class="swatch dark-label" title="background" style="background:rgb(5, 13, 18)">bg</span>
 <span class="swatch dark-label" title="panel" style="background:rgb(11, 28, 35)">panel</span>
 <span class="swatch" title="foreground" style="background:rgb(231, 247, 238)">ink</span>
@@ -1330,43 +1544,80 @@
   </div>
 </article>
 <article class="theme-card">
-  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="产品发布会 preview">
+  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="产品发布会 preview" style="font-family:Inter, Helvetica Neue, Noto Sans SC, HarmonyOS Sans SC, sans-serif">
   <rect width="640" height="420" fill="rgb(244, 246, 248)"/>
   <rect x="32" y="24" width="232" height="372" rx="14" fill="rgb(255, 255, 255)" stroke="rgb(232, 238, 245)" stroke-width="1.5"/>
   <rect x="32" y="24" width="232" height="7" rx="3.5" fill="rgb(55, 105, 246)"/>
-  <text x="52" y="62" font-size="10" font-weight="800" fill="rgb(55, 105, 246)">DAILY VIDEO</text>
-  <rect x="52" y="82" width="158" height="10" rx="5" fill="rgb(8, 16, 26)"/>
-  <rect x="52" y="102" width="126" height="7" rx="3.5" fill="rgb(92, 105, 120)"/>
-  <path d="M52 132h172M52 242h172M52 332h172" stroke="rgb(232, 238, 245)" stroke-width="1"/>
-  <rect x="52" y="150" width="172" height="64" rx="8" fill="rgb(232, 238, 245)"/>
-  <text x="68" y="174" font-size="10" fill="rgb(92, 105, 120)">01</text>
-  <rect x="94" y="166" width="78" height="6" rx="3" fill="rgb(8, 16, 26)"/>
-  <rect x="94" y="185" width="106" height="5" rx="2.5" fill="rgb(92, 105, 120)"/>
-  <rect x="94" y="201" width="64" height="5" rx="2.5" fill="rgb(92, 105, 120)"/>
-  <rect x="52" y="262" width="172" height="44" rx="7" fill="rgb(232, 238, 245)"/>
-  <path d="M70 290l22 -12 18 13 26 -21 34 16" fill="none" stroke="rgb(116, 84, 240)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="52" y="348" width="82" height="6" rx="3" fill="rgb(92, 105, 120)"/>
-  <rect x="166" y="348" width="58" height="6" rx="3" fill="rgb(55, 105, 246)"/>
-  <rect x="292" y="48" width="296" height="72" rx="10" fill="rgb(255, 255, 255)" stroke="rgb(232, 238, 245)" stroke-width="1.5"/>
-  <text x="314" y="78" font-size="12" font-weight="800" fill="rgb(8, 16, 26)">text hierarchy</text>
-  <rect x="314" y="94" width="118" height="6" rx="3" fill="rgb(92, 105, 120)"/>
-  <rect x="464" y="86" width="72" height="18" rx="9" fill="rgb(55, 105, 246)"/>
-  <rect x="292" y="146" width="296" height="94" rx="10" fill="rgb(255, 255, 255)" stroke="rgb(232, 238, 245)" stroke-width="1.5"/>
-  <text x="314" y="176" font-size="12" font-weight="800" fill="rgb(8, 16, 26)">fine data layer</text>
-  <path d="M314 206h230" stroke="rgb(232, 238, 245)" stroke-width="1"/>
-  <rect x="314" y="218" width="96" height="5" rx="2.5" fill="rgb(92, 105, 120)"/>
-  <rect x="436" y="218" width="54" height="5" rx="2.5" fill="rgb(116, 84, 240)"/>
-  <rect x="314" y="194" width="42" height="5" rx="2.5" fill="rgb(55, 105, 246)"/>
-  <circle cx="552" cy="172" r="6" fill="rgb(204, 73, 73)"/>
-  <rect x="292" y="266" width="296" height="82" rx="10" fill="rgb(255, 255, 255)" stroke="rgb(232, 238, 245)" stroke-width="1.5"/>
-  <text x="314" y="296" font-size="12" font-weight="800" fill="rgb(8, 16, 26)">motion hold</text>
-  <rect x="314" y="316" width="206" height="5" rx="2.5" fill="rgb(92, 105, 120)"/>
-  <rect x="314" y="332" width="148" height="5" rx="2.5" fill="rgb(55, 105, 246)"/>
+  <rect x="50" y="45" width="58" height="6" rx="3" fill="rgb(92, 105, 120)"/>
+  <circle cx="216" cy="48" r="3" fill="rgb(55, 105, 246)"/>
+  <circle cx="228" cy="48" r="3" fill="rgb(116, 84, 240)"/>
+  <text x="52" y="72" font-size="10" font-weight="800" fill="rgb(55, 105, 246)">DAILY VIDEO</text>
+  <text x="52" y="99" font-size="16" font-weight="850" fill="rgb(8, 16, 26)">视觉 Aa</text>
+  <text x="52" y="120" font-size="10" font-weight="650" fill="rgb(92, 105, 120)">type scale / 字号</text>
+  <rect x="52" y="129" width="73" height="3" rx="1.5" fill="rgb(116, 84, 240)"/>
+  <path d="M52 139h172M52 229h172M52 319h172" stroke="rgb(232, 238, 245)" stroke-width="1"/>
+  <rect x="52" y="154" width="172" height="52" rx="8" fill="rgb(232, 238, 245)"/>
+  <text x="68" y="175" font-size="10" font-weight="800" fill="rgb(55, 105, 246)">01</text>
+  <text x="94" y="173" font-size="8" font-weight="820" fill="rgb(8, 16, 26)">label chip</text>
+  <rect x="94" y="184" width="40" height="5" rx="2.5" fill="rgb(92, 105, 120)"/>
+  <rect x="66" y="192" width="36" height="5" rx="2.5" fill="rgb(116, 84, 240)"/>
+  <rect x="158" y="192" width="42" height="5" rx="2.5" fill="rgb(204, 73, 73)"/>
+  <rect x="52" y="246" width="78" height="48" rx="7" fill="rgb(232, 238, 245)"/>
+  <path d="M66 276l16 -10 14 12 18 -19 10 8" fill="none" stroke="rgb(116, 84, 240)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="144" y="246" width="80" height="48" rx="7" fill="rgb(232, 238, 245)"/>
+  <rect x="158" y="262" width="80" height="5" rx="2.5" fill="rgb(8, 16, 26)"/>
+  <rect x="158" y="278" width="34" height="5" rx="2.5" fill="rgb(92, 105, 120)"/>
+  <circle cx="208" cy="280" r="5" fill="rgb(55, 105, 246)"/>
+  <rect x="52" y="337" width="44" height="6" rx="3" fill="rgb(92, 105, 120)"/>
+  <rect x="108" y="337" width="52" height="6" rx="3" fill="rgb(232, 238, 245)"/>
+  <rect x="174" y="337" width="50" height="6" rx="3" fill="rgb(55, 105, 246)"/>
+  <rect x="52" y="360" width="172" height="1" fill="rgb(232, 238, 245)"/>
+  <rect x="52" y="376" width="72" height="5" rx="2.5" fill="rgb(92, 105, 120)"/>
+  <rect x="152" y="376" width="72" height="5" rx="2.5" fill="rgb(116, 84, 240)"/>
+  <rect x="292" y="40" width="142" height="88" rx="10" fill="rgb(255, 255, 255)" stroke="rgb(232, 238, 245)" stroke-width="1.5"/>
+  <text x="312" y="66" font-size="11" font-weight="800" fill="rgb(8, 16, 26)">type system</text>
+  <text x="312" y="86" font-size="8" font-weight="760" fill="rgb(55, 105, 246)">Noto Sans SC</text>
+  <text x="312" y="105" font-size="8" font-weight="760" fill="rgb(92, 105, 120)">Inter</text>
+  <rect x="312" y="113" width="84" height="3" rx="1.5" fill="rgb(116, 84, 240)"/>
+  <rect x="446" y="40" width="142" height="88" rx="10" fill="rgb(255, 255, 255)" stroke="rgb(232, 238, 245)" stroke-width="1.5"/>
+  <text x="466" y="66" font-size="11" font-weight="800" fill="rgb(8, 16, 26)">text / media</text>
+  <rect x="470" y="82" width="40" height="16" rx="5" fill="rgb(8, 16, 26)"/>
+  <rect x="516" y="82" width="56" height="16" rx="5" fill="rgb(116, 84, 240)"/>
+  <text x="470" y="113" font-size="9" font-weight="760" fill="rgb(92, 105, 120)">42% / 58%</text>
+  <circle cx="570" cy="112" r="5" fill="rgb(204, 73, 73)"/>
+  <rect x="292" y="150" width="296" height="112" rx="10" fill="rgb(255, 255, 255)" stroke="rgb(232, 238, 245)" stroke-width="1.5"/>
+  <text x="314" y="178" font-size="12" font-weight="800" fill="rgb(8, 16, 26)">decor + underline</text>
+  <path d="M314 202h230M314 226h230" stroke="rgb(232, 238, 245)" stroke-width="1"/>
+  <rect x="314" y="194" width="52" height="5" rx="2.5" fill="rgb(55, 105, 246)"/>
+  <rect x="382" y="194" width="74" height="5" rx="2.5" fill="rgb(92, 105, 120)"/>
+  <rect x="494" y="194" width="38" height="5" rx="2.5" fill="rgb(116, 84, 240)"/>
+  <rect x="314" y="218" width="86" height="5" rx="2.5" fill="rgb(92, 105, 120)"/>
+  <rect x="424" y="218" width="48" height="5" rx="2.5" fill="rgb(204, 73, 73)"/>
+  <rect x="314" y="234" width="73" height="4" rx="2" fill="rgb(116, 84, 240)"/>
+  <path d="M314 246l26 -12 22 10 32 -28 26 18 38 -30 34 20 32 -26" fill="none" stroke="rgb(116, 84, 240)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="292" y="284" width="142" height="80" rx="10" fill="rgb(255, 255, 255)" stroke="rgb(232, 238, 245)" stroke-width="1.5"/>
+  <text x="312" y="312" font-size="12" font-weight="800" fill="rgb(8, 16, 26)">scene rhythm</text>
+  <rect x="312" y="328" width="24" height="18" rx="4" fill="rgb(55, 105, 246)"/>
+  <rect x="342" y="328" width="24" height="18" rx="4" fill="rgb(232, 238, 245)"/>
+  <rect x="372" y="328" width="24" height="18" rx="4" fill="rgb(116, 84, 240)"/>
+  <rect x="402" y="328" width="14" height="18" rx="4" fill="rgb(92, 105, 120)"/>
+  <rect x="446" y="284" width="142" height="80" rx="10" fill="rgb(255, 255, 255)" stroke="rgb(232, 238, 245)" stroke-width="1.5"/>
+  <text x="466" y="312" font-size="12" font-weight="800" fill="rgb(8, 16, 26)">scale map</text>
+  <text x="466" y="331" font-size="8.5" font-weight="700" fill="rgb(92, 105, 120)">H 82 / B 40 / L 24</text>
+  <rect x="524" y="328" width="44" height="5" rx="2.5" fill="rgb(55, 105, 246)"/>
+  <rect x="466" y="344" width="102" height="5" rx="2.5" fill="rgb(232, 238, 245)"/>
 </svg></div>
   <div class="theme-body">
     <div class="card-meta"><span><code>product_keynote</code></span><span>Product Keynote</span></div>
     <h3>产品发布会 / Product Keynote</h3>
     <p>适合产品、功能、硬件和对象主视觉。</p>
+    <dl class="style-spec-list" aria-label="Visual style dimensions">
+      <div><dt>字体</dt><dd>Noto Sans SC / HarmonyOS Sans SC + Inter / Helvetica</dd></div>
+<div><dt>字号</dt><dd>标题 82 / 正文 40 / 标签 24</dd></div>
+<div><dt>图文</dt><dd>文字 42% / 画面 58%</dd></div>
+<div><dt>装饰</dt><dd>蓝色舞台标签，配漂浮式证明点。</dd></div>
+<div><dt>划线</dt><dd>在功能名下方使用更粗的短下划线。</dd></div>
+    </dl>
     <div class="swatch-row"><span class="swatch" title="background" style="background:rgb(244, 246, 248)">bg</span>
 <span class="swatch" title="panel" style="background:rgb(255, 255, 255)">panel</span>
 <span class="swatch dark-label" title="foreground" style="background:rgb(8, 16, 26)">ink</span>
@@ -1376,43 +1627,80 @@
   </div>
 </article>
 <article class="theme-card">
-  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="数据杂志 preview">
+  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="数据杂志 preview" style="font-family:IBM Plex Serif, Noto Serif SC, Source Han Serif SC, Georgia, serif">
   <rect width="640" height="420" fill="rgb(252, 248, 238)"/>
   <rect x="32" y="24" width="232" height="372" rx="14" fill="rgb(241, 234, 218)" stroke="rgb(222, 212, 195)" stroke-width="1.5"/>
   <rect x="32" y="24" width="232" height="7" rx="3.5" fill="rgb(18, 92, 129)"/>
-  <text x="52" y="62" font-size="10" font-weight="800" fill="rgb(18, 92, 129)">DAILY VIDEO</text>
-  <rect x="52" y="82" width="158" height="10" rx="5" fill="rgb(31, 30, 27)"/>
-  <rect x="52" y="102" width="126" height="7" rx="3.5" fill="rgb(97, 91, 82)"/>
-  <path d="M52 132h172M52 242h172M52 332h172" stroke="rgb(222, 212, 195)" stroke-width="1"/>
-  <rect x="52" y="150" width="172" height="64" rx="8" fill="rgb(222, 212, 195)"/>
-  <text x="68" y="174" font-size="10" fill="rgb(97, 91, 82)">01</text>
-  <rect x="94" y="166" width="78" height="6" rx="3" fill="rgb(31, 30, 27)"/>
-  <rect x="94" y="185" width="106" height="5" rx="2.5" fill="rgb(97, 91, 82)"/>
-  <rect x="94" y="201" width="64" height="5" rx="2.5" fill="rgb(97, 91, 82)"/>
-  <rect x="52" y="262" width="172" height="44" rx="7" fill="rgb(222, 212, 195)"/>
-  <path d="M70 290l22 -12 18 13 26 -21 34 16" fill="none" stroke="rgb(196, 95, 43)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="52" y="348" width="82" height="6" rx="3" fill="rgb(97, 91, 82)"/>
-  <rect x="166" y="348" width="58" height="6" rx="3" fill="rgb(18, 92, 129)"/>
-  <rect x="292" y="48" width="296" height="72" rx="10" fill="rgb(241, 234, 218)" stroke="rgb(222, 212, 195)" stroke-width="1.5"/>
-  <text x="314" y="78" font-size="12" font-weight="800" fill="rgb(31, 30, 27)">text hierarchy</text>
-  <rect x="314" y="94" width="118" height="6" rx="3" fill="rgb(97, 91, 82)"/>
-  <rect x="464" y="86" width="72" height="18" rx="9" fill="rgb(18, 92, 129)"/>
-  <rect x="292" y="146" width="296" height="94" rx="10" fill="rgb(241, 234, 218)" stroke="rgb(222, 212, 195)" stroke-width="1.5"/>
-  <text x="314" y="176" font-size="12" font-weight="800" fill="rgb(31, 30, 27)">fine data layer</text>
-  <path d="M314 206h230" stroke="rgb(222, 212, 195)" stroke-width="1"/>
-  <rect x="314" y="218" width="96" height="5" rx="2.5" fill="rgb(97, 91, 82)"/>
-  <rect x="436" y="218" width="54" height="5" rx="2.5" fill="rgb(196, 95, 43)"/>
-  <rect x="314" y="194" width="42" height="5" rx="2.5" fill="rgb(18, 92, 129)"/>
-  <circle cx="552" cy="172" r="6" fill="rgb(168, 61, 58)"/>
-  <rect x="292" y="266" width="296" height="82" rx="10" fill="rgb(241, 234, 218)" stroke="rgb(222, 212, 195)" stroke-width="1.5"/>
-  <text x="314" y="296" font-size="12" font-weight="800" fill="rgb(31, 30, 27)">motion hold</text>
-  <rect x="314" y="316" width="206" height="5" rx="2.5" fill="rgb(97, 91, 82)"/>
-  <rect x="314" y="332" width="148" height="5" rx="2.5" fill="rgb(18, 92, 129)"/>
+  <rect x="50" y="45" width="58" height="6" rx="3" fill="rgb(97, 91, 82)"/>
+  <circle cx="216" cy="48" r="3" fill="rgb(18, 92, 129)"/>
+  <circle cx="228" cy="48" r="3" fill="rgb(196, 95, 43)"/>
+  <text x="52" y="72" font-size="10" font-weight="800" fill="rgb(18, 92, 129)">DAILY VIDEO</text>
+  <text x="52" y="99" font-size="14" font-weight="850" fill="rgb(31, 30, 27)">视觉 Aa</text>
+  <text x="52" y="120" font-size="9" font-weight="650" fill="rgb(97, 91, 82)">type scale / 字号</text>
+  <rect x="52" y="129" width="100" height="3" rx="1.5" fill="rgb(196, 95, 43)"/>
+  <path d="M52 139h172M52 229h172M52 319h172" stroke="rgb(222, 212, 195)" stroke-width="1"/>
+  <rect x="52" y="154" width="172" height="52" rx="8" fill="rgb(222, 212, 195)"/>
+  <text x="68" y="175" font-size="10" font-weight="800" fill="rgb(18, 92, 129)">01</text>
+  <text x="94" y="173" font-size="8" font-weight="820" fill="rgb(31, 30, 27)">label chip</text>
+  <rect x="94" y="184" width="56" height="5" rx="2.5" fill="rgb(97, 91, 82)"/>
+  <rect x="66" y="192" width="36" height="5" rx="2.5" fill="rgb(196, 95, 43)"/>
+  <rect x="158" y="192" width="42" height="5" rx="2.5" fill="rgb(168, 61, 58)"/>
+  <rect x="52" y="246" width="78" height="48" rx="7" fill="rgb(222, 212, 195)"/>
+  <path d="M66 276l16 -10 14 12 18 -19 10 8" fill="none" stroke="rgb(196, 95, 43)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="144" y="246" width="80" height="48" rx="7" fill="rgb(222, 212, 195)"/>
+  <rect x="158" y="262" width="64" height="5" rx="2.5" fill="rgb(31, 30, 27)"/>
+  <rect x="158" y="278" width="34" height="5" rx="2.5" fill="rgb(97, 91, 82)"/>
+  <circle cx="208" cy="280" r="5" fill="rgb(18, 92, 129)"/>
+  <rect x="52" y="337" width="44" height="6" rx="3" fill="rgb(97, 91, 82)"/>
+  <rect x="108" y="337" width="52" height="6" rx="3" fill="rgb(222, 212, 195)"/>
+  <rect x="174" y="337" width="50" height="6" rx="3" fill="rgb(18, 92, 129)"/>
+  <rect x="52" y="360" width="172" height="1" fill="rgb(222, 212, 195)"/>
+  <rect x="52" y="376" width="72" height="5" rx="2.5" fill="rgb(97, 91, 82)"/>
+  <rect x="152" y="376" width="72" height="5" rx="2.5" fill="rgb(196, 95, 43)"/>
+  <rect x="292" y="40" width="142" height="88" rx="10" fill="rgb(241, 234, 218)" stroke="rgb(222, 212, 195)" stroke-width="1.5"/>
+  <text x="312" y="66" font-size="11" font-weight="800" fill="rgb(31, 30, 27)">type system</text>
+  <text x="312" y="86" font-size="8" font-weight="760" fill="rgb(18, 92, 129)">Noto Serif SC</text>
+  <text x="312" y="105" font-size="8" font-weight="760" fill="rgb(97, 91, 82)">IBM Plex Serif</text>
+  <rect x="312" y="113" width="84" height="3" rx="1.5" fill="rgb(196, 95, 43)"/>
+  <rect x="446" y="40" width="142" height="88" rx="10" fill="rgb(241, 234, 218)" stroke="rgb(222, 212, 195)" stroke-width="1.5"/>
+  <text x="466" y="66" font-size="11" font-weight="800" fill="rgb(31, 30, 27)">text / media</text>
+  <rect x="470" y="82" width="56" height="16" rx="5" fill="rgb(31, 30, 27)"/>
+  <rect x="532" y="82" width="40" height="16" rx="5" fill="rgb(196, 95, 43)"/>
+  <text x="470" y="113" font-size="9" font-weight="760" fill="rgb(97, 91, 82)">58% / 42%</text>
+  <circle cx="570" cy="112" r="5" fill="rgb(168, 61, 58)"/>
+  <rect x="292" y="150" width="296" height="112" rx="10" fill="rgb(241, 234, 218)" stroke="rgb(222, 212, 195)" stroke-width="1.5"/>
+  <text x="314" y="178" font-size="12" font-weight="800" fill="rgb(31, 30, 27)">decor + underline</text>
+  <path d="M314 202h230M314 226h230" stroke="rgb(222, 212, 195)" stroke-width="1"/>
+  <rect x="314" y="194" width="52" height="5" rx="2.5" fill="rgb(18, 92, 129)"/>
+  <rect x="382" y="194" width="74" height="5" rx="2.5" fill="rgb(97, 91, 82)"/>
+  <rect x="494" y="194" width="38" height="5" rx="2.5" fill="rgb(196, 95, 43)"/>
+  <rect x="314" y="218" width="86" height="5" rx="2.5" fill="rgb(97, 91, 82)"/>
+  <rect x="424" y="218" width="48" height="5" rx="2.5" fill="rgb(168, 61, 58)"/>
+  <rect x="314" y="234" width="100" height="4" rx="2" fill="rgb(196, 95, 43)"/>
+  <path d="M314 246l26 -12 22 10 32 -28 26 18 38 -30 34 20 32 -26" fill="none" stroke="rgb(196, 95, 43)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="292" y="284" width="142" height="80" rx="10" fill="rgb(241, 234, 218)" stroke="rgb(222, 212, 195)" stroke-width="1.5"/>
+  <text x="312" y="312" font-size="12" font-weight="800" fill="rgb(31, 30, 27)">scene rhythm</text>
+  <rect x="312" y="328" width="24" height="18" rx="4" fill="rgb(18, 92, 129)"/>
+  <rect x="342" y="328" width="24" height="18" rx="4" fill="rgb(222, 212, 195)"/>
+  <rect x="372" y="328" width="24" height="18" rx="4" fill="rgb(196, 95, 43)"/>
+  <rect x="402" y="328" width="14" height="18" rx="4" fill="rgb(97, 91, 82)"/>
+  <rect x="446" y="284" width="142" height="80" rx="10" fill="rgb(241, 234, 218)" stroke="rgb(222, 212, 195)" stroke-width="1.5"/>
+  <text x="466" y="312" font-size="12" font-weight="800" fill="rgb(31, 30, 27)">scale map</text>
+  <text x="466" y="331" font-size="8.5" font-weight="700" fill="rgb(97, 91, 82)">H 72 / B 38 / L 23</text>
+  <rect x="524" y="328" width="44" height="5" rx="2.5" fill="rgb(18, 92, 129)"/>
+  <rect x="466" y="344" width="102" height="5" rx="2.5" fill="rgb(222, 212, 195)"/>
 </svg></div>
   <div class="theme-body">
     <div class="card-meta"><span><code>data_magazine</code></span><span>Data Magazine</span></div>
     <h3>数据杂志 / Data Magazine</h3>
     <p>适合图表型专题和慢一点的编辑节奏。</p>
+    <dl class="style-spec-list" aria-label="Visual style dimensions">
+      <div><dt>字体</dt><dd>Noto Serif SC / Source Han Serif SC + IBM Plex Serif / Georgia</dd></div>
+<div><dt>字号</dt><dd>标题 72 / 正文 38 / 标签 23</dd></div>
+<div><dt>图文</dt><dd>文字 58% / 画面 42%</dd></div>
+<div><dt>装饰</dt><dd>杂志页码、暖色小标签和图表注释。</dd></div>
+<div><dt>划线</dt><dd>用赭色线条强调一条证据短语。</dd></div>
+    </dl>
     <div class="swatch-row"><span class="swatch" title="background" style="background:rgb(252, 248, 238)">bg</span>
 <span class="swatch" title="panel" style="background:rgb(241, 234, 218)">panel</span>
 <span class="swatch dark-label" title="foreground" style="background:rgb(31, 30, 27)">ink</span>
@@ -1422,43 +1710,80 @@
   </div>
 </article>
 <article class="theme-card">
-  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="社媒高能 preview">
+  <div class="svg-wrap"><svg viewBox="0 0 640 420" role="img" aria-label="社媒高能 preview" style="font-family:Space Grotesk, Noto Sans SC, Source Han Sans SC, Arial Black, sans-serif">
   <rect width="640" height="420" fill="rgb(18, 17, 26)"/>
   <rect x="32" y="24" width="232" height="372" rx="14" fill="rgb(35, 31, 52)" stroke="rgb(50, 43, 74)" stroke-width="1.5"/>
   <rect x="32" y="24" width="232" height="7" rx="3.5" fill="rgb(255, 198, 41)"/>
-  <text x="52" y="62" font-size="10" font-weight="800" fill="rgb(255, 198, 41)">DAILY VIDEO</text>
-  <rect x="52" y="82" width="158" height="10" rx="5" fill="rgb(255, 249, 238)"/>
-  <rect x="52" y="102" width="126" height="7" rx="3.5" fill="rgb(189, 180, 204)"/>
-  <path d="M52 132h172M52 242h172M52 332h172" stroke="rgb(50, 43, 74)" stroke-width="1"/>
-  <rect x="52" y="150" width="172" height="64" rx="8" fill="rgb(50, 43, 74)"/>
-  <text x="68" y="174" font-size="10" fill="rgb(189, 180, 204)">01</text>
-  <rect x="94" y="166" width="78" height="6" rx="3" fill="rgb(255, 249, 238)"/>
-  <rect x="94" y="185" width="106" height="5" rx="2.5" fill="rgb(189, 180, 204)"/>
-  <rect x="94" y="201" width="64" height="5" rx="2.5" fill="rgb(189, 180, 204)"/>
-  <rect x="52" y="262" width="172" height="44" rx="7" fill="rgb(50, 43, 74)"/>
-  <path d="M70 290l22 -12 18 13 26 -21 34 16" fill="none" stroke="rgb(38, 205, 255)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="52" y="348" width="82" height="6" rx="3" fill="rgb(189, 180, 204)"/>
-  <rect x="166" y="348" width="58" height="6" rx="3" fill="rgb(255, 198, 41)"/>
-  <rect x="292" y="48" width="296" height="72" rx="10" fill="rgb(35, 31, 52)" stroke="rgb(50, 43, 74)" stroke-width="1.5"/>
-  <text x="314" y="78" font-size="12" font-weight="800" fill="rgb(255, 249, 238)">text hierarchy</text>
-  <rect x="314" y="94" width="118" height="6" rx="3" fill="rgb(189, 180, 204)"/>
-  <rect x="464" y="86" width="72" height="18" rx="9" fill="rgb(255, 198, 41)"/>
-  <rect x="292" y="146" width="296" height="94" rx="10" fill="rgb(35, 31, 52)" stroke="rgb(50, 43, 74)" stroke-width="1.5"/>
-  <text x="314" y="176" font-size="12" font-weight="800" fill="rgb(255, 249, 238)">fine data layer</text>
-  <path d="M314 206h230" stroke="rgb(50, 43, 74)" stroke-width="1"/>
-  <rect x="314" y="218" width="96" height="5" rx="2.5" fill="rgb(189, 180, 204)"/>
-  <rect x="436" y="218" width="54" height="5" rx="2.5" fill="rgb(38, 205, 255)"/>
-  <rect x="314" y="194" width="42" height="5" rx="2.5" fill="rgb(255, 198, 41)"/>
-  <circle cx="552" cy="172" r="6" fill="rgb(255, 95, 123)"/>
-  <rect x="292" y="266" width="296" height="82" rx="10" fill="rgb(35, 31, 52)" stroke="rgb(50, 43, 74)" stroke-width="1.5"/>
-  <text x="314" y="296" font-size="12" font-weight="800" fill="rgb(255, 249, 238)">motion hold</text>
-  <rect x="314" y="316" width="206" height="5" rx="2.5" fill="rgb(189, 180, 204)"/>
-  <rect x="314" y="332" width="148" height="5" rx="2.5" fill="rgb(255, 198, 41)"/>
+  <rect x="50" y="45" width="58" height="6" rx="3" fill="rgb(189, 180, 204)"/>
+  <circle cx="216" cy="48" r="3" fill="rgb(255, 198, 41)"/>
+  <circle cx="228" cy="48" r="3" fill="rgb(38, 205, 255)"/>
+  <text x="52" y="72" font-size="10" font-weight="800" fill="rgb(255, 198, 41)">DAILY VIDEO</text>
+  <text x="52" y="99" font-size="17" font-weight="850" fill="rgb(255, 249, 238)">视觉 Aa</text>
+  <text x="52" y="120" font-size="10" font-weight="650" fill="rgb(189, 180, 204)">type scale / 字号</text>
+  <rect x="52" y="129" width="87" height="3" rx="1.5" fill="rgb(38, 205, 255)"/>
+  <path d="M52 139h172M52 229h172M52 319h172" stroke="rgb(50, 43, 74)" stroke-width="1"/>
+  <rect x="52" y="154" width="172" height="52" rx="8" fill="rgb(50, 43, 74)"/>
+  <text x="68" y="175" font-size="10" font-weight="800" fill="rgb(255, 198, 41)">01</text>
+  <text x="94" y="173" font-size="9" font-weight="820" fill="rgb(255, 249, 238)">label chip</text>
+  <rect x="94" y="184" width="48" height="5" rx="2.5" fill="rgb(189, 180, 204)"/>
+  <rect x="66" y="192" width="36" height="5" rx="2.5" fill="rgb(38, 205, 255)"/>
+  <rect x="158" y="192" width="42" height="5" rx="2.5" fill="rgb(255, 95, 123)"/>
+  <rect x="52" y="246" width="78" height="48" rx="7" fill="rgb(50, 43, 74)"/>
+  <path d="M66 276l16 -10 14 12 18 -19 10 8" fill="none" stroke="rgb(38, 205, 255)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="144" y="246" width="80" height="48" rx="7" fill="rgb(50, 43, 74)"/>
+  <rect x="158" y="262" width="72" height="5" rx="2.5" fill="rgb(255, 249, 238)"/>
+  <rect x="158" y="278" width="34" height="5" rx="2.5" fill="rgb(189, 180, 204)"/>
+  <circle cx="208" cy="280" r="5" fill="rgb(255, 198, 41)"/>
+  <rect x="52" y="337" width="44" height="6" rx="3" fill="rgb(189, 180, 204)"/>
+  <rect x="108" y="337" width="52" height="6" rx="3" fill="rgb(50, 43, 74)"/>
+  <rect x="174" y="337" width="50" height="6" rx="3" fill="rgb(255, 198, 41)"/>
+  <rect x="52" y="360" width="172" height="1" fill="rgb(50, 43, 74)"/>
+  <rect x="52" y="376" width="72" height="5" rx="2.5" fill="rgb(189, 180, 204)"/>
+  <rect x="152" y="376" width="72" height="5" rx="2.5" fill="rgb(38, 205, 255)"/>
+  <rect x="292" y="40" width="142" height="88" rx="10" fill="rgb(35, 31, 52)" stroke="rgb(50, 43, 74)" stroke-width="1.5"/>
+  <text x="312" y="66" font-size="11" font-weight="800" fill="rgb(255, 249, 238)">type system</text>
+  <text x="312" y="86" font-size="9" font-weight="760" fill="rgb(255, 198, 41)">Noto Sans SC Black</text>
+  <text x="312" y="105" font-size="9" font-weight="760" fill="rgb(189, 180, 204)">Space Grotesk</text>
+  <rect x="312" y="113" width="84" height="3" rx="1.5" fill="rgb(38, 205, 255)"/>
+  <rect x="446" y="40" width="142" height="88" rx="10" fill="rgb(35, 31, 52)" stroke="rgb(50, 43, 74)" stroke-width="1.5"/>
+  <text x="466" y="66" font-size="11" font-weight="800" fill="rgb(255, 249, 238)">text / media</text>
+  <rect x="470" y="82" width="48" height="16" rx="5" fill="rgb(255, 249, 238)"/>
+  <rect x="524" y="82" width="48" height="16" rx="5" fill="rgb(38, 205, 255)"/>
+  <text x="470" y="113" font-size="9" font-weight="760" fill="rgb(189, 180, 204)">50% / 50%</text>
+  <circle cx="570" cy="112" r="5" fill="rgb(255, 95, 123)"/>
+  <rect x="292" y="150" width="296" height="112" rx="10" fill="rgb(35, 31, 52)" stroke="rgb(50, 43, 74)" stroke-width="1.5"/>
+  <text x="314" y="178" font-size="12" font-weight="800" fill="rgb(255, 249, 238)">decor + underline</text>
+  <path d="M314 202h230M314 226h230" stroke="rgb(50, 43, 74)" stroke-width="1"/>
+  <rect x="314" y="194" width="52" height="5" rx="2.5" fill="rgb(255, 198, 41)"/>
+  <rect x="382" y="194" width="74" height="5" rx="2.5" fill="rgb(189, 180, 204)"/>
+  <rect x="494" y="194" width="38" height="5" rx="2.5" fill="rgb(38, 205, 255)"/>
+  <rect x="314" y="218" width="86" height="5" rx="2.5" fill="rgb(189, 180, 204)"/>
+  <rect x="424" y="218" width="48" height="5" rx="2.5" fill="rgb(255, 95, 123)"/>
+  <rect x="314" y="234" width="87" height="4" rx="2" fill="rgb(38, 205, 255)"/>
+  <path d="M314 246l26 -12 22 10 32 -28 26 18 38 -30 34 20 32 -26" fill="none" stroke="rgb(38, 205, 255)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="292" y="284" width="142" height="80" rx="10" fill="rgb(35, 31, 52)" stroke="rgb(50, 43, 74)" stroke-width="1.5"/>
+  <text x="312" y="312" font-size="12" font-weight="800" fill="rgb(255, 249, 238)">scene rhythm</text>
+  <rect x="312" y="328" width="24" height="18" rx="4" fill="rgb(255, 198, 41)"/>
+  <rect x="342" y="328" width="24" height="18" rx="4" fill="rgb(50, 43, 74)"/>
+  <rect x="372" y="328" width="24" height="18" rx="4" fill="rgb(38, 205, 255)"/>
+  <rect x="402" y="328" width="14" height="18" rx="4" fill="rgb(189, 180, 204)"/>
+  <rect x="446" y="284" width="142" height="80" rx="10" fill="rgb(35, 31, 52)" stroke="rgb(50, 43, 74)" stroke-width="1.5"/>
+  <text x="466" y="312" font-size="12" font-weight="800" fill="rgb(255, 249, 238)">scale map</text>
+  <text x="466" y="331" font-size="8.5" font-weight="700" fill="rgb(189, 180, 204)">H 84 / B 42 / L 26</text>
+  <rect x="524" y="328" width="44" height="5" rx="2.5" fill="rgb(255, 198, 41)"/>
+  <rect x="466" y="344" width="102" height="5" rx="2.5" fill="rgb(50, 43, 74)"/>
 </svg></div>
   <div class="theme-body">
     <div class="card-meta"><span><code>social_pop</code></span><span>Social Pop</span></div>
     <h3>社媒高能 / Social Pop</h3>
     <p>适合榜单、轻快盘点和更鲜明的社交包装。</p>
+    <dl class="style-spec-list" aria-label="Visual style dimensions">
+      <div><dt>字体</dt><dd>Noto Sans SC Black / Source Han Sans Heavy + Space Grotesk / Arial Black</dd></div>
+<div><dt>字号</dt><dd>标题 84 / 正文 42 / 标签 26</dd></div>
+<div><dt>图文</dt><dd>文字 50% / 画面 50%</dd></div>
+<div><dt>装饰</dt><dd>高饱和贴纸标签和强数字标记。</dd></div>
+<div><dt>划线</dt><dd>用荧光笔式下划线强调情绪钩子。</dd></div>
+    </dl>
     <div class="swatch-row"><span class="swatch dark-label" title="background" style="background:rgb(18, 17, 26)">bg</span>
 <span class="swatch dark-label" title="panel" style="background:rgb(35, 31, 52)">panel</span>
 <span class="swatch" title="foreground" style="background:rgb(255, 249, 238)">ink</span>
@@ -1469,20 +1794,82 @@
 </article></div>
     </section>
 
+    <section id="motion-grammars">
+      <div class="section-head">
+        <div><span class="eyebrow">Motion Grammar / 出场语法</span><h2>再约束元素如何进入和组装</h2></div>
+        <p>Motion 层不是装饰说明，而是代码里的渲染合同。它规定先出现结构、轨道、数据还是结论，让元素出场符合叙事逻辑。</p>
+      </div>
+      <div class="motion-grid"><article class="motion-card">
+  <div class="card-meta"><span><code>soft_assembly</code></span><span>cover, context, grid</span></div>
+  <h3>Soft Assembly</h3>
+  <p>A calm commercial default: shell first, title second, cards or proof details stagger into a readable hold.</p>
+  <div class="motion-steps">
+    <div><b>Entrance</b> soft fade with a small upward settle</div>
+    <div><b>Emphasis</b> staggered content assembly</div>
+    <div><b>Exit</b> short fade-through</div>
+  </div>
+</article>
+<article class="motion-card">
+  <div class="card-meta"><span><code>evidence_trace</code></span><span>proof, chips, rail, timeline</span></div>
+  <h3>Evidence Trace</h3>
+  <p>Proof-oriented motion: draw the rail or path first, then reveal stops, labels, and evidence cards in sequence.</p>
+  <div class="motion-steps">
+    <div><b>Entrance</b> rail draw-on before nodes</div>
+    <div><b>Emphasis</b> node and card stagger</div>
+    <div><b>Exit</b> source line holds before fade-through</div>
+  </div>
+</article>
+<article class="motion-card">
+  <div class="card-meta"><span><code>product_reveal</code></span><span>product, map</span></div>
+  <h3>Product Reveal</h3>
+  <p>A product or object gets a premium reveal with a soft plate entrance, light camera push, and restrained callouts.</p>
+  <div class="motion-steps">
+    <div><b>Entrance</b> matte-like plate reveal with gentle scale</div>
+    <div><b>Emphasis</b> callout pins after the anchor is visible</div>
+    <div><b>Exit</b> slow push into the final product read</div>
+  </div>
+</article>
+<article class="motion-card">
+  <div class="card-meta"><span><code>data_tween</code></span><span>metric, ledger, ranking</span></div>
+  <h3>Data Tween</h3>
+  <p>Numbers, rows, and tiny charts animate as evidence changes rather than appearing as static slides.</p>
+  <div class="motion-steps">
+    <div><b>Entrance</b> metric rows stagger in</div>
+    <div><b>Emphasis</b> value and sparkline fill</div>
+    <div><b>Exit</b> final values hold long enough to read</div>
+  </div>
+</article>
+<article class="motion-card">
+  <div class="card-meta"><span><code>mechanism_scan</code></span><span>mechanism, split, matrix</span></div>
+  <h3>Mechanism Scan</h3>
+  <p>Layered explanations reveal structure before claims, then use a scan or connector pass to show causality.</p>
+  <div class="motion-steps">
+    <div><b>Entrance</b> layer peel or split reveal</div>
+    <div><b>Emphasis</b> focus rail, divider, or scan pass</div>
+    <div><b>Exit</b> consequence layer settles last</div>
+  </div>
+</article>
+<article class="motion-card">
+  <div class="card-meta"><span><code>verdict_lock</code></span><span>list, stamp</span></div>
+  <h3>Verdict Lock</h3>
+  <p>Conclusion motion compresses supporting details into a final practical watch item or verdict.</p>
+  <div class="motion-steps">
+    <div><b>Entrance</b> verdict plate enters after the setup</div>
+    <div><b>Emphasis</b> supporting checks stagger below</div>
+    <div><b>Exit</b> final stamp hold</div>
+  </div>
+</article></div>
+    </section>
+
     <section id="composition-rule">
       <div class="section-head">
-        <div><span class="eyebrow">Composition Rule / 组合示例</span><h2>三层组合后，会生成具体视频方向</h2></div>
-        <p>每组从 Story、Scene、Visual 各选一个，最后给出一个结果画面。真实运行时会继续替换成用户自己的信源、脚本、BGM 和输出目录。</p>
+        <div><span class="eyebrow">Composition Rule / 组合示例</span><h2>四层组合后，会生成具体视频方向</h2></div>
+        <p>每组从 Story、Scene、Visual、Motion 各选一个，最后给出一个结果画面。真实运行时会继续替换成用户自己的信源、脚本、BGM 和输出目录。</p>
       </div>
       <div class="composition-list"><article class="composition-row">
   <div class="composition-head">
-    <div>
-      <h3>公开市场复盘</h3>
-      <span>Market recap</span>
-    </div>
-    <ul class="case-bullets"><li>Story: 用 Market Radar 先扫宽度、强弱和风险。</li>
-<li>Scene: 用 Ledger、Grid、Rail、Stamp 承载四个切换画面。</li>
-<li>Visual: 用 Market Terminal 保留密集数字和冷静判断。</li></ul>
+    <h3>公开市场复盘 <span>Market recap</span></h3>
+    <p class="case-choice-line"><b>Story</b> 市场雷达 / Market Radar<span class="choice-sep">·</span><b>Scene</b> 市场账本 / Market Ledger<span class="choice-sep">·</span><b>Visual</b> 市场终端 / Market Terminal<span class="choice-sep">·</span><b>Motion</b> auto</p>
   </div>
   <div class="result-frames">
     <article class="result-frame">
@@ -1553,13 +1940,8 @@
 </article>
 <article class="composition-row">
   <div class="composition-head">
-    <div>
-      <h3>产品发布短片</h3>
-      <span>Product launch</span>
-    </div>
-    <ul class="case-bullets"><li>Story: 用 Product Launch 说明对象、场景、验证和行动。</li>
-<li>Scene: 用 Product Plate、Use Case、Before/After、CTA 切换镜头。</li>
-<li>Visual: 用 Product Keynote 保留明亮、干净、发布会感。</li></ul>
+    <h3>产品发布短片 <span>Product launch</span></h3>
+    <p class="case-choice-line"><b>Story</b> 产品发布 / Product Launch<span class="choice-sep">·</span><b>Scene</b> 产品主视觉 / Product Plate<span class="choice-sep">·</span><b>Visual</b> 产品发布会 / Product Keynote<span class="choice-sep">·</span><b>Motion</b> auto</p>
   </div>
   <div class="result-frames">
     <article class="result-frame">
@@ -1630,13 +2012,8 @@
 </article>
 <article class="composition-row">
   <div class="composition-head">
-    <div>
-      <h3>证据链解释</h3>
-      <span>Evidence explainer</span>
-    </div>
-    <ul class="case-bullets"><li>Story: 用 Evidence Chain 把来源、主张、验证、结论串起来。</li>
-<li>Scene: 用 Source Proof、Quote、Verification Rail、X-Ray 展开证据。</li>
-<li>Visual: 用 Executive Light 保持报告感和可信度。</li></ul>
+    <h3>证据链解释 <span>Evidence explainer</span></h3>
+    <p class="case-choice-line"><b>Story</b> 证据链 / Evidence Chain<span class="choice-sep">·</span><b>Scene</b> 验证轨道 / Verification Rail<span class="choice-sep">·</span><b>Visual</b> 高管浅色 / Executive Light<span class="choice-sep">·</span><b>Motion</b> auto</p>
   </div>
   <div class="result-frames">
     <article class="result-frame">

@@ -74,7 +74,7 @@ def fetch_sources(sources: Iterable[Source]) -> tuple[list[NewsItem], list[str]]
     return items, warnings
 
 
-def load_demo_items(path: str | Path) -> list[NewsItem]:
+def load_items_file(path: str | Path) -> list[NewsItem]:
     import json
 
     with Path(path).open("r", encoding="utf-8") as f:
@@ -92,6 +92,10 @@ def load_demo_items(path: str | Path) -> list[NewsItem]:
             )
         )
     return items
+
+
+def load_demo_items(path: str | Path) -> list[NewsItem]:
+    return load_items_file(path)
 
 
 def _strip_html(value: str) -> str:

@@ -21,6 +21,17 @@ class SceneComponent:
     purpose: str
 
 
+@dataclass(frozen=True)
+class MotionGrammar:
+    key: str
+    name: str
+    description: str
+    default_families: tuple[str, ...]
+    entrance: str
+    emphasis: str
+    exit: str
+
+
 STORY_TEMPLATES: dict[str, StoryTemplate] = {
     "daily_briefing": StoryTemplate(
         "daily_briefing",
@@ -135,6 +146,71 @@ SCENE_COMPONENTS: dict[str, SceneComponent] = {
 }
 
 
+MOTION_GRAMMARS: dict[str, MotionGrammar] = {
+    "soft_assembly": MotionGrammar(
+        "soft_assembly",
+        "Soft Assembly",
+        "A calm commercial default: shell first, title second, cards or proof details stagger into a readable hold.",
+        ("cover", "context", "grid"),
+        "soft fade with a small upward settle",
+        "staggered content assembly",
+        "short fade-through",
+    ),
+    "evidence_trace": MotionGrammar(
+        "evidence_trace",
+        "Evidence Trace",
+        "Proof-oriented motion: draw the rail or path first, then reveal stops, labels, and evidence cards in sequence.",
+        ("proof", "chips", "rail", "timeline"),
+        "rail draw-on before nodes",
+        "node and card stagger",
+        "source line holds before fade-through",
+    ),
+    "product_reveal": MotionGrammar(
+        "product_reveal",
+        "Product Reveal",
+        "A product or object gets a premium reveal with a soft plate entrance, light camera push, and restrained callouts.",
+        ("product", "map"),
+        "matte-like plate reveal with gentle scale",
+        "callout pins after the anchor is visible",
+        "slow push into the final product read",
+    ),
+    "data_tween": MotionGrammar(
+        "data_tween",
+        "Data Tween",
+        "Numbers, rows, and tiny charts animate as evidence changes rather than appearing as static slides.",
+        ("metric", "ledger", "ranking"),
+        "metric rows stagger in",
+        "value and sparkline fill",
+        "final values hold long enough to read",
+    ),
+    "mechanism_scan": MotionGrammar(
+        "mechanism_scan",
+        "Mechanism Scan",
+        "Layered explanations reveal structure before claims, then use a scan or connector pass to show causality.",
+        ("mechanism", "split", "matrix"),
+        "layer peel or split reveal",
+        "focus rail, divider, or scan pass",
+        "consequence layer settles last",
+    ),
+    "verdict_lock": MotionGrammar(
+        "verdict_lock",
+        "Verdict Lock",
+        "Conclusion motion compresses supporting details into a final practical watch item or verdict.",
+        ("list", "stamp"),
+        "verdict plate enters after the setup",
+        "supporting checks stagger below",
+        "final stamp hold",
+    ),
+}
+
+
+MOTION_DEFAULTS_BY_FAMILY: dict[str, str] = {
+    family: grammar.key
+    for grammar in MOTION_GRAMMARS.values()
+    for family in grammar.default_families
+}
+
+
 VISUAL_THEMES: dict[str, dict[str, Any]] = {
     "editorial_dark": {
         "name": "Editorial Dark",
@@ -146,6 +222,19 @@ VISUAL_THEMES: dict[str, dict[str, Any]] = {
         "accent": (70, 188, 172),
         "accent2": (230, 184, 91),
         "danger": (219, 101, 83),
+        "style": {
+            "font_zh": "Noto Serif SC / Source Han Serif SC",
+            "font_en": "Newsreader / Georgia",
+            "font_stack": "Noto Serif SC, Source Han Serif SC, Newsreader, Georgia, serif",
+            "type_scale": "Headline 76 / Body 40 / Label 24",
+            "headline_size": 76,
+            "body_size": 40,
+            "label_size": 24,
+            "text_ratio": 64,
+            "media_ratio": 36,
+            "ornament": "Thin cyan tabs with amber proof ticks.",
+            "underline": "One short accent underline below the key claim.",
+        },
     },
     "executive_light": {
         "name": "Executive Light",
@@ -157,6 +246,19 @@ VISUAL_THEMES: dict[str, dict[str, Any]] = {
         "accent": (25, 103, 210),
         "accent2": (176, 122, 50),
         "danger": (184, 75, 63),
+        "style": {
+            "font_zh": "Noto Sans SC / Source Han Sans SC",
+            "font_en": "Inter / SF Pro",
+            "font_stack": "Inter, Noto Sans SC, Source Han Sans SC, system-ui, sans-serif",
+            "type_scale": "Headline 68 / Body 38 / Label 24",
+            "headline_size": 68,
+            "body_size": 38,
+            "label_size": 24,
+            "text_ratio": 56,
+            "media_ratio": 44,
+            "ornament": "Quiet blue chips with restrained gold checks.",
+            "underline": "Fine blue rule under the conclusion line only.",
+        },
     },
     "market_terminal": {
         "name": "Market Terminal",
@@ -168,6 +270,19 @@ VISUAL_THEMES: dict[str, dict[str, Any]] = {
         "accent": (23, 214, 132),
         "accent2": (236, 198, 83),
         "danger": (234, 82, 82),
+        "style": {
+            "font_zh": "Noto Sans Mono CJK SC / Sarasa Gothic SC",
+            "font_en": "IBM Plex Mono / SF Mono",
+            "font_stack": "IBM Plex Mono, SFMono-Regular, Noto Sans Mono CJK SC, monospace",
+            "type_scale": "Headline 60 / Body 34 / Label 22",
+            "headline_size": 60,
+            "body_size": 34,
+            "label_size": 22,
+            "text_ratio": 48,
+            "media_ratio": 52,
+            "ornament": "Terminal brackets, status dots, and tight data rails.",
+            "underline": "Green metric rail under the changing value.",
+        },
     },
     "product_keynote": {
         "name": "Product Keynote",
@@ -179,6 +294,19 @@ VISUAL_THEMES: dict[str, dict[str, Any]] = {
         "accent": (55, 105, 246),
         "accent2": (116, 84, 240),
         "danger": (204, 73, 73),
+        "style": {
+            "font_zh": "Noto Sans SC / HarmonyOS Sans SC",
+            "font_en": "Inter / Helvetica",
+            "font_stack": "Inter, Helvetica Neue, Noto Sans SC, HarmonyOS Sans SC, sans-serif",
+            "type_scale": "Headline 82 / Body 40 / Label 24",
+            "headline_size": 82,
+            "body_size": 40,
+            "label_size": 24,
+            "text_ratio": 42,
+            "media_ratio": 58,
+            "ornament": "Blue stage tabs with small floating proof dots.",
+            "underline": "Thicker short underline beneath the feature name.",
+        },
     },
     "data_magazine": {
         "name": "Data Magazine",
@@ -190,6 +318,19 @@ VISUAL_THEMES: dict[str, dict[str, Any]] = {
         "accent": (18, 92, 129),
         "accent2": (196, 95, 43),
         "danger": (168, 61, 58),
+        "style": {
+            "font_zh": "Noto Serif SC / Source Han Serif SC",
+            "font_en": "IBM Plex Serif / Georgia",
+            "font_stack": "IBM Plex Serif, Noto Serif SC, Source Han Serif SC, Georgia, serif",
+            "type_scale": "Headline 72 / Body 38 / Label 23",
+            "headline_size": 72,
+            "body_size": 38,
+            "label_size": 23,
+            "text_ratio": 58,
+            "media_ratio": 42,
+            "ornament": "Editorial folios, warm chips, and chart captions.",
+            "underline": "Ochre underline for one evidence phrase.",
+        },
     },
     "social_pop": {
         "name": "Social Pop",
@@ -201,6 +342,19 @@ VISUAL_THEMES: dict[str, dict[str, Any]] = {
         "accent": (255, 198, 41),
         "accent2": (38, 205, 255),
         "danger": (255, 95, 123),
+        "style": {
+            "font_zh": "Noto Sans SC Black / Source Han Sans Heavy",
+            "font_en": "Space Grotesk / Arial Black",
+            "font_stack": "Space Grotesk, Noto Sans SC, Source Han Sans SC, Arial Black, sans-serif",
+            "type_scale": "Headline 84 / Body 42 / Label 26",
+            "headline_size": 84,
+            "body_size": 42,
+            "label_size": 26,
+            "text_ratio": 50,
+            "media_ratio": 50,
+            "ornament": "Bright sticker chips and punchy number tags.",
+            "underline": "Highlighter underline below the emotional hook.",
+        },
     },
 }
 
@@ -213,6 +367,18 @@ def get_story_template(key: str | None) -> StoryTemplate:
 
 def get_component(key: str) -> SceneComponent:
     return SCENE_COMPONENTS.get(key, SCENE_COMPONENTS["insight_stack"])
+
+
+def get_motion_grammar(key: str | None) -> MotionGrammar:
+    if not key or key == "auto":
+        return MOTION_GRAMMARS["soft_assembly"]
+    return MOTION_GRAMMARS.get(key, MOTION_GRAMMARS["soft_assembly"])
+
+
+def resolve_motion_key(key: str | None, family: str) -> str:
+    if key and key != "auto":
+        return key if key in MOTION_GRAMMARS else "soft_assembly"
+    return MOTION_DEFAULTS_BY_FAMILY.get(family, "soft_assembly")
 
 
 def get_theme(key: str | None) -> dict[str, Any]:

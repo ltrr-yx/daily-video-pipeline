@@ -2,11 +2,12 @@
 
 Open [`docs/gallery.html`](gallery.html) for the visual gallery.
 
-制作视频的方向由三层决定：
+制作视频的方向由四层决定：
 
 - Story Template / 叙事模板：决定故事顺序。
 - Scene Component / 镜头类型：决定每个画面怎么表达。
 - Visual Theme / 视觉皮肤：决定颜色、质感和商业气质。
+- Motion Grammar / 出场语法：决定元素如何进入、组装、强调和退出。
 
 ## Story Templates / 叙事模板
 
@@ -196,11 +197,74 @@ Open [`docs/gallery.html`](gallery.html) for the visual gallery.
 ## Visual Themes / 视觉皮肤
 
 - `editorial_dark` - 深色编辑部 / Editorial Dark: 适合严肃新闻、研究札记、夜间复盘。
+  - Type: Noto Serif SC / Source Han Serif SC + Newsreader / Georgia
+  - Scale: 标题 76 / 正文 40 / 标签 24
+  - Text/media: 文字 64% / 画面 36%
+  - Ornament: 青绿色小色块，配少量金色证据点。
+  - Emphasis: 只给关键判断加一条短强调线。
 - `executive_light` - 高管浅色 / Executive Light: 适合周报、简报、面向决策者的解释。
+  - Type: Noto Sans SC / Source Han Sans SC + Inter / SF Pro
+  - Scale: 标题 68 / 正文 38 / 标签 24
+  - Text/media: 文字 56% / 画面 44%
+  - Ornament: 克制蓝色标签，配少量金色确认点。
+  - Emphasis: 只在结论行下方放一条细蓝线。
 - `market_terminal` - 市场终端 / Market Terminal: 适合金融、KPI、市场宽度和密集数字。
+  - Type: Noto Sans Mono CJK SC / Sarasa Gothic SC + IBM Plex Mono / SF Mono
+  - Scale: 标题 60 / 正文 34 / 标签 22
+  - Text/media: 文字 48% / 画面 52%
+  - Ornament: 终端括号、状态点和紧凑数据轨。
+  - Emphasis: 用绿色指标轨强调正在变化的数值。
 - `product_keynote` - 产品发布会 / Product Keynote: 适合产品、功能、硬件和对象主视觉。
+  - Type: Noto Sans SC / HarmonyOS Sans SC + Inter / Helvetica
+  - Scale: 标题 82 / 正文 40 / 标签 24
+  - Text/media: 文字 42% / 画面 58%
+  - Ornament: 蓝色舞台标签，配漂浮式证明点。
+  - Emphasis: 在功能名下方使用更粗的短下划线。
 - `data_magazine` - 数据杂志 / Data Magazine: 适合图表型专题和慢一点的编辑节奏。
+  - Type: Noto Serif SC / Source Han Serif SC + IBM Plex Serif / Georgia
+  - Scale: 标题 72 / 正文 38 / 标签 23
+  - Text/media: 文字 58% / 画面 42%
+  - Ornament: 杂志页码、暖色小标签和图表注释。
+  - Emphasis: 用赭色线条强调一条证据短语。
 - `social_pop` - 社媒高能 / Social Pop: 适合榜单、轻快盘点和更鲜明的社交包装。
+  - Type: Noto Sans SC Black / Source Han Sans Heavy + Space Grotesk / Arial Black
+  - Scale: 标题 84 / 正文 42 / 标签 26
+  - Text/media: 文字 50% / 画面 50%
+  - Ornament: 高饱和贴纸标签和强数字标记。
+  - Emphasis: 用荧光笔式下划线强调情绪钩子。
+
+## Motion Grammars / 出场语法
+
+- `soft_assembly` - Soft Assembly: A calm commercial default: shell first, title second, cards or proof details stagger into a readable hold.
+  - Default families: cover, context, grid
+  - Entrance: soft fade with a small upward settle
+  - Emphasis: staggered content assembly
+  - Exit: short fade-through
+- `evidence_trace` - Evidence Trace: Proof-oriented motion: draw the rail or path first, then reveal stops, labels, and evidence cards in sequence.
+  - Default families: proof, chips, rail, timeline
+  - Entrance: rail draw-on before nodes
+  - Emphasis: node and card stagger
+  - Exit: source line holds before fade-through
+- `product_reveal` - Product Reveal: A product or object gets a premium reveal with a soft plate entrance, light camera push, and restrained callouts.
+  - Default families: product, map
+  - Entrance: matte-like plate reveal with gentle scale
+  - Emphasis: callout pins after the anchor is visible
+  - Exit: slow push into the final product read
+- `data_tween` - Data Tween: Numbers, rows, and tiny charts animate as evidence changes rather than appearing as static slides.
+  - Default families: metric, ledger, ranking
+  - Entrance: metric rows stagger in
+  - Emphasis: value and sparkline fill
+  - Exit: final values hold long enough to read
+- `mechanism_scan` - Mechanism Scan: Layered explanations reveal structure before claims, then use a scan or connector pass to show causality.
+  - Default families: mechanism, split, matrix
+  - Entrance: layer peel or split reveal
+  - Emphasis: focus rail, divider, or scan pass
+  - Exit: consequence layer settles last
+- `verdict_lock` - Verdict Lock: Conclusion motion compresses supporting details into a final practical watch item or verdict.
+  - Default families: list, stamp
+  - Entrance: verdict plate enters after the setup
+  - Emphasis: supporting checks stagger below
+  - Exit: final stamp hold
 
 ## Composition Examples / 组合示例
 

@@ -4,7 +4,7 @@ import re
 import textwrap
 
 from .models import NewsItem, ScriptScene
-from .templates import get_component, get_story_template
+from .templates import get_component, get_story_template, resolve_motion_key
 
 
 def build_scenes(
@@ -17,11 +17,15 @@ def build_scenes(
     story_config = story_config or {}
     template = get_story_template(str(story_config.get("template", "daily_briefing")))
     seconds_per_scene = float(story_config.get("seconds_per_scene", 5.0))
+    global_motion = str(story_config.get("motion") or story_config.get("motion_grammar") or "auto")
+    motion_overrides = story_config.get("motion_overrides") or {}
     scenes: list[ScriptScene] = []
 
     for index, component_key in enumerate(template.components):
         item = items[min(index, len(items) - 1)]
         component = get_component(component_key)
+        override_motion = motion_overrides.get(component_key) or motion_overrides.get(component.family)
+        motion_grammar = resolve_motion_key(str(override_motion or global_motion), component.family)
         scenes.append(
             _scene_for_component(
                 component_key,
@@ -32,6 +36,7 @@ def build_scenes(
                 run_date=run_date,
                 template_name=template.name,
                 visual_grammar=component.visual_grammar,
+                motion_grammar=motion_grammar,
                 duration=seconds_per_scene,
             )
         )
@@ -43,7 +48,7 @@ def build_markdown(items: list[NewsItem], scenes: list[ScriptScene], *, run_date
     lines.append("## Voiceover")
     lines.append("")
     for scene in scenes:
-        lines.append(f"- {scene.kicker}: {scene.title}. {scene.body}")
+        lines.append(f"- {scene.title}. {scene.body}")
         if scene.proof:
             lines.append(f"  Proof: {scene.proof}")
     lines.append("")
@@ -69,6 +74,7 @@ def _scene_for_component(
     run_date: str,
     template_name: str,
     visual_grammar: str,
+    motion_grammar: str,
     duration: float,
 ) -> ScriptScene:
     titles = tuple(_short_title(entry.title, 58) for entry in items[:5])
@@ -85,6 +91,7 @@ def _scene_for_component(
             source_label=source_label,
             component=component,
             visual_grammar=visual_grammar,
+            motion_grammar=motion_grammar,
             proof=proof,
             source_url=item.url,
             metrics=metrics,
@@ -98,10 +105,11 @@ def _scene_for_component(
             title="Key signals",
             kicker=f"Signals · {len(items)} sources",
             eyebrow=project_name,
-            body="A fast read of the strongest configured-source signals.",
-            source_label="source-linked digest",
+            body="The strongest signals are grouped so the direction is easier to compare.",
+            source_label="market source digest",
             component=component,
             visual_grammar=visual_grammar,
+            motion_grammar=motion_grammar,
             proof=proof,
             source_url=item.url,
             metrics=metrics,
@@ -119,6 +127,7 @@ def _scene_for_component(
             source_label=source_label,
             component=component,
             visual_grammar=visual_grammar,
+            motion_grammar=motion_grammar,
             proof=proof,
             source_url=item.url,
             metrics=metrics,
@@ -132,10 +141,11 @@ def _scene_for_component(
             title="What moved",
             kicker="Metrics",
             eyebrow=_short_title(item.title, 42),
-            body="Numbers, recency, and source density give the viewer a fast evidence handle.",
+            body="The key numbers show what changed, how broad the move is, and where pressure is concentrated.",
             source_label=source_label,
             component=component,
             visual_grammar=visual_grammar,
+            motion_grammar=motion_grammar,
             proof=proof,
             source_url=item.url,
             metrics=metrics,
@@ -149,10 +159,11 @@ def _scene_for_component(
             title="Sequence to watch",
             kicker="Timeline",
             eyebrow=run_date,
-            body="Read the story as a sequence: first signal, proof point, then the next check.",
+            body="The sequence is signal first, proof point second, and the next check last.",
             source_label=source_label,
             component=component,
             visual_grammar=visual_grammar,
+            motion_grammar=motion_grammar,
             proof=proof,
             source_url=item.url,
             metrics=metrics,
@@ -170,6 +181,7 @@ def _scene_for_component(
             source_label=source_label,
             component=component,
             visual_grammar=visual_grammar,
+            motion_grammar=motion_grammar,
             proof=proof,
             source_url=item.url,
             metrics=metrics,
@@ -187,6 +199,7 @@ def _scene_for_component(
             source_label=source_label,
             component=component,
             visual_grammar=visual_grammar,
+            motion_grammar=motion_grammar,
             proof=proof,
             source_url=item.url,
             metrics=metrics,
@@ -200,10 +213,11 @@ def _scene_for_component(
             title="Ranked evidence",
             kicker="Ledger",
             eyebrow=project_name,
-            body="Sorted source-backed items, designed for scanning before deeper review.",
-            source_label="configured sources",
+            body="Ranked signals show what mattered most in this recap.",
+            source_label="market source digest",
             component=component,
             visual_grammar=visual_grammar,
+            motion_grammar=motion_grammar,
             proof=proof,
             source_url=item.url,
             metrics=metrics,
@@ -217,10 +231,11 @@ def _scene_for_component(
             title="Next checks",
             kicker="Watch",
             eyebrow=_short_title(item.title, 42),
-            body="Keep the final frame practical: what changed, what could contradict it, and what to check next.",
+            body="The practical watch list is what changed, what could contradict it, and what to check next.",
             source_label=source_label,
             component=component,
             visual_grammar=visual_grammar,
+            motion_grammar=motion_grammar,
             proof=proof,
             source_url=item.url,
             metrics=metrics,
@@ -238,6 +253,7 @@ def _scene_for_component(
             source_label=source_label,
             component=component,
             visual_grammar=visual_grammar,
+            motion_grammar=motion_grammar,
             proof=proof,
             source_url=item.url,
             metrics=metrics,
@@ -247,13 +263,14 @@ def _scene_for_component(
         )
 
     return ScriptScene(
-        title="Editorial takeaways",
+        title="Practical takeaways",
         kicker="Conclusion",
         eyebrow=project_name,
         body=_impact_line(item),
         source_label=source_label,
         component=component,
         visual_grammar=visual_grammar,
+        motion_grammar=motion_grammar,
         proof=proof,
         source_url=item.url,
         metrics=metrics,
@@ -281,7 +298,7 @@ def _short_title(value: str, width: int) -> str:
 
 def _metrics_for_item(item: NewsItem, items: list[NewsItem]) -> tuple[tuple[str, str], ...]:
     text = f"{item.title} {item.summary}"
-    numbers = re.findall(r"(?<!\w)(?:\d+(?:\.\d+)?%?|\$?\d+(?:\.\d+)?[MBK]?)(?!\w)", text)
+    numbers = _extract_metric_values(text)
     metrics: list[tuple[str, str]] = []
     for number in numbers[:2]:
         metrics.append(("mentioned", number))
@@ -294,3 +311,18 @@ def _split_bullets(items: list[NewsItem]) -> tuple[str, ...]:
     left = _short_title(items[0].title, 48) if items else "Before"
     right = _short_title(items[1].title, 48) if len(items) > 1 else "After"
     return (left, right)
+
+
+def _extract_metric_values(text: str) -> list[str]:
+    values: list[str] = []
+    for pattern in (
+        r"[-+]?\d+(?:\.\d+)?%",
+        r"[-+]?\d+(?:\.\d+)?(?:万亿|亿元|点|家)",
+        r"[$¥]\d+(?:\.\d+)?[MBK]?",
+    ):
+        for value in re.findall(pattern, text):
+            if value not in values:
+                values.append(value)
+    if values:
+        return values
+    return re.findall(r"(?<![A-Za-z0-9_.])[-+]?\d+(?:\.\d+)?(?![A-Za-z0-9_])", text)

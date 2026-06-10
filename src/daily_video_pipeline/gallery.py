@@ -4,7 +4,15 @@ from html import escape
 from pathlib import Path
 from typing import Any
 
-from .templates import SCENE_COMPONENTS, STORY_TEMPLATES, VISUAL_THEMES, SceneComponent, StoryTemplate
+from .templates import (
+    MOTION_GRAMMARS,
+    SCENE_COMPONENTS,
+    STORY_TEMPLATES,
+    VISUAL_THEMES,
+    MotionGrammar,
+    SceneComponent,
+    StoryTemplate,
+)
 
 
 STORY_I18N = {
@@ -114,6 +122,41 @@ THEME_I18N = {
     "product_keynote": ("产品发布会", "适合产品、功能、硬件和对象主视觉。"),
     "data_magazine": ("数据杂志", "适合图表型专题和慢一点的编辑节奏。"),
     "social_pop": ("社媒高能", "适合榜单、轻快盘点和更鲜明的社交包装。"),
+}
+
+STYLE_SPEC_LABELS = (
+    ("字体", "font"),
+    ("字号", "scale"),
+    ("图文", "ratio"),
+    ("装饰", "ornament"),
+    ("划线", "underline"),
+)
+
+THEME_STYLE_I18N = {
+    "editorial_dark": {
+        "ornament": "青绿色小色块，配少量金色证据点。",
+        "underline": "只给关键判断加一条短强调线。",
+    },
+    "executive_light": {
+        "ornament": "克制蓝色标签，配少量金色确认点。",
+        "underline": "只在结论行下方放一条细蓝线。",
+    },
+    "market_terminal": {
+        "ornament": "终端括号、状态点和紧凑数据轨。",
+        "underline": "用绿色指标轨强调正在变化的数值。",
+    },
+    "product_keynote": {
+        "ornament": "蓝色舞台标签，配漂浮式证明点。",
+        "underline": "在功能名下方使用更粗的短下划线。",
+    },
+    "data_magazine": {
+        "ornament": "杂志页码、暖色小标签和图表注释。",
+        "underline": "用赭色线条强调一条证据短语。",
+    },
+    "social_pop": {
+        "ornament": "高饱和贴纸标签和强数字标记。",
+        "underline": "用荧光笔式下划线强调情绪钩子。",
+    },
 }
 
 FAMILY_ORDER = (
@@ -230,11 +273,12 @@ def build_gallery_markdown() -> str:
         "",
         "Open [`docs/gallery.html`](gallery.html) for the visual gallery.",
         "",
-        "制作视频的方向由三层决定：",
+        "制作视频的方向由四层决定：",
         "",
         "- Story Template / 叙事模板：决定故事顺序。",
         "- Scene Component / 镜头类型：决定每个画面怎么表达。",
         "- Visual Theme / 视觉皮肤：决定颜色、质感和商业气质。",
+        "- Motion Grammar / 出场语法：决定元素如何进入、组装、强调和退出。",
         "",
         "## Story Templates / 叙事模板",
         "",
@@ -273,7 +317,21 @@ def build_gallery_markdown() -> str:
     lines.extend(["## Visual Themes / 视觉皮肤", ""])
     for key, theme in VISUAL_THEMES.items():
         name_zh, usage_zh = THEME_I18N[key]
+        style = _theme_style_values(key, theme["style"])
         lines.append(f"- `{key}` - {name_zh} / {theme['name']}: {usage_zh}")
+        lines.append(f"  - Type: {style['font']}")
+        lines.append(f"  - Scale: {style['scale']}")
+        lines.append(f"  - Text/media: {style['ratio']}")
+        lines.append(f"  - Ornament: {style['ornament']}")
+        lines.append(f"  - Emphasis: {style['underline']}")
+
+    lines.extend(["", "## Motion Grammars / 出场语法", ""])
+    for key, motion in MOTION_GRAMMARS.items():
+        lines.append(f"- `{key}` - {motion.name}: {motion.description}")
+        lines.append(f"  - Default families: {', '.join(motion.default_families)}")
+        lines.append(f"  - Entrance: {motion.entrance}")
+        lines.append(f"  - Emphasis: {motion.emphasis}")
+        lines.append(f"  - Exit: {motion.exit}")
     lines.extend(["", "## Composition Examples / 组合示例", ""])
     for example in COMPOSITION_EXAMPLES:
         lines.extend(
@@ -295,6 +353,7 @@ def build_gallery_html() -> str:
     story_cards = "\n".join(_story_card(template) for template in STORY_TEMPLATES.values())
     scene_sections = "\n".join(_scene_family_section(family) for family in FAMILY_ORDER)
     theme_cards = "\n".join(_theme_card(key, theme) for key, theme in VISUAL_THEMES.items())
+    motion_cards = "\n".join(_motion_card(motion) for motion in MOTION_GRAMMARS.values())
     combo_rows = "\n".join(_composition_row(example) for example in COMPOSITION_EXAMPLES)
     return f"""<!doctype html>
 <html lang="zh-CN">
@@ -304,17 +363,17 @@ def build_gallery_html() -> str:
   <title>Daily Video Pipeline - Gallery / 模板图库</title>
   <style>
     :root {{
-      --bg: #edf2f4;
-      --surface: #fbfcfb;
-      --surface-2: #f4f8f7;
-      --ink: #101418;
-      --text: #26323a;
-      --muted: #5f6c73;
-      --line: #cfd8dd;
-      --line-strong: #aebdc5;
-      --green: #0e9f6e;
-      --green-dark: #087957;
-      --blue: #1d63d8;
+      --bg: #eef3f6;
+      --surface: #ffffff;
+      --surface-2: #f6f9fa;
+      --ink: #111821;
+      --text: #26343d;
+      --muted: #63717b;
+      --line: #d5e0e6;
+      --line-strong: #b8c7d0;
+      --green: #247a74;
+      --green-dark: #17615e;
+      --blue: #2467d8;
       --gold: #b7791f;
       --red: #c64f45;
       --radius: 8px;
@@ -326,7 +385,7 @@ def build_gallery_html() -> str:
       margin: 0;
       color: var(--ink);
       background:
-        linear-gradient(180deg, #f7faf9 0%, var(--bg) 42%, #e6edf0 100%);
+        linear-gradient(180deg, #fbfcfd 0%, var(--bg) 46%, #e7eef2 100%);
     }}
     .shell {{
       width: min(1240px, calc(100% - 40px));
@@ -334,30 +393,29 @@ def build_gallery_html() -> str:
       padding: 34px 0 72px;
     }}
     .hero {{
-      color: #eef8f2;
-      background: #071014;
-      border: 1px solid #20343a;
+      color: var(--ink);
+      background: linear-gradient(180deg, #ffffff 0%, #f5f8fa 100%);
+      border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 30px;
+      padding: 24px;
       display: grid;
-      grid-template-columns: minmax(260px, .82fr) minmax(420px, 1.18fr);
+      grid-template-columns: minmax(260px, .66fr) minmax(460px, 1.34fr);
       gap: 28px;
       align-items: center;
     }}
     .hero h1 {{
-      margin: 0 0 14px;
-      font-size: 48px;
-      line-height: 1.08;
+      margin: 0;
+      font-size: 40px;
+      line-height: 1.12;
       letter-spacing: 0;
       text-wrap: balance;
     }}
-    .hero p {{
-      margin: 0;
-      max-width: 56ch;
-      color: #b7c9c5;
-      font-size: 17px;
-      line-height: 1.62;
-      text-wrap: pretty;
+    .hero-flow {{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 720;
     }}
     .hero-meta {{
       margin-top: 22px;
@@ -370,36 +428,37 @@ def build_gallery_html() -> str:
       align-items: baseline;
       gap: 8px;
       padding: 8px 10px;
-      background: #0e2025;
-      border: 1px solid #244047;
+      background: #f1f6f6;
+      border: 1px solid #d7e3e5;
       border-radius: var(--radius);
-      color: #dff8ec;
+      color: #455761;
       font-size: 13px;
     }}
-    .metric-chip strong {{ font-size: 20px; color: #ffffff; }}
+    .metric-chip strong {{ font-size: 20px; color: var(--ink); }}
     .process {{
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
+      gap: 7px;
     }}
     .process-step {{
-      min-height: 152px;
-      padding: 16px;
+      min-height: 0;
+      padding: 10px 12px;
       border-radius: var(--radius);
-      background: #0e2025;
-      border: 1px solid #25464c;
+      background: rgba(255, 255, 255, .82);
+      border: 1px solid #d8e3e8;
       position: relative;
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
     }}
     .process-step::after {{
-      content: "→";
+      content: "";
       position: absolute;
-      right: -15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6fe0aa;
-      font-size: 26px;
-      font-weight: 800;
-      z-index: 1;
+      left: 26px;
+      top: calc(100% + 1px);
+      width: 1px;
+      height: 7px;
+      background: #b8cbd0;
     }}
     .process-step:last-child::after {{ display: none; }}
     .process-step span {{
@@ -408,46 +467,84 @@ def build_gallery_html() -> str:
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      color: #06120f;
-      background: #24d293;
+      color: #0d4f4b;
+      background: #dff1ef;
       font-weight: 850;
-      margin-bottom: 18px;
     }}
     .process-step h2 {{
-      margin: 0 0 7px;
-      font-size: 18px;
-      line-height: 1.16;
-      color: #ffffff;
-    }}
-    .process-step p {{
       margin: 0;
-      color: #91aaa4;
-      font-size: 13px;
-      line-height: 1.45;
+      font-size: 15px;
+      line-height: 1.2;
+      color: var(--text);
     }}
-    nav {{
+    nav.gallery-filter {{
       position: sticky;
       top: 0;
       z-index: 5;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 24px 0 42px;
-      padding: 10px;
-      background: rgba(237, 242, 244, .92);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      backdrop-filter: blur(14px);
+      flex-wrap: nowrap;
+      align-items: center;
+      width: 100vw;
+      max-width: none;
+      gap: 4px;
+      margin: 18px calc(50% - 50vw) 38px;
+      padding: 7px max(20px, calc((100vw - 1240px) / 2 + 20px));
+      background: linear-gradient(180deg, rgba(251, 252, 251, .96), rgba(246, 250, 249, .86));
+      box-shadow:
+        0 1px 0 rgba(46, 68, 78, .10),
+        0 12px 24px rgba(30, 48, 58, .08);
+      backdrop-filter: blur(18px) saturate(1.04);
+      isolation: isolate;
+      overflow-x: auto;
+      scrollbar-width: none;
     }}
-    nav a {{
+    nav.gallery-filter::-webkit-scrollbar {{
+      display: none;
+    }}
+    nav.gallery-filter::after {{
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -16px;
+      height: 16px;
+      background: linear-gradient(180deg, rgba(30, 48, 58, .08), rgba(30, 48, 58, 0));
+      pointer-events: none;
+      z-index: -1;
+    }}
+    .filter-label {{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 760;
+      line-height: 1;
+      padding: 0 9px 0 7px;
+      border-right: 1px solid rgba(95, 108, 115, .20);
+      flex: 0 0 auto;
+    }}
+    nav.gallery-filter a {{
+      display: inline-flex;
+      align-items: baseline;
+      flex: 0 0 auto;
+      gap: 4px;
       text-decoration: none;
-      color: var(--ink);
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 13px;
-      font-weight: 750;
+      color: var(--text);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 12px;
+      font-weight: 730;
+      line-height: 1;
+    }}
+    nav.gallery-filter a:hover,
+    nav.gallery-filter a:focus-visible {{
+      color: #0b6d51;
+      background: #eef7f2;
+      border-color: rgba(14, 159, 110, .20);
+      outline: none;
+    }}
+    .nav-en {{
+      color: var(--muted);
+      font-weight: 620;
     }}
     section {{ margin-top: 56px; }}
     .section-head {{
@@ -484,7 +581,7 @@ def build_gallery_html() -> str:
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 14px;
     }}
-    .story-card, .scene-card, .theme-card {{
+    .story-card, .scene-card, .theme-card, .motion-card {{
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -504,14 +601,37 @@ def build_gallery_html() -> str:
       font-size: 12px;
       font-weight: 780;
     }}
-    .story-card h3, .scene-card h4, .theme-card h3 {{
+    .story-card h3, .scene-card h4, .theme-card h3, .motion-card h3 {{
       margin: 0;
       color: var(--ink);
       line-height: 1.2;
       text-wrap: balance;
     }}
     .story-card h3 {{ font-size: 22px; }}
-    .story-card p, .scene-card p, .theme-card p {{
+    .story-title {{
+      min-height: 56px;
+      display: grid;
+      gap: 5px;
+      align-content: start;
+      text-wrap: auto;
+    }}
+    .story-title .title-zh {{
+      display: block;
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.12;
+      font-weight: 840;
+    }}
+    .story-title .title-en {{
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.24;
+      font-weight: 690;
+      word-break: keep-all;
+      overflow-wrap: normal;
+    }}
+    .story-card p, .scene-card p, .theme-card p, .motion-card p {{
       margin: 0;
       color: var(--muted);
       line-height: 1.52;
@@ -590,8 +710,8 @@ def build_gallery_html() -> str:
       flex-direction: column;
     }}
     .svg-wrap {{
-      background: #071014;
-      border-bottom: 1px solid #233a40;
+      background: #f6f9fa;
+      border-bottom: 1px solid var(--line);
     }}
     svg {{ display: block; width: 100%; height: auto; }}
     .scene-card .svg-wrap {{
@@ -634,7 +754,50 @@ def build_gallery_html() -> str:
       grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
       gap: 16px;
     }}
+    .motion-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+    }}
+    .motion-card {{
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }}
+    .motion-steps {{
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }}
+    .motion-steps b {{
+      color: var(--text);
+    }}
     .theme-card h3 {{ font-size: 21px; margin-top: 10px; }}
+    .style-spec-list {{
+      display: grid;
+      gap: 7px;
+      margin: 14px 0 0;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }}
+    .style-spec-list div {{
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 8px;
+      font-size: 12px;
+      line-height: 1.42;
+    }}
+    .style-spec-list dt {{
+      color: var(--muted);
+      font-weight: 790;
+    }}
+    .style-spec-list dd {{
+      margin: 0;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }}
     .swatch-row {{
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -665,35 +828,32 @@ def build_gallery_html() -> str:
       border-top: 1px solid var(--line);
     }}
     .composition-head {{
-      display: grid;
-      grid-template-columns: minmax(220px, .45fr) minmax(360px, .55fr);
-      gap: 16px;
-      align-items: start;
       margin-bottom: 14px;
+      max-width: 1040px;
     }}
     .composition-head h3 {{
       margin: 0;
       font-size: 24px;
     }}
-    .composition-head span {{
+    .composition-head h3 span {{
       color: var(--muted);
       font-weight: 760;
+      font-size: 15px;
+      margin-left: 6px;
     }}
-    .case-bullets {{
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 7px;
-    }}
-    .case-bullets li {{
-      color: var(--text);
-      background: #f5f9f8;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 8px 10px;
+    .case-choice-line {{
+      margin: 7px 0 0;
+      color: var(--muted);
       font-size: 13px;
-      line-height: 1.45;
+      line-height: 1.55;
+    }}
+    .case-choice-line b {{
+      color: var(--text);
+      font-weight: 790;
+    }}
+    .choice-sep {{
+      color: var(--line-strong);
+      margin: 0 8px;
     }}
     .result-frames {{
       display: grid;
@@ -735,16 +895,13 @@ def build_gallery_html() -> str:
     }}
     @media (max-width: 980px) {{
       .hero, .section-head {{ grid-template-columns: 1fr; }}
-      .process {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
-      .process-step:nth-child(2)::after {{ display: none; }}
-      .composition-head {{ grid-template-columns: 1fr; }}
       .result-frames {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
     }}
     @media (max-width: 620px) {{
       .shell {{ width: min(100% - 24px, 1240px); padding-top: 18px; }}
       .hero {{ padding: 20px; }}
       .hero h1 {{ font-size: 34px; }}
-      .process, .scene-grid, .result-frames {{ grid-template-columns: 1fr; }}
+      .scene-grid, .result-frames {{ grid-template-columns: 1fr; }}
       .process-step::after {{ display: none; }}
       .scene-card {{
         width: 100%;
@@ -756,9 +913,10 @@ def build_gallery_html() -> str:
       .scene-card .svg-wrap svg {{
         height: auto;
       }}
-      .theme-grid {{ grid-template-columns: 1fr; }}
-      .composition-head {{ display: block; }}
-      nav {{ position: static; }}
+      .theme-grid, .motion-grid {{ grid-template-columns: 1fr; }}
+      nav.gallery-filter {{
+        padding-inline: 12px;
+      }}
     }}
     @media (prefers-reduced-motion: reduce) {{
       html {{ scroll-behavior: auto; }}
@@ -769,27 +927,31 @@ def build_gallery_html() -> str:
   <main class="shell">
     <header class="hero">
       <div>
-        <h1>三步选出视频方向</h1>
-        <p>先选叙事模板，再选每个画面的镜头类型，最后套上视觉皮肤。用户只需要替换成本地信源、BGM 和配置，就能生成自己的短视频。</p>
+        <h1>五步生成视频方向</h1>
+        <p class="hero-flow">Story -> Scene -> Visual -> Motion -> Render</p>
         <div class="hero-meta" aria-label="Gallery counts">
           <span class="metric-chip"><strong>{len(STORY_TEMPLATES)}</strong> 叙事模板</span>
           <span class="metric-chip"><strong>{len(SCENE_COMPONENTS)}</strong> 镜头类型</span>
           <span class="metric-chip"><strong>{len(VISUAL_THEMES)}</strong> 视觉皮肤</span>
+          <span class="metric-chip"><strong>{len(MOTION_GRAMMARS)}</strong> 出场语法</span>
         </div>
       </div>
       <div class="process" aria-label="Video direction process">
-        <article class="process-step"><span>1</span><h2>Story Template<br>叙事模板</h2><p>决定故事顺序：开场、证据、机制、风险、结论。</p></article>
-        <article class="process-step"><span>2</span><h2>Scene Component<br>镜头类型</h2><p>决定单个画面怎么承载信息：账本、轨道、图表、对比。</p></article>
-        <article class="process-step"><span>3</span><h2>Visual Theme<br>视觉皮肤</h2><p>决定气质：市场终端、产品发布会、数据杂志、社媒高能。</p></article>
-        <article class="process-step"><span>4</span><h2>Rendered Video<br>输出视频</h2><p>组合成带 BGM 的竖版视频，并保留审片图 / contact sheet。</p></article>
+        <article class="process-step"><span>1</span><h2>Story Template / 叙事模板</h2></article>
+        <article class="process-step"><span>2</span><h2>Scene Component / 镜头类型</h2></article>
+        <article class="process-step"><span>3</span><h2>Visual Theme / 视觉皮肤</h2></article>
+        <article class="process-step"><span>4</span><h2>Motion Grammar / 出场语法</h2></article>
+        <article class="process-step"><span>5</span><h2>Rendered Video / 输出视频</h2></article>
       </div>
     </header>
 
-    <nav aria-label="Gallery sections">
-      <a href="#story-templates">叙事模板 Story</a>
-      <a href="#scene-components">镜头类型 Scene</a>
-      <a href="#visual-themes">视觉皮肤 Visual</a>
-      <a href="#composition-rule">组合示例 Composition</a>
+    <nav class="gallery-filter" aria-label="Gallery sections">
+      <span class="filter-label">筛选</span>
+      <a href="#story-templates"><span>叙事模板</span><span class="nav-en">Story</span></a>
+      <a href="#scene-components"><span>镜头类型</span><span class="nav-en">Scene</span></a>
+      <a href="#visual-themes"><span>视觉皮肤</span><span class="nav-en">Visual</span></a>
+      <a href="#motion-grammars"><span>出场语法</span><span class="nav-en">Motion</span></a>
+      <a href="#composition-rule"><span>组合示例</span><span class="nav-en">Composition</span></a>
     </nav>
 
     <section id="story-templates">
@@ -816,10 +978,18 @@ def build_gallery_html() -> str:
       <div class="theme-grid">{theme_cards}</div>
     </section>
 
+    <section id="motion-grammars">
+      <div class="section-head">
+        <div><span class="eyebrow">Motion Grammar / 出场语法</span><h2>再约束元素如何进入和组装</h2></div>
+        <p>Motion 层不是装饰说明，而是代码里的渲染合同。它规定先出现结构、轨道、数据还是结论，让元素出场符合叙事逻辑。</p>
+      </div>
+      <div class="motion-grid">{motion_cards}</div>
+    </section>
+
     <section id="composition-rule">
       <div class="section-head">
-        <div><span class="eyebrow">Composition Rule / 组合示例</span><h2>三层组合后，会生成具体视频方向</h2></div>
-        <p>每组从 Story、Scene、Visual 各选一个，最后给出一个结果画面。真实运行时会继续替换成用户自己的信源、脚本、BGM 和输出目录。</p>
+        <div><span class="eyebrow">Composition Rule / 组合示例</span><h2>四层组合后，会生成具体视频方向</h2></div>
+        <p>每组从 Story、Scene、Visual、Motion 各选一个，最后给出一个结果画面。真实运行时会继续替换成用户自己的信源、脚本、BGM 和输出目录。</p>
       </div>
       <div class="composition-list">{combo_rows}</div>
     </section>
@@ -842,7 +1012,7 @@ def _story_card(template: StoryTemplate) -> str:
     return f"""<article class="story-card">
   <div class="card-meta"><span><code>{escape(template.key)}</code></span><span>{len(template.components)} scenes</span></div>
   <div>
-    <h3>{escape(meta["zh"])} / {escape(template.name)}</h3>
+    <h3 class="story-title"><span class="title-zh">{escape(meta["zh"])}</span><span class="title-en">{escape(template.name)}</span></h3>
     <p>{escape(meta["fit"])}</p>
   </div>
   <ol class="story-flow">{steps}</ol>
@@ -881,32 +1051,70 @@ def _theme_card(key: str, theme: dict[str, Any]) -> str:
         _swatch(name, theme[name])
         for name in ("background", "panel", "foreground", "accent", "accent2", "danger")
     )
+    style_specs = _theme_style_specs(key, theme["style"])
     return f"""<article class="theme-card">
   <div class="svg-wrap">{_theme_svg(key, theme)}</div>
   <div class="theme-body">
     <div class="card-meta"><span><code>{escape(key)}</code></span><span>{escape(theme["name"])}</span></div>
     <h3>{escape(name_zh)} / {escape(theme["name"])}</h3>
     <p>{escape(usage_zh)}</p>
+    {style_specs}
     <div class="swatch-row">{swatches}</div>
   </div>
 </article>"""
 
 
+def _motion_card(motion: MotionGrammar) -> str:
+    families = ", ".join(motion.default_families)
+    return f"""<article class="motion-card">
+  <div class="card-meta"><span><code>{escape(motion.key)}</code></span><span>{escape(families)}</span></div>
+  <h3>{escape(motion.name)}</h3>
+  <p>{escape(motion.description)}</p>
+  <div class="motion-steps">
+    <div><b>Entrance</b> {escape(motion.entrance)}</div>
+    <div><b>Emphasis</b> {escape(motion.emphasis)}</div>
+    <div><b>Exit</b> {escape(motion.exit)}</div>
+  </div>
+</article>"""
+
+
+def _theme_style_values(key: str, style: dict[str, Any]) -> dict[str, str]:
+    localized = THEME_STYLE_I18N[key]
+    return {
+        "font": f"{style['font_zh']} + {style['font_en']}",
+        "scale": f"标题 {style['headline_size']} / 正文 {style['body_size']} / 标签 {style['label_size']}",
+        "ratio": f"文字 {style['text_ratio']}% / 画面 {style['media_ratio']}%",
+        "ornament": localized["ornament"],
+        "underline": localized["underline"],
+    }
+
+
+def _theme_style_specs(key: str, style: dict[str, Any]) -> str:
+    values = _theme_style_values(key, style)
+    rows = "\n".join(
+        f"<div><dt>{escape(label)}</dt><dd>{escape(values[key])}</dd></div>"
+        for label, key in STYLE_SPEC_LABELS
+    )
+    return f"""<dl class="style-spec-list" aria-label="Visual style dimensions">
+      {rows}
+    </dl>"""
+
+
 def _composition_row(example: dict[str, Any]) -> str:
     story = STORY_TEMPLATES[example["story"]]
+    story_zh = STORY_I18N[example["story"]]["zh"]
+    scene = SCENE_COMPONENTS[example["scene"]]
+    scene_zh = COMPONENT_I18N[example["scene"]][0]
     theme = VISUAL_THEMES[example["theme"]]
-    bullets = "\n".join(f"<li>{escape(bullet)}</li>" for bullet in example["bullets"])
+    theme_zh = THEME_I18N[example["theme"]][0]
     frames = "\n".join(
         _composition_frame(example, title, kind, idx)
         for idx, (title, kind) in enumerate(example["frames"], 1)
     )
     return f"""<article class="composition-row">
   <div class="composition-head">
-    <div>
-      <h3>{escape(example["title"])}</h3>
-      <span>{escape(example["subtitle"])}</span>
-    </div>
-    <ul class="case-bullets">{bullets}</ul>
+    <h3>{escape(example["title"])} <span>{escape(example["subtitle"])}</span></h3>
+    <p class="case-choice-line"><b>Story</b> {escape(story_zh)} / {escape(story.name)}<span class="choice-sep">·</span><b>Scene</b> {escape(scene_zh)} / {escape(scene.name)}<span class="choice-sep">·</span><b>Visual</b> {escape(theme_zh)} / {escape(theme["name"])}<span class="choice-sep">·</span><b>Motion</b> auto</p>
   </div>
   <div class="result-frames">
     {frames}
@@ -975,10 +1183,10 @@ def _component_svg(component: SceneComponent) -> str:
 
 
 def _svg_frame(inner: str, label: str = "") -> str:
-    label_text = f'<text x="30" y="31" font-size="12" font-weight="800" fill="#7ce0aa">{escape(label)}</text>' if label else ""
+    label_text = f'<text x="30" y="31" font-size="12" font-weight="800" fill="#17615e">{escape(label)}</text>' if label else ""
     return f"""<svg viewBox="0 0 420 260" role="img" aria-label="{escape(label or 'scene preview')}">
-  <rect width="420" height="260" fill="#071014"/>
-  <rect x="18" y="18" width="384" height="224" rx="10" fill="#0c2025" stroke="#234047"/>
+  <rect width="420" height="260" fill="#f6f9fa"/>
+  <rect x="18" y="18" width="384" height="224" rx="10" fill="#ffffff" stroke="#d5e0e6"/>
   {label_text}
   {inner}
 </svg>"""
@@ -1357,39 +1565,84 @@ def _theme_svg(key: str, theme: dict[str, Any]) -> str:
     accent = _rgb(theme["accent"])
     accent2 = _rgb(theme["accent2"])
     danger = _rgb(theme["danger"])
+    style = theme["style"]
     name = escape(THEME_I18N[key][0])
-    return f"""<svg viewBox="0 0 640 420" role="img" aria-label="{name} preview">
+    font_stack = escape(style["font_stack"], quote=True)
+    font_zh = escape(style["font_zh"].split("/")[0].strip())
+    font_en = escape(style["font_en"].split("/")[0].strip())
+    scale = escape(style["type_scale"].replace("Headline", "H").replace("Body", "B").replace("Label", "L"))
+    headline_size = max(13, min(18, round(style["headline_size"] / 5)))
+    body_size = max(8, min(11, round(style["body_size"] / 4.2)))
+    label_size = max(7, min(9, round(style["label_size"] / 3)))
+    text_ratio = int(style["text_ratio"])
+    media_ratio = int(style["media_ratio"])
+    ratio_total = 96
+    text_bar = max(28, round(ratio_total * text_ratio / 100))
+    media_bar = ratio_total - text_bar
+    media_x = 470 + text_bar + 6
+    underline_w = max(38, min(100, round(122 * text_ratio / 70)))
+    return f"""<svg viewBox="0 0 640 420" role="img" aria-label="{name} preview" style="font-family:{font_stack}">
   <rect width="640" height="420" fill="{bg}"/>
   <rect x="32" y="24" width="232" height="372" rx="14" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
   <rect x="32" y="24" width="232" height="7" rx="3.5" fill="{accent}"/>
-  <text x="52" y="62" font-size="10" font-weight="800" fill="{accent}">DAILY VIDEO</text>
-  <rect x="52" y="82" width="158" height="10" rx="5" fill="{fg}"/>
-  <rect x="52" y="102" width="126" height="7" rx="3.5" fill="{muted}"/>
-  <path d="M52 132h172M52 242h172M52 332h172" stroke="{panel_alt}" stroke-width="1"/>
-  <rect x="52" y="150" width="172" height="64" rx="8" fill="{panel_alt}"/>
-  <text x="68" y="174" font-size="10" fill="{muted}">01</text>
-  <rect x="94" y="166" width="78" height="6" rx="3" fill="{fg}"/>
-  <rect x="94" y="185" width="106" height="5" rx="2.5" fill="{muted}"/>
-  <rect x="94" y="201" width="64" height="5" rx="2.5" fill="{muted}"/>
-  <rect x="52" y="262" width="172" height="44" rx="7" fill="{panel_alt}"/>
-  <path d="M70 290l22 -12 18 13 26 -21 34 16" fill="none" stroke="{accent2}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="52" y="348" width="82" height="6" rx="3" fill="{muted}"/>
-  <rect x="166" y="348" width="58" height="6" rx="3" fill="{accent}"/>
-  <rect x="292" y="48" width="296" height="72" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
-  <text x="314" y="78" font-size="12" font-weight="800" fill="{fg}">text hierarchy</text>
-  <rect x="314" y="94" width="118" height="6" rx="3" fill="{muted}"/>
-  <rect x="464" y="86" width="72" height="18" rx="9" fill="{accent}"/>
-  <rect x="292" y="146" width="296" height="94" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
-  <text x="314" y="176" font-size="12" font-weight="800" fill="{fg}">fine data layer</text>
-  <path d="M314 206h230" stroke="{panel_alt}" stroke-width="1"/>
-  <rect x="314" y="218" width="96" height="5" rx="2.5" fill="{muted}"/>
-  <rect x="436" y="218" width="54" height="5" rx="2.5" fill="{accent2}"/>
-  <rect x="314" y="194" width="42" height="5" rx="2.5" fill="{accent}"/>
-  <circle cx="552" cy="172" r="6" fill="{danger}"/>
-  <rect x="292" y="266" width="296" height="82" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
-  <text x="314" y="296" font-size="12" font-weight="800" fill="{fg}">motion hold</text>
-  <rect x="314" y="316" width="206" height="5" rx="2.5" fill="{muted}"/>
-  <rect x="314" y="332" width="148" height="5" rx="2.5" fill="{accent}"/>
+  <rect x="50" y="45" width="58" height="6" rx="3" fill="{muted}"/>
+  <circle cx="216" cy="48" r="3" fill="{accent}"/>
+  <circle cx="228" cy="48" r="3" fill="{accent2}"/>
+  <text x="52" y="72" font-size="10" font-weight="800" fill="{accent}">DAILY VIDEO</text>
+  <text x="52" y="99" font-size="{headline_size}" font-weight="850" fill="{fg}">视觉 Aa</text>
+  <text x="52" y="120" font-size="{body_size}" font-weight="650" fill="{muted}">type scale / 字号</text>
+  <rect x="52" y="129" width="{underline_w}" height="3" rx="1.5" fill="{accent2}"/>
+  <path d="M52 139h172M52 229h172M52 319h172" stroke="{panel_alt}" stroke-width="1"/>
+  <rect x="52" y="154" width="172" height="52" rx="8" fill="{panel_alt}"/>
+  <text x="68" y="175" font-size="10" font-weight="800" fill="{accent}">01</text>
+  <text x="94" y="173" font-size="{label_size}" font-weight="820" fill="{fg}">label chip</text>
+  <rect x="94" y="184" width="{text_bar}" height="5" rx="2.5" fill="{muted}"/>
+  <rect x="66" y="192" width="36" height="5" rx="2.5" fill="{accent2}"/>
+  <rect x="158" y="192" width="42" height="5" rx="2.5" fill="{danger}"/>
+  <rect x="52" y="246" width="78" height="48" rx="7" fill="{panel_alt}"/>
+  <path d="M66 276l16 -10 14 12 18 -19 10 8" fill="none" stroke="{accent2}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="144" y="246" width="80" height="48" rx="7" fill="{panel_alt}"/>
+  <rect x="158" y="262" width="{max(38, media_bar + 24)}" height="5" rx="2.5" fill="{fg}"/>
+  <rect x="158" y="278" width="34" height="5" rx="2.5" fill="{muted}"/>
+  <circle cx="208" cy="280" r="5" fill="{accent}"/>
+  <rect x="52" y="337" width="44" height="6" rx="3" fill="{muted}"/>
+  <rect x="108" y="337" width="52" height="6" rx="3" fill="{panel_alt}"/>
+  <rect x="174" y="337" width="50" height="6" rx="3" fill="{accent}"/>
+  <rect x="52" y="360" width="172" height="1" fill="{panel_alt}"/>
+  <rect x="52" y="376" width="72" height="5" rx="2.5" fill="{muted}"/>
+  <rect x="152" y="376" width="72" height="5" rx="2.5" fill="{accent2}"/>
+  <rect x="292" y="40" width="142" height="88" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="312" y="66" font-size="11" font-weight="800" fill="{fg}">type system</text>
+  <text x="312" y="86" font-size="{label_size}" font-weight="760" fill="{accent}">{font_zh}</text>
+  <text x="312" y="105" font-size="{label_size}" font-weight="760" fill="{muted}">{font_en}</text>
+  <rect x="312" y="113" width="84" height="3" rx="1.5" fill="{accent2}"/>
+  <rect x="446" y="40" width="142" height="88" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="466" y="66" font-size="11" font-weight="800" fill="{fg}">text / media</text>
+  <rect x="470" y="82" width="{text_bar}" height="16" rx="5" fill="{fg}"/>
+  <rect x="{media_x}" y="82" width="{media_bar}" height="16" rx="5" fill="{accent2}"/>
+  <text x="470" y="113" font-size="9" font-weight="760" fill="{muted}">{text_ratio}% / {media_ratio}%</text>
+  <circle cx="570" cy="112" r="5" fill="{danger}"/>
+  <rect x="292" y="150" width="296" height="112" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="314" y="178" font-size="12" font-weight="800" fill="{fg}">decor + underline</text>
+  <path d="M314 202h230M314 226h230" stroke="{panel_alt}" stroke-width="1"/>
+  <rect x="314" y="194" width="52" height="5" rx="2.5" fill="{accent}"/>
+  <rect x="382" y="194" width="74" height="5" rx="2.5" fill="{muted}"/>
+  <rect x="494" y="194" width="38" height="5" rx="2.5" fill="{accent2}"/>
+  <rect x="314" y="218" width="86" height="5" rx="2.5" fill="{muted}"/>
+  <rect x="424" y="218" width="48" height="5" rx="2.5" fill="{danger}"/>
+  <rect x="314" y="234" width="{underline_w}" height="4" rx="2" fill="{accent2}"/>
+  <path d="M314 246l26 -12 22 10 32 -28 26 18 38 -30 34 20 32 -26" fill="none" stroke="{accent2}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="292" y="284" width="142" height="80" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="312" y="312" font-size="12" font-weight="800" fill="{fg}">scene rhythm</text>
+  <rect x="312" y="328" width="24" height="18" rx="4" fill="{accent}"/>
+  <rect x="342" y="328" width="24" height="18" rx="4" fill="{panel_alt}"/>
+  <rect x="372" y="328" width="24" height="18" rx="4" fill="{accent2}"/>
+  <rect x="402" y="328" width="14" height="18" rx="4" fill="{muted}"/>
+  <rect x="446" y="284" width="142" height="80" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="466" y="312" font-size="12" font-weight="800" fill="{fg}">scale map</text>
+  <text x="466" y="331" font-size="8.5" font-weight="700" fill="{muted}">{scale}</text>
+  <rect x="524" y="328" width="44" height="5" rx="2.5" fill="{accent}"/>
+  <rect x="466" y="344" width="102" height="5" rx="2.5" fill="{panel_alt}"/>
 </svg>"""
 
 

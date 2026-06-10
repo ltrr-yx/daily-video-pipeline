@@ -21,6 +21,7 @@ video:
   height: 1920
   fps: 30
   theme: "product_keynote"
+  motion: "auto"
   seconds_per_scene: 5
   font_path: ""
 
@@ -32,7 +33,7 @@ narration:
 music:
   path: ""
   volume: 0.18
-  generate_demo_tone_if_missing: true
+  generate_demo_bgm_if_missing: true
 
 sources:
   - name: "Example RSS feed"

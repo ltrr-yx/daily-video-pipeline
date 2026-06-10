@@ -7,6 +7,7 @@ The repository now uses a composable video direction model instead of a few fixe
 - **Story templates** decide the narrative order. The first public set contains 12 templates such as daily briefing, product launch, market radar, evidence chain, comparison, timeline, risk watch, top five, and weekly review.
 - **Scene components** decide how one screen expresses information. The registry contains 30+ components: cover hooks, source proof, metric stacks, comparison splits, timeline ribbons, mechanism x-rays, ledgers, risk matrices, rankings, product plates, and conclusion stamps.
 - **Visual themes** decide the commercial surface. The first 6 are editorial dark, executive light, market terminal, product keynote, data magazine, and social pop.
+- **Motion grammars** decide how each screen enters, assembles, emphasizes, and exits. They are registered in code so renderers follow the same structure users choose in config.
 
 This gives users many combinations without copying whole video scripts.
 
@@ -27,9 +28,14 @@ daily-video build-gallery
 
 - `story.template` in config picks the narrative template.
 - `video.theme` picks the visual skin.
-- Each generated scene carries a component key, visual grammar, bullets, metrics, proof text, source label, and duration.
-- The renderer creates multiple beat frames per scene, then assembles them with ffmpeg so each scene has a visible rhythm instead of a single static slide.
+- `video.motion` picks the motion grammar. `auto` maps scene families to their default motion grammar.
+- Each generated scene carries a component key, visual grammar, motion grammar, bullets, metrics, proof text, source label, and duration.
+- The renderer creates multiple motion frames per scene from a normalized `0..1` progress value, then assembles them with ffmpeg so elements stage in with visible rhythm instead of popping on as static slides.
 - Every render also writes `review_contact_sheet.jpg` in the output folder for quick visual QA.
+
+## Audience Boundary
+
+Internal editorial guidance must not appear in final frames, narration, captions, or audience-facing publishing copy. Template keys, component names, `visual_grammar`, `motion_grammar`, prompt notes, plate roles, renderer phases, and user-provided production guidance are authoring data only. See [`production_principles.md`](production_principles.md).
 
 ## Commands
 
