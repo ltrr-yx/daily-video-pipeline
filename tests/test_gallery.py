@@ -15,6 +15,15 @@ def test_gallery_html_includes_registered_assets() -> None:
         assert key in html
 
 
+def test_gallery_html_has_fixed_scene_cards_and_result_frames() -> None:
+    html = build_gallery_html()
+
+    assert "grid-template-columns: repeat(auto-fill, 286px)" in html
+    assert html.count('class="composition-row"') == 3
+    assert html.count('class="case-bullets"') == 3
+    assert html.count('class="result-frame"') == 12
+
+
 def test_gallery_markdown_lists_three_layers() -> None:
     markdown = build_gallery_markdown()
 

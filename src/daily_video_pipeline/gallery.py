@@ -161,25 +161,55 @@ COMPOSITION_EXAMPLES = (
         "title": "公开市场复盘",
         "subtitle": "Market recap",
         "story": "market_radar",
-        "component": "market_ledger",
+        "scene": "market_ledger",
         "theme": "market_terminal",
-        "result": "市场宽度先修复，主线仍需成交验证。",
+        "bullets": (
+            "Story: 用 Market Radar 先扫宽度、强弱和风险。",
+            "Scene: 用 Ledger、Grid、Rail、Stamp 承载四个切换画面。",
+            "Visual: 用 Market Terminal 保留密集数字和冷静判断。",
+        ),
+        "frames": (
+            ("01 市场账本", "ledger"),
+            ("02 强弱结构", "signal"),
+            ("03 验证轨道", "rail"),
+            ("04 结论收束", "stamp"),
+        ),
     },
     {
         "title": "产品发布短片",
         "subtitle": "Product launch",
         "story": "product_launch",
-        "component": "product_plate",
+        "scene": "product_plate",
         "theme": "product_keynote",
-        "result": "把对象、场景和验证点放进同一条短片。",
+        "bullets": (
+            "Story: 用 Product Launch 说明对象、场景、验证和行动。",
+            "Scene: 用 Product Plate、Use Case、Before/After、CTA 切换镜头。",
+            "Visual: 用 Product Keynote 保留明亮、干净、发布会感。",
+        ),
+        "frames": (
+            ("01 产品主视觉", "product"),
+            ("02 使用场景", "use_case"),
+            ("03 前后对照", "compare"),
+            ("04 行动收尾", "cta"),
+        ),
     },
     {
         "title": "证据链解释",
         "subtitle": "Evidence explainer",
         "story": "evidence_chain",
-        "component": "verification_rail",
+        "scene": "verification_rail",
         "theme": "executive_light",
-        "result": "来源、主张、验证和结论顺序清楚。",
+        "bullets": (
+            "Story: 用 Evidence Chain 把来源、主张、验证、结论串起来。",
+            "Scene: 用 Source Proof、Quote、Verification Rail、X-Ray 展开证据。",
+            "Visual: 用 Executive Light 保持报告感和可信度。",
+        ),
+        "frames": (
+            ("01 来源证明", "source"),
+            ("02 证据摘句", "quote"),
+            ("03 验证路径", "rail"),
+            ("04 机制解释", "xray"),
+        ),
     },
 )
 
@@ -246,9 +276,16 @@ def build_gallery_markdown() -> str:
         lines.append(f"- `{key}` - {name_zh} / {theme['name']}: {usage_zh}")
     lines.extend(["", "## Composition Examples / 组合示例", ""])
     for example in COMPOSITION_EXAMPLES:
-        lines.append(
-            f"- {example['title']}: `{example['story']}` + `{example['component']}` + "
-            f"`{example['theme']}` -> {example['result']}"
+        lines.extend(
+            [
+                f"### {example['title']} / {example['subtitle']}",
+                "",
+                f"- Story: `{example['story']}`",
+                f"- Scene: `{example['scene']}`",
+                f"- Visual: `{example['theme']}`",
+                f"- Result frames: {', '.join(title for title, _ in example['frames'])}",
+                "",
+            ]
         )
     lines.append("")
     return "\n".join(lines)
@@ -541,20 +578,44 @@ def build_gallery_html() -> str:
     }}
     .scene-grid {{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(244px, 1fr));
+      grid-template-columns: repeat(auto-fill, 286px);
       gap: 14px;
+      align-items: stretch;
+      justify-content: start;
+    }}
+    .scene-card {{
+      width: 286px;
+      height: 382px;
+      display: flex;
+      flex-direction: column;
     }}
     .svg-wrap {{
       background: #071014;
       border-bottom: 1px solid #233a40;
     }}
     svg {{ display: block; width: 100%; height: auto; }}
+    .scene-card .svg-wrap {{
+      flex: 0 0 177px;
+      overflow: hidden;
+    }}
+    .scene-card .svg-wrap svg {{
+      height: 100%;
+      object-fit: cover;
+    }}
     .scene-body, .theme-body {{
       padding: 14px;
+    }}
+    .scene-body {{
+      display: flex;
+      flex: 1;
+      flex-direction: column;
     }}
     .scene-card h4 {{
       margin-top: 10px;
       font-size: 18px;
+    }}
+    .scene-body .key-line {{
+      margin-top: auto;
     }}
     .pill {{
       display: inline-flex;
@@ -604,10 +665,10 @@ def build_gallery_html() -> str:
       border-top: 1px solid var(--line);
     }}
     .composition-head {{
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(220px, .45fr) minmax(360px, .55fr);
       gap: 16px;
-      align-items: baseline;
+      align-items: start;
       margin-bottom: 14px;
     }}
     .composition-head h3 {{
@@ -618,19 +679,35 @@ def build_gallery_html() -> str:
       color: var(--muted);
       font-weight: 760;
     }}
-    .combo-panels {{
+    .case-bullets {{
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 7px;
+    }}
+    .case-bullets li {{
+      color: var(--text);
+      background: #f5f9f8;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      font-size: 13px;
+      line-height: 1.45;
+    }}
+    .result-frames {{
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
     }}
-    .combo-panel {{
+    .result-frame {{
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       overflow: hidden;
       min-width: 0;
     }}
-    .combo-panel h4 {{
+    .result-frame h4 {{
       margin: 0;
       padding: 10px 12px;
       border-bottom: 1px solid var(--line);
@@ -660,14 +737,25 @@ def build_gallery_html() -> str:
       .hero, .section-head {{ grid-template-columns: 1fr; }}
       .process {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
       .process-step:nth-child(2)::after {{ display: none; }}
-      .combo-panels {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      .composition-head {{ grid-template-columns: 1fr; }}
+      .result-frames {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
     }}
     @media (max-width: 620px) {{
       .shell {{ width: min(100% - 24px, 1240px); padding-top: 18px; }}
       .hero {{ padding: 20px; }}
       .hero h1 {{ font-size: 34px; }}
-      .process, .combo-panels {{ grid-template-columns: 1fr; }}
+      .process, .scene-grid, .result-frames {{ grid-template-columns: 1fr; }}
       .process-step::after {{ display: none; }}
+      .scene-card {{
+        width: 100%;
+        height: auto;
+      }}
+      .scene-card .svg-wrap {{
+        flex-basis: auto;
+      }}
+      .scene-card .svg-wrap svg {{
+        height: auto;
+      }}
       .theme-grid {{ grid-template-columns: 1fr; }}
       .composition-head {{ display: block; }}
       nav {{ position: static; }}
@@ -782,7 +870,7 @@ def _scene_card(component: SceneComponent) -> str:
     <span class="pill">{escape(component.visual_grammar)}</span>
     <h4>{escape(name_zh)} / {escape(component.name)}</h4>
     <p>{escape(purpose_zh)}</p>
-    <p style="margin-top:9px"><code>{escape(component.key)}</code></p>
+    <p class="key-line"><code>{escape(component.key)}</code></p>
   </div>
 </article>"""
 
@@ -804,23 +892,24 @@ def _theme_card(key: str, theme: dict[str, Any]) -> str:
 </article>"""
 
 
-def _composition_row(example: dict[str, str]) -> str:
+def _composition_row(example: dict[str, Any]) -> str:
     story = STORY_TEMPLATES[example["story"]]
-    component = SCENE_COMPONENTS[example["component"]]
     theme = VISUAL_THEMES[example["theme"]]
-    story_meta = STORY_I18N[story.key]
-    comp_name, _ = COMPONENT_I18N[component.key]
-    theme_name, _ = THEME_I18N[example["theme"]]
+    bullets = "\n".join(f"<li>{escape(bullet)}</li>" for bullet in example["bullets"])
+    frames = "\n".join(
+        _composition_frame(example, title, kind, idx)
+        for idx, (title, kind) in enumerate(example["frames"], 1)
+    )
     return f"""<article class="composition-row">
   <div class="composition-head">
-    <h3>{escape(example["title"])}</h3>
-    <span>{escape(example["subtitle"])}</span>
+    <div>
+      <h3>{escape(example["title"])}</h3>
+      <span>{escape(example["subtitle"])}</span>
+    </div>
+    <ul class="case-bullets">{bullets}</ul>
   </div>
-  <div class="combo-panels">
-    <div class="combo-panel"><h4>1. Story</h4>{_mini_story_svg(story)}<div class="combo-copy">叙事骨架：{escape(story_meta["zh"])}<br><code>{escape(story.key)}</code></div></div>
-    <div class="combo-panel"><h4>2. Scene</h4>{_component_svg(component)}<div class="combo-copy">镜头模块：{escape(comp_name)}<br><code>{escape(component.key)}</code></div></div>
-    <div class="combo-panel"><h4>3. Visual</h4>{_theme_svg(example["theme"], theme)}<div class="combo-copy">视觉皮肤：{escape(theme_name)}<br><code>{escape(example["theme"])}</code></div></div>
-    <div class="combo-panel"><h4>4. Result</h4>{_result_svg(example, component, theme)}<div class="combo-copy">输出方向：{escape(example["result"])}</div></div>
+  <div class="result-frames">
+    {frames}
   </div>
 </article>"""
 
@@ -1271,22 +1360,48 @@ def _theme_svg(key: str, theme: dict[str, Any]) -> str:
     name = escape(THEME_I18N[key][0])
     return f"""<svg viewBox="0 0 640 420" role="img" aria-label="{name} preview">
   <rect width="640" height="420" fill="{bg}"/>
-  <rect x="28" y="28" width="584" height="364" rx="14" fill="{panel}" stroke="{panel_alt}" stroke-width="2"/>
-  <rect x="54" y="54" width="134" height="20" rx="10" fill="{accent}"/>
-  <rect x="54" y="102" width="302" height="28" rx="7" fill="{fg}"/>
-  <rect x="54" y="146" width="236" height="16" rx="8" fill="{muted}"/>
-  <rect x="54" y="204" width="360" height="112" rx="12" fill="{panel_alt}"/>
-  <rect x="82" y="232" width="112" height="18" rx="9" fill="{fg}"/>
-  <rect x="82" y="270" width="72" height="12" rx="6" fill="{muted}"/>
-  <path d="M250 276l36 -18 28 22 42 -36 48 24" fill="none" stroke="{accent2}" stroke-width="7" stroke-linecap="round"/>
-  <circle cx="520" cy="86" r="20" fill="{danger}"/>
-  <rect x="462" y="204" width="92" height="24" rx="12" fill="{accent}"/>
-  <rect x="462" y="246" width="72" height="16" rx="8" fill="{muted}"/>
-  <rect x="462" y="280" width="106" height="16" rx="8" fill="{fg}"/>
+  <rect x="32" y="24" width="232" height="372" rx="14" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <rect x="32" y="24" width="232" height="7" rx="3.5" fill="{accent}"/>
+  <text x="52" y="62" font-size="10" font-weight="800" fill="{accent}">DAILY VIDEO</text>
+  <rect x="52" y="82" width="158" height="10" rx="5" fill="{fg}"/>
+  <rect x="52" y="102" width="126" height="7" rx="3.5" fill="{muted}"/>
+  <path d="M52 132h172M52 242h172M52 332h172" stroke="{panel_alt}" stroke-width="1"/>
+  <rect x="52" y="150" width="172" height="64" rx="8" fill="{panel_alt}"/>
+  <text x="68" y="174" font-size="10" fill="{muted}">01</text>
+  <rect x="94" y="166" width="78" height="6" rx="3" fill="{fg}"/>
+  <rect x="94" y="185" width="106" height="5" rx="2.5" fill="{muted}"/>
+  <rect x="94" y="201" width="64" height="5" rx="2.5" fill="{muted}"/>
+  <rect x="52" y="262" width="172" height="44" rx="7" fill="{panel_alt}"/>
+  <path d="M70 290l22 -12 18 13 26 -21 34 16" fill="none" stroke="{accent2}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="52" y="348" width="82" height="6" rx="3" fill="{muted}"/>
+  <rect x="166" y="348" width="58" height="6" rx="3" fill="{accent}"/>
+  <rect x="292" y="48" width="296" height="72" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="314" y="78" font-size="12" font-weight="800" fill="{fg}">text hierarchy</text>
+  <rect x="314" y="94" width="118" height="6" rx="3" fill="{muted}"/>
+  <rect x="464" y="86" width="72" height="18" rx="9" fill="{accent}"/>
+  <rect x="292" y="146" width="296" height="94" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="314" y="176" font-size="12" font-weight="800" fill="{fg}">fine data layer</text>
+  <path d="M314 206h230" stroke="{panel_alt}" stroke-width="1"/>
+  <rect x="314" y="218" width="96" height="5" rx="2.5" fill="{muted}"/>
+  <rect x="436" y="218" width="54" height="5" rx="2.5" fill="{accent2}"/>
+  <rect x="314" y="194" width="42" height="5" rx="2.5" fill="{accent}"/>
+  <circle cx="552" cy="172" r="6" fill="{danger}"/>
+  <rect x="292" y="266" width="296" height="82" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="314" y="296" font-size="12" font-weight="800" fill="{fg}">motion hold</text>
+  <rect x="314" y="316" width="206" height="5" rx="2.5" fill="{muted}"/>
+  <rect x="314" y="332" width="148" height="5" rx="2.5" fill="{accent}"/>
 </svg>"""
 
 
-def _result_svg(example: dict[str, str], component: SceneComponent, theme: dict[str, Any]) -> str:
+def _composition_frame(example: dict[str, Any], title: str, kind: str, idx: int) -> str:
+    theme = VISUAL_THEMES[example["theme"]]
+    return f"""<article class="result-frame">
+  <h4>{idx}. {escape(title)}</h4>
+  {_video_frame_svg(title, kind, theme)}
+</article>"""
+
+
+def _video_frame_svg(title: str, kind: str, theme: dict[str, Any]) -> str:
     bg = _rgb(theme["background"])
     panel = _rgb(theme["panel"])
     panel_alt = _rgb(theme["panel_alt"])
@@ -1295,42 +1410,109 @@ def _result_svg(example: dict[str, str], component: SceneComponent, theme: dict[
     accent = _rgb(theme["accent"])
     accent2 = _rgb(theme["accent2"])
     danger = _rgb(theme["danger"])
-    body = _result_body(example["story"], fg, muted, accent, accent2, danger, panel_alt)
-    return f"""<svg viewBox="0 0 420 260" role="img" aria-label="{escape(example["title"])} result preview">
-  <rect width="420" height="260" fill="{bg}"/>
-  <rect x="22" y="18" width="376" height="224" rx="10" fill="{panel}" stroke="{panel_alt}"/>
-  <rect x="42" y="40" width="86" height="13" rx="7" fill="{accent}"/>
-  <rect x="42" y="70" width="210" height="20" rx="6" fill="{fg}"/>
-  <rect x="42" y="102" width="164" height="10" rx="5" fill="{muted}"/>
+    body = _video_frame_body(kind, fg, muted, accent, accent2, danger, panel_alt)
+    return f"""<svg viewBox="0 0 360 520" role="img" aria-label="{escape(title)} video frame">
+  <rect width="360" height="520" fill="{bg}"/>
+  <rect x="24" y="24" width="312" height="472" rx="14" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <rect x="24" y="24" width="312" height="7" rx="3.5" fill="{accent}"/>
+  <text x="46" y="62" font-size="10" font-weight="800" fill="{accent}">DAILY VIDEO</text>
+  <text x="46" y="91" font-size="18" font-weight="850" fill="{fg}">{escape(title)}</text>
+  <rect x="46" y="112" width="188" height="7" rx="3.5" fill="{muted}"/>
+  <path d="M46 138h268M46 422h268" stroke="{panel_alt}" stroke-width="1"/>
   {body}
+  <text x="46" y="460" font-size="9" fill="{muted}">source reviewed</text>
+  <rect x="214" y="454" width="70" height="5" rx="2.5" fill="{muted}"/>
+  <rect x="286" y="454" width="28" height="5" rx="2.5" fill="{accent}"/>
 </svg>"""
 
 
-def _result_body(story_key: str, fg: str, muted: str, accent: str, accent2: str, danger: str, panel_alt: str) -> str:
-    if story_key == "market_radar":
+def _video_frame_body(kind: str, fg: str, muted: str, accent: str, accent2: str, danger: str, panel_alt: str) -> str:
+    if kind == "ledger":
         rows = []
-        for idx, y in enumerate((134, 162, 190), 1):
-            rows.append(f'<rect x="42" y="{y}" width="336" height="20" rx="6" fill="{panel_alt}"/>')
-            rows.append(f'<rect x="58" y="{y + 7}" width="{112 + idx * 22}" height="6" rx="3" fill="{fg}"/>')
-            rows.append(f'<rect x="314" y="{y + 7}" width="38" height="6" rx="3" fill="{accent2}"/>')
+        for idx, y in enumerate((162, 202, 242, 282), 1):
+            rows.append(f'<rect x="46" y="{y}" width="268" height="26" rx="6" fill="{panel_alt}"/>')
+            rows.append(f'<text x="62" y="{y + 17}" font-size="9" font-weight="800" fill="{accent}">0{idx}</text>')
+            rows.append(f'<rect x="92" y="{y + 9}" width="{110 + idx * 12}" height="5" rx="2.5" fill="{fg}"/>')
+            rows.append(f'<rect x="264" y="{y + 9}" width="32" height="5" rx="2.5" fill="{accent2}"/>')
         return "".join(rows)
-    if story_key == "product_launch":
+    if kind == "signal":
+        cards = []
+        for idx, (x, y) in enumerate(((46, 158), (184, 158), (46, 250), (184, 250))):
+            color = accent if idx != 3 else accent2
+            cards.append(f'<rect x="{x}" y="{y}" width="130" height="66" rx="8" fill="{panel_alt}" stroke="{color}" stroke-width="1.4"/>')
+            cards.append(f'<rect x="{x + 16}" y="{y + 18}" width="48" height="6" rx="3" fill="{fg}"/>')
+            cards.append(f'<rect x="{x + 16}" y="{y + 38}" width="76" height="5" rx="2.5" fill="{muted}"/>')
+        return "".join(cards)
+    if kind == "rail":
         return (
-            f'<rect x="68" y="124" width="284" height="84" rx="12" fill="{panel_alt}"/>'
-            f'<circle cx="210" cy="166" r="28" fill="{accent}" opacity=".9"/>'
-            f'<rect x="92" y="150" width="70" height="9" rx="5" fill="{fg}"/>'
-            f'<rect x="258" y="150" width="70" height="9" rx="5" fill="{fg}"/>'
-            f'<path d="M162 166h36M222 166h36" stroke="{accent2}" stroke-width="4"/>'
+            f'<path d="M62 218h236" stroke="{accent}" stroke-width="3"/>'
+            f'<circle cx="72" cy="218" r="6" fill="{accent}"/><circle cx="146" cy="218" r="6" fill="{accent}"/>'
+            f'<circle cx="220" cy="218" r="6" fill="{accent2}"/><circle cx="292" cy="218" r="6" fill="{danger}"/>'
+            f'<rect x="64" y="272" width="232" height="72" rx="8" fill="{panel_alt}" stroke="{accent}" stroke-width="1.4"/>'
+            f'<rect x="84" y="294" width="112" height="6" rx="3" fill="{fg}"/>'
+            f'<rect x="84" y="318" width="168" height="5" rx="2.5" fill="{muted}"/>'
         )
-    return (
-        f'<path d="M60 150h300" stroke="{accent}" stroke-width="5"/>'
-        f'<circle cx="76" cy="150" r="10" fill="{accent}"/>'
-        f'<circle cx="170" cy="150" r="10" fill="{accent}"/>'
-        f'<circle cx="266" cy="150" r="10" fill="{accent2}"/>'
-        f'<circle cx="344" cy="150" r="10" fill="{danger}"/>'
-        f'<rect x="74" y="184" width="220" height="18" rx="6" fill="{panel_alt}"/>'
-        f'<rect x="92" y="190" width="124" height="6" rx="3" fill="{fg}"/>'
-    )
+    if kind == "stamp":
+        return (
+            f'<rect x="62" y="178" width="236" height="112" rx="10" fill="{panel_alt}" stroke="{accent}" stroke-width="2"/>'
+            f'<text x="180" y="226" text-anchor="middle" font-size="19" font-weight="900" fill="{accent}">VERDICT</text>'
+            f'<rect x="98" y="250" width="164" height="7" rx="3.5" fill="{fg}"/>'
+            f'<circle cx="72" cy="336" r="5" fill="{accent}"/><rect x="90" y="332" width="174" height="5" rx="2.5" fill="{muted}"/>'
+        )
+    if kind == "product":
+        return (
+            f'<rect x="58" y="156" width="244" height="164" rx="12" fill="{panel_alt}" stroke="{accent}" stroke-width="1.6"/>'
+            f'<rect x="116" y="210" width="128" height="44" rx="22" fill="{accent}" opacity=".88"/>'
+            f'<path d="M74 232h42M244 232h42" stroke="{accent2}" stroke-width="2"/>'
+            f'<rect x="86" y="344" width="188" height="7" rx="3.5" fill="{muted}"/>'
+        )
+    if kind == "use_case":
+        parts = []
+        for x, y in ((54, 160), (204, 160), (54, 268), (204, 268)):
+            parts.append(f'<rect x="{x}" y="{y}" width="102" height="58" rx="8" fill="{panel_alt}" stroke="{accent}" stroke-width="1"/>')
+            parts.append(f'<rect x="{x + 16}" y="{y + 24}" width="48" height="6" rx="3" fill="{fg}"/>')
+        parts.append(f'<rect x="138" y="222" width="84" height="32" rx="16" fill="{accent2}"/>')
+        return "".join(parts)
+    if kind == "compare":
+        return (
+            f'<rect x="54" y="174" width="112" height="118" rx="10" fill="{panel_alt}" stroke="{danger}" stroke-width="1.4"/>'
+            f'<rect x="194" y="174" width="112" height="118" rx="10" fill="{panel_alt}" stroke="{accent}" stroke-width="1.4"/>'
+            f'<rect x="78" y="220" width="56" height="6" rx="3" fill="{muted}"/>'
+            f'<rect x="218" y="220" width="56" height="6" rx="3" fill="{fg}"/>'
+            f'<path d="M168 235h24" stroke="{accent2}" stroke-width="2.5"/>'
+        )
+    if kind == "cta":
+        return (
+            f'<rect x="70" y="178" width="220" height="116" rx="12" fill="{panel_alt}" stroke="{accent}" stroke-width="1.5"/>'
+            f'<rect x="96" y="214" width="168" height="8" rx="4" fill="{fg}"/>'
+            f'<rect x="118" y="252" width="124" height="28" rx="14" fill="{accent}"/>'
+            f'<path d="M226 266h-26M218 256l12 10 -12 10" fill="none" stroke="{panel_alt}" stroke-width="2.2"/>'
+        )
+    if kind == "source":
+        return (
+            f'<rect x="58" y="156" width="244" height="176" rx="10" fill="{panel_alt}" stroke="{accent}" stroke-width="1.6"/>'
+            f'<rect x="82" y="182" width="74" height="7" rx="3.5" fill="{accent}"/>'
+            f'<rect x="82" y="216" width="166" height="7" rx="3.5" fill="{fg}"/>'
+            f'<rect x="82" y="246" width="196" height="5" rx="2.5" fill="{muted}"/>'
+            f'<path d="M226 294l16 16 36 -48" fill="none" stroke="{accent2}" stroke-width="3"/>'
+        )
+    if kind == "quote":
+        return (
+            f'<rect x="58" y="166" width="244" height="142" rx="10" fill="{panel_alt}" stroke="{accent}" stroke-width="1.2"/>'
+            f'<text x="82" y="214" font-size="42" font-weight="900" fill="{accent}">“</text>'
+            f'<rect x="120" y="200" width="128" height="7" rx="3.5" fill="{fg}"/>'
+            f'<rect x="120" y="230" width="150" height="5" rx="2.5" fill="{muted}"/>'
+            f'<rect x="120" y="254" width="108" height="5" rx="2.5" fill="{muted}"/>'
+        )
+    if kind == "xray":
+        return (
+            f'<circle cx="180" cy="238" r="48" fill="{panel_alt}" stroke="{accent}" stroke-width="2"/>'
+            f'<ellipse cx="180" cy="238" rx="92" ry="20" fill="none" stroke="{muted}" stroke-width="1.5"/>'
+            f'<path d="M78 238h64M218 238h64" stroke="{accent2}" stroke-width="2.4"/>'
+            f'<rect x="62" y="204" width="70" height="26" rx="6" fill="{panel_alt}" stroke="{muted}" stroke-width="1"/>'
+            f'<rect x="226" y="248" width="70" height="26" rx="6" fill="{panel_alt}" stroke="{muted}" stroke-width="1"/>'
+        )
+    return f'<rect x="58" y="164" width="244" height="148" rx="10" fill="{panel_alt}" stroke="{accent}" stroke-width="1.5"/>'
 
 
 def _rgb(value: tuple[int, int, int]) -> str:

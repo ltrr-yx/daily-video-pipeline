@@ -204,6 +204,24 @@ Open [`docs/gallery.html`](gallery.html) for the visual gallery.
 
 ## Composition Examples / 组合示例
 
-- 公开市场复盘: `market_radar` + `market_ledger` + `market_terminal` -> 市场宽度先修复，主线仍需成交验证。
-- 产品发布短片: `product_launch` + `product_plate` + `product_keynote` -> 把对象、场景和验证点放进同一条短片。
-- 证据链解释: `evidence_chain` + `verification_rail` + `executive_light` -> 来源、主张、验证和结论顺序清楚。
+### 公开市场复盘 / Market recap
+
+- Story: `market_radar`
+- Scene: `market_ledger`
+- Visual: `market_terminal`
+- Result frames: 01 市场账本, 02 强弱结构, 03 验证轨道, 04 结论收束
+
+### 产品发布短片 / Product launch
+
+- Story: `product_launch`
+- Scene: `product_plate`
+- Visual: `product_keynote`
+- Result frames: 01 产品主视觉, 02 使用场景, 03 前后对照, 04 行动收尾
+
+### 证据链解释 / Evidence explainer
+
+- Story: `evidence_chain`
+- Scene: `verification_rail`
+- Visual: `executive_light`
+- Result frames: 01 来源证明, 02 证据摘句, 03 验证路径, 04 机制解释
+
