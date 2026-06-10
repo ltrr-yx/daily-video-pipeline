@@ -38,8 +38,17 @@ class ScriptScene:
     kicker: str
     body: str
     source_label: str
+    component: str = "insight_stack"
+    visual_grammar: str = "signal_board"
+    eyebrow: str = ""
+    proof: str = ""
+    source_url: str = ""
+    metrics: tuple[tuple[str, str], ...] = ()
+    bullets: tuple[str, ...] = ()
+    tags: tuple[str, ...] = ()
+    duration: float = 5.0
 
-    def to_dict(self) -> dict[str, str]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -49,4 +58,5 @@ class RunArtifacts:
     manifest_path: str
     script_path: str
     video_path: str | None = None
+    review_path: str | None = None
     warnings: tuple[str, ...] = field(default_factory=tuple)

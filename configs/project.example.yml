@@ -10,6 +10,13 @@ selection:
   # Put your own public topic words here in configs/project.local.yml.
   keywords: []
 
+story:
+  # Use `daily-video list-templates` to see all built-in options.
+  # Good defaults: daily_briefing, product_launch, market_radar, evidence_chain,
+  # comparison, timeline, risk_watch, top_five, weekly_review.
+  template: "daily_briefing"
+  seconds_per_scene: 5
+
 privacy:
   # Terms here are excluded from generated scripts. Keep personal terms in a
   # local config or .privacy-blocklist.local, not in the public repository.
@@ -19,6 +26,9 @@ video:
   width: 1080
   height: 1920
   fps: 30
+  # Built-in themes: editorial_dark, executive_light, market_terminal,
+  # product_keynote, data_magazine, social_pop.
+  theme: "editorial_dark"
   seconds_per_scene: 5
   # Optional: set a local font path if your language needs a specific font.
   font_path: ""

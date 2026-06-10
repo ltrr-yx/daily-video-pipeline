@@ -18,6 +18,7 @@ def test_demo_pipeline_writes_manifest_and_script(tmp_path: Path) -> None:
         keywords=config.keywords,
         blocked_terms=config.blocked_terms,
         sources=config.sources,
+        story=config.story,
         video=config.video,
         narration=config.narration,
         music=config.music,
@@ -33,3 +34,6 @@ def test_demo_pipeline_writes_manifest_and_script(tmp_path: Path) -> None:
     assert Path(artifacts.manifest_path).exists()
     assert Path(artifacts.script_path).exists()
     assert artifacts.video_path is None
+    manifest_text = Path(artifacts.manifest_path).read_text(encoding="utf-8")
+    assert '"component": "cover_hook"' in manifest_text
+    assert '"visual_grammar":' in manifest_text

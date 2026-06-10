@@ -20,6 +20,7 @@ class ProjectConfig:
     keywords: tuple[str, ...]
     blocked_terms: tuple[str, ...]
     sources: tuple[Source, ...]
+    story: dict[str, Any]
     video: dict[str, Any]
     narration: dict[str, Any]
     music: dict[str, Any]
@@ -41,6 +42,7 @@ def load_config(path: str | Path) -> ProjectConfig:
     project = raw.get("project", {})
     selection = raw.get("selection", {})
     privacy = raw.get("privacy", {})
+    story = raw.get("story", {})
     video = raw.get("video", {})
     narration = raw.get("narration", {})
     music = raw.get("music", {})
@@ -74,6 +76,7 @@ def load_config(path: str | Path) -> ProjectConfig:
         keywords=_as_tuple(selection.get("keywords")),
         blocked_terms=_as_tuple(privacy.get("blocked_terms")),
         sources=tuple(sources),
+        story=dict(story),
         video=dict(video),
         narration=dict(narration),
         music=dict(music),

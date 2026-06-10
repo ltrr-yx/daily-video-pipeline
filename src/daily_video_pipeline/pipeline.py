@@ -44,7 +44,7 @@ def run_pipeline(
     if not selected:
         raise RuntimeError("No eligible items found. Check sources, freshness window, or blocked terms.")
 
-    scenes = build_scenes(selected, project_name=config.name, run_date=day)
+    scenes = build_scenes(selected, project_name=config.name, run_date=day, story_config=config.story)
     manifest_path = output_dir / "manifest.json"
     script_path = output_dir / "script.md"
     script_path.write_text(build_markdown(selected, scenes, run_date=day), encoding="utf-8")
@@ -53,6 +53,8 @@ def run_pipeline(
             {
                 "date": day,
                 "project": config.name,
+                "story": config.story,
+                "theme": config.video.get("theme", "editorial_dark"),
                 "items": [item.to_dict() for item in selected],
                 "scenes": [scene.to_dict() for scene in scenes],
                 "warnings": warnings,
@@ -65,6 +67,7 @@ def run_pipeline(
     )
 
     video_path: Path | None = None
+    review_path: Path | None = None
     if not skip_video:
         video_path = render_video(
             scenes,
@@ -73,12 +76,14 @@ def run_pipeline(
             narration_config=config.narration,
             music_config=config.music,
         )
+        review_path = output_dir / "review_contact_sheet.jpg"
 
     return RunArtifacts(
         output_dir=str(output_dir),
         manifest_path=str(manifest_path),
         script_path=str(script_path),
         video_path=str(video_path) if video_path else None,
+        review_path=str(review_path) if review_path else None,
         warnings=tuple(warnings),
     )
 

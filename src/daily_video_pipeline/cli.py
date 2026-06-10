@@ -8,6 +8,7 @@ from pathlib import Path
 from .config import load_config
 from .pipeline import run_pipeline
 from .privacy import load_extra_blocklist, scan_tree
+from .templates import SCENE_COMPONENTS, STORY_TEMPLATES, VISUAL_THEMES
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -28,6 +29,7 @@ def main(argv: list[str] | None = None) -> int:
         default=".privacy-blocklist.local",
         help="Ignored local file with personal source names, domains, topic labels, or holdings terms to block.",
     )
+    subparsers.add_parser("list-templates", help="List built-in story templates, scene components, and visual themes.")
 
     args = parser.parse_args(argv)
     if args.command == "run":
@@ -41,6 +43,7 @@ def main(argv: list[str] | None = None) -> int:
             "manifest_path": artifacts.manifest_path,
             "script_path": artifacts.script_path,
             "video_path": artifacts.video_path,
+            "review_path": artifacts.review_path,
             "warnings": list(artifacts.warnings),
         }
         if args.json:
@@ -51,6 +54,8 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Script: {artifacts.script_path}")
             if artifacts.video_path:
                 print(f"Video: {artifacts.video_path}")
+            if artifacts.review_path:
+                print(f"Review contact sheet: {artifacts.review_path}")
             for warning in artifacts.warnings:
                 print(f"Warning: {warning}", file=sys.stderr)
         return 0
@@ -64,6 +69,18 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"{finding.path}: {finding.reason}", file=sys.stderr)
             return 1
         print("privacy scan passed")
+        return 0
+
+    if args.command == "list-templates":
+        print("Story templates")
+        for key, template in STORY_TEMPLATES.items():
+            print(f"- {key}: {template.name} ({len(template.components)} scenes)")
+        print("\nScene components")
+        for key, component in SCENE_COMPONENTS.items():
+            print(f"- {key}: {component.name} / {component.family} / {component.visual_grammar}")
+        print("\nVisual themes")
+        for key, theme in VISUAL_THEMES.items():
+            print(f"- {key}: {theme['name']}")
         return 0
 
     return 2

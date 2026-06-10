@@ -1,0 +1,43 @@
+project:
+  name: "Commercial Demo Brief"
+  language: "zh-CN"
+  timezone: "Asia/Shanghai"
+  output_dir: "outputs"
+
+selection:
+  max_items: 5
+  freshness_hours: 168
+  keywords: ["launch", "workflow", "data", "audio", "benchmark"]
+
+story:
+  template: "product_launch"
+  seconds_per_scene: 5
+
+privacy:
+  blocked_terms: []
+
+video:
+  width: 1080
+  height: 1920
+  fps: 30
+  theme: "product_keynote"
+  seconds_per_scene: 5
+  font_path: ""
+
+narration:
+  enabled: false
+  engine: "auto"
+  voice: "zh-CN-YunyangNeural"
+
+music:
+  path: ""
+  volume: 0.18
+  generate_demo_tone_if_missing: true
+
+sources:
+  - name: "Example RSS feed"
+    type: "rss"
+    url: "https://example.com/feed.xml"
+    enabled: false
+    priority: 1.0
+    tags: ["example"]

@@ -9,9 +9,23 @@ This repository intentionally does not include private feeds, watchlists, holdin
 - Fetches user-configured RSS/Atom sources.
 - Selects recent items with optional keyword scoring and blocked terms.
 - Writes a source-linked script packet.
-- Renders a 1080x1920 MP4 from simple editorial scenes.
+- Renders a 1080x1920 MP4 from composable commercial story templates.
 - Mixes local licensed BGM under narration or a silent track.
 - Includes a privacy scan before commit/publish.
+
+## Commercial Template System
+
+The public version ships with a composable direction system rather than a few fixed samples:
+
+- 12 story templates for daily briefs, product launches, evidence chains, market radar, comparisons, timelines, risk watches, rankings, and weekly reviews.
+- 30+ scene components for cover hooks, source proof, metric stacks, timeline ribbons, comparison splits, risk matrices, ledgers, product plates, and conclusion stamps.
+- 6 visual themes: editorial dark, executive light, market terminal, product keynote, data magazine, and social pop.
+
+List them locally:
+
+```bash
+daily-video list-templates
+```
 
 ## Quick Start
 
@@ -28,6 +42,12 @@ Run the safe demo:
 
 ```bash
 daily-video run --config configs/project.example.yml --demo
+```
+
+Run the richer commercial-style demo:
+
+```bash
+daily-video run --config configs/commercial.example.yml --demo
 ```
 
 Run with your own sources:
@@ -62,3 +82,4 @@ tests/                   pipeline and privacy tests
 - This is a publishing pipeline, not financial advice or trading automation.
 - Source links are preserved in the manifest and script so users can review originals before publishing.
 - BGM must be user-provided or generated in demo mode. Do not commit copyrighted audio.
+- Every video run writes `review_contact_sheet.jpg` for quick visual review.
