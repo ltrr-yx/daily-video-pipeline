@@ -62,6 +62,16 @@ Run with your own sources:
 daily-video run --config configs/project.local.yml
 ```
 
+## Codex / CodeBuddy Skill
+
+This repo includes a guided agent skill at [`skills/daily-video-pipeline`](skills/daily-video-pipeline). Use it when you want Codex or CodeBuddy to operate the pipeline conversationally: clarify the video topic and audience, choose story/visual/motion direction, prepare local config, run the CLI, review the contact sheet, and keep private inputs out of git.
+
+If your agent supports repo-local skills, point it at that folder. Otherwise copy the folder into your agent's skills directory and invoke:
+
+```text
+Use $daily-video-pipeline to help me make a publishable vertical video from my sources.
+```
+
 Before committing:
 
 ```bash

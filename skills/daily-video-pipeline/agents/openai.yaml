@@ -1,0 +1,7 @@
+interface:
+  display_name: "Daily Video Pipeline"
+  short_description: "Guided Codex workflow for source-to-video runs"
+  default_prompt: "Use $daily-video-pipeline to help me make a publishable vertical video from my sources."
+
+policy:
+  allow_implicit_invocation: true
