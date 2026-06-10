@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Video Pipeline - Template Gallery</title>
+  <style>
+    :root {
+      --paper: #eef2f3;
+      --ink: #121417;
+      --muted: #687077;
+      --line: #d6dde1;
+      --panel: #ffffff;
+      --dark: #0a1114;
+      --green: #17d684;
+      --blue: #1d63d8;
+      --gold: #c88a2d;
+      --red: #c85045;
+      --radius: 8px;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #f8faf9 0%, var(--paper) 54%, #e4eaed 100%);
+    }
+    .shell { max-width: 1180px; margin: 0 auto; padding: 40px 24px 72px; }
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr);
+      gap: 28px;
+      align-items: stretch;
+      margin-bottom: 34px;
+    }
+    .hero {
+      min-height: 360px;
+      padding: 34px;
+      border-radius: var(--radius);
+      color: #eef8f2;
+      background: #071014;
+      border: 1px solid #1a3638;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 34px 32px 34px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--green), var(--gold), var(--blue));
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #9ad9bd;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 28px; height: 2px; background: var(--green); }
+    h1 { margin: 28px 0 18px; font-size: clamp(42px, 6vw, 76px); line-height: .93; letter-spacing: 0; }
+    .hero p { max-width: 660px; margin: 0; color: #c4d4ce; font-size: 18px; line-height: 1.55; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 34px;
+      max-width: 640px;
+    }
+    .hero-chip {
+      padding: 12px;
+      border: 1px solid #21434a;
+      background: #0d2026;
+      border-radius: var(--radius);
+      min-height: 76px;
+    }
+    .hero-chip strong { display: block; color: #f2f6ee; font-size: 24px; }
+    .hero-chip span { display: block; color: #86a39c; margin-top: 4px; font-size: 12px; }
+    .guide {
+      padding: 24px;
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 44px rgba(20, 20, 20, .08);
+    }
+    .guide h2 { margin: 0 0 18px; font-size: 22px; }
+    .layer-row {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 14px;
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+    }
+    .layer-row:first-of-type { border-top: 0; padding-top: 0; }
+    .layer-no {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #06120f;
+      font-weight: 900;
+      background: var(--green);
+    }
+    .layer-row h3 { margin: 0 0 5px; font-size: 16px; }
+    .layer-row p { margin: 0; color: var(--muted); line-height: 1.45; }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      margin: 0 -24px 38px;
+      padding: 12px 24px;
+      backdrop-filter: blur(16px);
+      background: rgba(238, 242, 243, .88);
+      border-bottom: 1px solid rgba(216, 208, 194, .8);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    nav a {
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 241, .78);
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    section { margin-top: 56px; }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+    .section-head h2 { margin: 0; font-size: clamp(28px, 4vw, 44px); letter-spacing: 0; }
+    .section-head p { margin: 0; max-width: 520px; color: var(--muted); line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .story-card, .component-card, .theme-card {
+      background: rgba(255, 250, 241, .88);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(20, 20, 20, .055);
+    }
+    .story-card { display: flex; flex-direction: column; min-height: 392px; }
+    .card-body { padding: 18px; }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+    h3 { margin: 10px 0 8px; font-size: 22px; line-height: 1.12; }
+    .story-card p, .component-card p, .theme-card p { margin: 0; color: var(--muted); line-height: 1.48; }
+    .sample {
+      margin-top: 14px;
+      padding: 12px;
+      border-left: 3px solid var(--gold);
+      background: #eef7f2;
+      color: #263f36;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .svg-wrap {
+      background: #071014;
+      border-bottom: 1px solid #203134;
+    }
+    svg { width: 100%; height: auto; display: block; }
+    .component-family { margin-top: 28px; }
+    .component-family h3 {
+      margin: 0 0 12px;
+      padding-left: 12px;
+      border-left: 4px solid var(--green);
+      font-size: 22px;
+    }
+    .component-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .component-card h4, .theme-card h4 { margin: 10px 0 6px; font-size: 18px; }
+    .component-card .card-body, .theme-card .card-body { padding: 15px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      padding: 5px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #424950;
+      background: #f4f8f7;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      white-space: nowrap;
+    }
+    .theme-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .swatches { display: flex; gap: 7px; margin-top: 14px; }
+    .swatch { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(0,0,0,.18); }
+    code {
+      display: inline-block;
+      max-width: 100%;
+      color: #12342c;
+      background: #e6f2eb;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .note {
+      margin-top: 24px;
+      padding: 18px;
+      border: 1px solid #b8c9df;
+      border-radius: var(--radius);
+      background: #eef6ff;
+      color: #26394e;
+      line-height: 1.5;
+    }
+    footer { margin-top: 56px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 960px) {
+      header { grid-template-columns: 1fr; }
+      .grid, .theme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .component-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 620px) {
+      .shell { padding: 24px 16px 56px; }
+      header { gap: 16px; }
+      .hero { padding: 24px; min-height: 0; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .grid, .theme-grid, .component-grid { grid-template-columns: 1fr; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 10px; }
+      nav { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="hero">
+        <span class="eyebrow">Composable video direction</span>
+        <h1>Template Gallery</h1>
+        <p>Preview the narrative templates, scene modules, and visual skins that turn public source material into a short commercial-style vertical video.</p>
+        <div class="hero-grid" aria-label="Registry counts">
+          <div class="hero-chip"><strong>12</strong><span>Story templates</span></div>
+          <div class="hero-chip"><strong>34</strong><span>Scene components</span></div>
+          <div class="hero-chip"><strong>6</strong><span>Visual themes</span></div>
+        </div>
+      </div>
+      <aside class="guide" aria-label="How to read the gallery">
+        <h2>How to read it</h2>
+        <div class="layer-row">
+          <div class="layer-no">1</div>
+          <div><h3>Story template</h3><p>Chooses the narrative route: briefing, deep dive, market radar, evidence chain, comparison, timeline, and more.</p></div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-no">2</div>
+          <div><h3>Scene component</h3><p>Chooses what each screen does: grid, metric stack, ledger, proof rail, timeline, matrix, stamp.</p></div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-no">3</div>
+          <div><h3>Visual theme</h3><p>Chooses the skin: market terminal, executive light, data magazine, product keynote, social pop, or editorial dark.</p></div>
+        </div>
+      </aside>
+    </header>
+    <nav>
+      <a href="#story-templates">Story templates</a>
+      <a href="#scene-components">Scene components</a>
+      <a href="#visual-themes">Visual themes</a>
+      <a href="#composition-rule">Composition rule</a>
+    </nav>
+    <section id="story-templates">
+      <div class="section-head">
+        <h2>Story Templates</h2>
+        <p>Templates are the editorial skeleton. They decide the order of scenes, while the actual sources and facts stay user-owned and local.</p>
+      </div>
+      <div class="grid">
+        <article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Daily Briefing flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">daily_briefing</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="202.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="238.0" y1="112" x2="362.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="398.0" y1="112" x2="522.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="558.0" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Cover Hook</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">cinematic_anchor</text><circle cx="220.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="220.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="220.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Signal Grid</text><text x="220.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">signal_board</text><circle cx="380.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="380.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="380.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Source Proof</text><text x="380.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="540.0" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="540.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="540.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Insight Stack</text><text x="540.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">signal_board</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">5</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Next Watch</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">signal_board</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>daily_briefing</span><span>5 scenes</span></div>
+    <h3>Daily Briefing</h3>
+    <p>Three to five signals with a fast editorial open and a watch-next close.</p>
+    <div class="sample">Example: three morning AI or market signals, one proof point, one watch-next close.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Single Event Deep Dive flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">single_event_deep_dive</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="202.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="238.0" y1="112" x2="362.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="398.0" y1="112" x2="522.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="558.0" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Cover Hook</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">cinematic_anchor</text><circle cx="220.0" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="220.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="220.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Context Panel</text><text x="220.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">runtime_lens</text><circle cx="380.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="380.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="380.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Mechanism X-Ray</text><text x="380.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">mechanism_xray</text><circle cx="540.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="540.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="540.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Evidence Quote</text><text x="540.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">5</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Conclusion Stamp</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>single_event_deep_dive</span><span>5 scenes</span></div>
+    <h3>Single Event Deep Dive</h3>
+    <p>One story explained through context, mechanism, evidence, and consequence.</p>
+    <div class="sample">Example: one launch, policy change, earnings note, or research result explained end to end.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Breaking Update flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">breaking_update</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="255.3" y2="112" stroke="#26454a" stroke-width="4"/><line x1="291.3" y1="112" x2="468.7" y2="112" stroke="#26454a" stroke-width="4"/><line x1="504.7" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Impact Headline</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">cinematic_anchor</text><circle cx="273.3" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="273.3" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="273.3" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Source Proof</text><text x="273.3" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="486.7" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="486.7" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="486.7" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Proof Chips</text><text x="486.7" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Next Watch</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">signal_board</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>breaking_update</span><span>4 scenes</span></div>
+    <h3>Breaking Update</h3>
+    <p>Short urgent update with immediate fact, source proof, and next check.</p>
+    <div class="sample">Example: a fresh source-backed update that needs a short fact, proof, and next check.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Product Launch flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">product_launch</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="202.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="238.0" y1="112" x2="362.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="398.0" y1="112" x2="522.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="558.0" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Product Plate</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">official_product_plate</text><circle cx="220.0" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="220.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="220.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Before After</text><text x="220.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">before_after_surface</text><circle cx="380.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="380.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="380.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Use Case Grid</text><text x="380.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">official_product_plate</text><circle cx="540.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="540.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="540.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Verification Ra.</text><text x="540.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">5</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">CTA End</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">cinematic_anchor</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>product_launch</span><span>5 scenes</span></div>
+    <h3>Product Launch</h3>
+    <p>What shipped, who it helps, proof, and why the workflow changes.</p>
+    <div class="sample">Example: a new product or feature, who it helps, and what workflow changed.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Company Update flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">company_update</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="202.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="238.0" y1="112" x2="362.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="398.0" y1="112" x2="522.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="558.0" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Entity Map</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">runtime_lens</text><circle cx="220.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="220.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="220.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Source Proof</text><text x="220.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="380.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="380.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="380.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Metric Stack</text><text x="380.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text><circle cx="540.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="540.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="540.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Risk Matrix</text><text x="540.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">5</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Next Watch</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">signal_board</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>company_update</span><span>5 scenes</span></div>
+    <h3>Company Update</h3>
+    <p>Entity-led update with action, evidence, impact, and watch signal.</p>
+    <div class="sample">Example: a company action, source evidence, impact metrics, risks, and next signal.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Market Radar flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">market_radar</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="202.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="238.0" y1="112" x2="362.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="398.0" y1="112" x2="522.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="558.0" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Market Ledger</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text><circle cx="220.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="220.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="220.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Pulse Monitor</text><text x="220.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">data_on_plate</text><circle cx="380.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="380.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="380.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Signal Grid</text><text x="380.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">signal_board</text><circle cx="540.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="540.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="540.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Risk Matrix</text><text x="540.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">5</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Conclusion Stamp</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>market_radar</span><span>5 scenes</span></div>
+    <h3>Market Radar</h3>
+    <p>Multiple indicators arranged as a calm market board.</p>
+    <div class="sample">Example: a public market breadth recap with sector strength, risks, and a clean verdict.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Evidence Chain flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">evidence_chain</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="202.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="238.0" y1="112" x2="362.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="398.0" y1="112" x2="522.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="558.0" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Verification Ra.</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="220.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="220.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="220.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Source Proof</text><text x="220.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="380.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="380.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="380.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Evidence Quote</text><text x="380.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="540.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="540.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="540.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Mechanism X-Ray</text><text x="540.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">mechanism_xray</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">5</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Conclusion Stamp</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>evidence_chain</span><span>5 scenes</span></div>
+    <h3>Evidence Chain</h3>
+    <p>Source to claim to validation with proof stops.</p>
+    <div class="sample">Example: source to claim to validation, with proof stops and a final confidence read.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Comparison flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">comparison</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="255.3" y2="112" stroke="#26454a" stroke-width="4"/><line x1="291.3" y1="112" x2="468.7" y2="112" stroke="#26454a" stroke-width="4"/><line x1="504.7" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Compare Split</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">before_after_surface</text><circle cx="273.3" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="273.3" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="273.3" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Metric Stack</text><text x="273.3" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text><circle cx="486.7" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="486.7" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="486.7" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Before After</text><text x="486.7" y="189" text-anchor="middle" font-size="13" fill="#83a09a">before_after_surface</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Conclusion Stamp</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>comparison</span><span>4 scenes</span></div>
+    <h3>Comparison</h3>
+    <p>Two approaches, products, companies, or signals compared side by side.</p>
+    <div class="sample">Example: two tools, companies, assets, or signals compared side by side.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Timeline flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">timeline</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="255.3" y2="112" stroke="#26454a" stroke-width="4"/><line x1="291.3" y1="112" x2="468.7" y2="112" stroke="#26454a" stroke-width="4"/><line x1="504.7" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Timeline Ribbon</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">timeline_ribbon</text><circle cx="273.3" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="273.3" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="273.3" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Milestone Stack</text><text x="273.3" y="189" text-anchor="middle" font-size="13" fill="#83a09a">timeline_ribbon</text><circle cx="486.7" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="486.7" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="486.7" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Source Proof</text><text x="486.7" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Next Watch</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">signal_board</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>timeline</span><span>4 scenes</span></div>
+    <h3>Timeline</h3>
+    <p>Sequence of milestones and what changes at the end.</p>
+    <div class="sample">Example: a release sequence, policy timeline, or research-to-product milestone chain.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Risk Watch flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">risk_watch</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="255.3" y2="112" stroke="#26454a" stroke-width="4"/><line x1="291.3" y1="112" x2="468.7" y2="112" stroke="#26454a" stroke-width="4"/><line x1="504.7" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Risk Matrix</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="273.3" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="273.3" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="273.3" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Verification Ra.</text><text x="273.3" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="486.7" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="486.7" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="486.7" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Proof Chips</text><text x="486.7" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Next Watch</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">signal_board</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>risk_watch</span><span>4 scenes</span></div>
+    <h3>Risk Watch</h3>
+    <p>Opportunity, uncertainty, contradiction, and next validation.</p>
+    <div class="sample">Example: opportunity, contradiction, uncertainty, and the next validation checkpoint.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Top Five flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">top_five</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="255.3" y2="112" stroke="#26454a" stroke-width="4"/><line x1="291.3" y1="112" x2="468.7" y2="112" stroke="#26454a" stroke-width="4"/><line x1="504.7" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Ranking Board</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text><circle cx="273.3" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="273.3" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="273.3" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Source Proof</text><text x="273.3" y="189" text-anchor="middle" font-size="13" fill="#83a09a">verification_rail</text><circle cx="486.7" cy="112" r="22" fill="#ecca53" stroke="#d9f6ea" stroke-width="2"/><text x="486.7" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="486.7" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Metric Stack</text><text x="486.7" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">CTA End</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">cinematic_anchor</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>top_five</span><span>4 scenes</span></div>
+    <h3>Top Five</h3>
+    <p>Ranked countdown for daily or weekly lists.</p>
+    <div class="sample">Example: a ranked daily or weekly list with proof and a compact close.</div>
+  </div>
+</article>
+<article class="story-card">
+  <div class="svg-wrap"><svg viewBox="0 0 760 245" role="img" aria-label="Weekly Review flow">
+  <rect width="760" height="245" fill="#071014"/>
+  <rect x="24" y="22" width="712" height="201" rx="14" fill="#0d2026" stroke="#203b40"/>
+  <text x="42" y="56" font-size="17" font-weight="800" fill="#17d684">weekly_review</text>
+  <text x="718" y="56" text-anchor="end" font-size="13" font-weight="800" fill="#83a09a">NARRATIVE FLOW</text>
+  <line x1="78.0" y1="112" x2="202.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="238.0" y1="112" x2="362.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="398.0" y1="112" x2="522.0" y2="112" stroke="#26454a" stroke-width="4"/><line x1="558.0" y1="112" x2="682.0" y2="112" stroke="#26454a" stroke-width="4"/>
+  <circle cx="60.0" cy="112" r="22" fill="#57c0ff" stroke="#d9f6ea" stroke-width="2"/><text x="60.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">1</text><text x="60.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Week Calendar</text><text x="60.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">timeline_ribbon</text><circle cx="220.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="220.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">2</text><text x="220.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Signal Grid</text><text x="220.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">signal_board</text><circle cx="380.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="380.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">3</text><text x="380.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Market Ledger</text><text x="380.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text><circle cx="540.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="540.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">4</text><text x="540.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Conclusion Stamp</text><text x="540.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">market_ledger</text><circle cx="700.0" cy="112" r="22" fill="#17d684" stroke="#d9f6ea" stroke-width="2"/><text x="700.0" y="117" text-anchor="middle" font-size="14" font-weight="800" fill="#06120f">5</text><text x="700.0" y="164" text-anchor="middle" font-size="18" font-weight="750" fill="#eef8f2">Next Watch</text><text x="700.0" y="189" text-anchor="middle" font-size="13" fill="#83a09a">signal_board</text>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>weekly_review</span><span>5 scenes</span></div>
+    <h3>Weekly Review</h3>
+    <p>Week-level synthesis across themes, changes, and next week signals.</p>
+    <div class="sample">Example: a week-level synthesis across themes, changes, and next-week signals.</div>
+  </div>
+</article>
+      </div>
+    </section>
+    <section id="scene-components">
+      <div class="section-head">
+        <h2>Scene Components</h2>
+        <p>Components are eight-second building blocks. Each one has a visual grammar and a purpose, so the renderer can assemble readable motion instead of static slides.</p>
+      </div>
+      <div class="component-family">
+  <h3>Opening and impact</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="48" y="55" width="82" height="14" rx="7" fill="#17d684"/><rect x="48" y="92" width="235" height="20" rx="5" fill="#eef8f2"/><rect x="48" y="122" width="186" height="16" rx="4" fill="#83a09a"/><circle cx="318" cy="132" r="48" fill="#16393c" stroke="#ecca53" stroke-width="4"/><path d="M292 132h52M318 106v52" stroke="#17d684" stroke-width="4"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">cinematic_anchor</span>
+    <h4>Cover Hook</h4>
+    <p>Open with one strong claim.</p>
+    <p style="margin-top:10px"><code>cover_hook</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="48" y="55" width="82" height="14" rx="7" fill="#17d684"/><rect x="48" y="92" width="235" height="20" rx="5" fill="#eef8f2"/><rect x="48" y="122" width="186" height="16" rx="4" fill="#83a09a"/><circle cx="318" cy="132" r="48" fill="#16393c" stroke="#ecca53" stroke-width="4"/><path d="M292 132h52M318 106v52" stroke="#17d684" stroke-width="4"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">cinematic_anchor</span>
+    <h4>Impact Headline</h4>
+    <p>Make the immediate change obvious.</p>
+    <p style="margin-top:10px"><code>impact_headline</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Context and insight</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="54" y="54" width="118" height="142" rx="10" fill="#102b31" stroke="#17d684"/><rect x="192" y="66" width="170" height="28" rx="6" fill="#eef8f2"/><rect x="192" y="111" width="132" height="18" rx="5" fill="#83a09a"/><rect x="192" y="146" width="150" height="18" rx="5" fill="#83a09a"/><path d="M172 126h35" stroke="#ecca53" stroke-width="4"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">runtime_lens</span>
+    <h4>Context Panel</h4>
+    <p>Set up the story frame.</p>
+    <p style="margin-top:10px"><code>context_panel</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="54" y="54" width="118" height="142" rx="10" fill="#102b31" stroke="#17d684"/><rect x="192" y="66" width="170" height="28" rx="6" fill="#eef8f2"/><rect x="192" y="111" width="132" height="18" rx="5" fill="#83a09a"/><rect x="192" y="146" width="150" height="18" rx="5" fill="#83a09a"/><path d="M172 126h35" stroke="#ecca53" stroke-width="4"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">signal_board</span>
+    <h4>Insight Stack</h4>
+    <p>Stack compact insight cards.</p>
+    <p style="margin-top:10px"><code>insight_stack</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Signal groups</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="52" y="58" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="74" cy="85" r="8" fill="#17d684"/><rect x="94" y="78" width="60" height="10" rx="5" fill="#eef8f2"/><rect x="214" y="58" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="236" cy="85" r="8" fill="#17d684"/><rect x="256" y="78" width="60" height="10" rx="5" fill="#eef8f2"/><rect x="52" y="131" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="74" cy="158" r="8" fill="#17d684"/><rect x="94" y="151" width="60" height="10" rx="5" fill="#eef8f2"/><rect x="214" y="131" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="236" cy="158" r="8" fill="#17d684"/><rect x="256" y="151" width="60" height="10" rx="5" fill="#eef8f2"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">signal_board</span>
+    <h4>Signal Grid</h4>
+    <p>Group several weak signals.</p>
+    <p style="margin-top:10px"><code>signal_grid</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="52" y="58" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="74" cy="85" r="8" fill="#17d684"/><rect x="94" y="78" width="60" height="10" rx="5" fill="#eef8f2"/><rect x="214" y="58" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="236" cy="85" r="8" fill="#17d684"/><rect x="256" y="78" width="60" height="10" rx="5" fill="#eef8f2"/><rect x="52" y="131" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="74" cy="158" r="8" fill="#17d684"/><rect x="94" y="151" width="60" height="10" rx="5" fill="#eef8f2"/><rect x="214" y="131" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="236" cy="158" r="8" fill="#17d684"/><rect x="256" y="151" width="60" height="10" rx="5" fill="#eef8f2"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">official_product_plate</span>
+    <h4>Use Case Grid</h4>
+    <p>Show practical usage lanes.</p>
+    <p style="margin-top:10px"><code>use_case_grid</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="52" y="58" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="74" cy="85" r="8" fill="#17d684"/><rect x="94" y="78" width="60" height="10" rx="5" fill="#eef8f2"/><rect x="214" y="58" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="236" cy="85" r="8" fill="#17d684"/><rect x="256" y="78" width="60" height="10" rx="5" fill="#eef8f2"/><rect x="52" y="131" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="74" cy="158" r="8" fill="#17d684"/><rect x="94" y="151" width="60" height="10" rx="5" fill="#eef8f2"/><rect x="214" y="131" width="128" height="55" rx="9" fill="#102b31" stroke="#31545a"/><circle cx="236" cy="158" r="8" fill="#17d684"/><rect x="256" y="151" width="60" height="10" rx="5" fill="#eef8f2"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">signal_board</span>
+    <h4>Three Takeaways</h4>
+    <p>Summarize into three useful points.</p>
+    <p style="margin-top:10px"><code>three_takeaways</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Numbers and charts</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="50" y="55" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="79" font-size="25" font-weight="850" fill="#17d684">+2.4</text><path d="M244 78l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/><rect x="50" y="101" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="125" font-size="25" font-weight="850" fill="#eef8f2">81%</text><path d="M244 124l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/><rect x="50" y="147" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="171" font-size="25" font-weight="850" fill="#eef8f2">14</text><path d="M244 170l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">market_ledger</span>
+    <h4>Metric Stack</h4>
+    <p>Stack numbers and short labels.</p>
+    <p style="margin-top:10px"><code>metric_stack</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="50" y="55" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="79" font-size="25" font-weight="850" fill="#17d684">+2.4</text><path d="M244 78l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/><rect x="50" y="101" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="125" font-size="25" font-weight="850" fill="#eef8f2">81%</text><path d="M244 124l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/><rect x="50" y="147" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="171" font-size="25" font-weight="850" fill="#eef8f2">14</text><path d="M244 170l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">data_on_plate</span>
+    <h4>Big Number</h4>
+    <p>Feature one number or count.</p>
+    <p style="margin-top:10px"><code>big_number</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="50" y="55" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="79" font-size="25" font-weight="850" fill="#17d684">+2.4</text><path d="M244 78l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/><rect x="50" y="101" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="125" font-size="25" font-weight="850" fill="#eef8f2">81%</text><path d="M244 124l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/><rect x="50" y="147" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="171" font-size="25" font-weight="850" fill="#eef8f2">14</text><path d="M244 170l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">data_on_plate</span>
+    <h4>Mini Chart</h4>
+    <p>Show a compact trend-like shape.</p>
+    <p style="margin-top:10px"><code>mini_chart</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="50" y="55" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="79" font-size="25" font-weight="850" fill="#17d684">+2.4</text><path d="M244 78l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/><rect x="50" y="101" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="125" font-size="25" font-weight="850" fill="#eef8f2">81%</text><path d="M244 124l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/><rect x="50" y="147" width="320" height="34" rx="8" fill="#102b31" stroke="#31545a"/><text x="70" y="171" font-size="25" font-weight="850" fill="#eef8f2">14</text><path d="M244 170l24 -10 22 12 28 -18 24 9" fill="none" stroke="#ecca53" stroke-width="3"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">data_on_plate</span>
+    <h4>Pulse Monitor</h4>
+    <p>Show a heartbeat-like signal state.</p>
+    <p style="margin-top:10px"><code>pulse_monitor</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Ledgers and tables</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="48" y="56" width="324" height="28" rx="7" fill="#102b31" stroke="#31545a"/><text x="65" y="76" font-size="13" font-weight="800" fill="#17d684">01</text><rect x="102" y="65" width="120" height="8" rx="4" fill="#eef8f2"/><rect x="298" y="65" width="44" height="8" rx="4" fill="#ecca53"/><rect x="48" y="96" width="324" height="28" rx="7" fill="#102b31" stroke="#31545a"/><text x="65" y="116" font-size="13" font-weight="800" fill="#17d684">02</text><rect x="102" y="105" width="120" height="8" rx="4" fill="#eef8f2"/><rect x="298" y="105" width="44" height="8" rx="4" fill="#ecca53"/><rect x="48" y="136" width="324" height="28" rx="7" fill="#102b31" stroke="#31545a"/><text x="65" y="156" font-size="13" font-weight="800" fill="#17d684">03</text><rect x="102" y="145" width="120" height="8" rx="4" fill="#eef8f2"/><rect x="298" y="145" width="44" height="8" rx="4" fill="#ecca53"/><rect x="48" y="176" width="324" height="28" rx="7" fill="#102b31" stroke="#31545a"/><text x="65" y="196" font-size="13" font-weight="800" fill="#17d684">04</text><rect x="102" y="185" width="120" height="8" rx="4" fill="#eef8f2"/><rect x="298" y="185" width="44" height="8" rx="4" fill="#ecca53"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">market_ledger</span>
+    <h4>Market Ledger</h4>
+    <p>Present rows of indicators.</p>
+    <p style="margin-top:10px"><code>market_ledger</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="48" y="56" width="324" height="28" rx="7" fill="#102b31" stroke="#31545a"/><text x="65" y="76" font-size="13" font-weight="800" fill="#17d684">01</text><rect x="102" y="65" width="120" height="8" rx="4" fill="#eef8f2"/><rect x="298" y="65" width="44" height="8" rx="4" fill="#ecca53"/><rect x="48" y="96" width="324" height="28" rx="7" fill="#102b31" stroke="#31545a"/><text x="65" y="116" font-size="13" font-weight="800" fill="#17d684">02</text><rect x="102" y="105" width="120" height="8" rx="4" fill="#eef8f2"/><rect x="298" y="105" width="44" height="8" rx="4" fill="#ecca53"/><rect x="48" y="136" width="324" height="28" rx="7" fill="#102b31" stroke="#31545a"/><text x="65" y="156" font-size="13" font-weight="800" fill="#17d684">03</text><rect x="102" y="145" width="120" height="8" rx="4" fill="#eef8f2"/><rect x="298" y="145" width="44" height="8" rx="4" fill="#ecca53"/><rect x="48" y="176" width="324" height="28" rx="7" fill="#102b31" stroke="#31545a"/><text x="65" y="196" font-size="13" font-weight="800" fill="#17d684">04</text><rect x="102" y="185" width="120" height="8" rx="4" fill="#eef8f2"/><rect x="298" y="185" width="44" height="8" rx="4" fill="#ecca53"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">market_ledger</span>
+    <h4>Data Table</h4>
+    <p>Use dense but readable rows.</p>
+    <p style="margin-top:10px"><code>data_table</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Source proof</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <path d="M58 82h278" stroke="#17d684" stroke-width="5"/><circle cx="72" cy="82" r="12" fill="#17d684"/><circle cx="180" cy="82" r="12" fill="#17d684"/><circle cx="318" cy="82" r="12" fill="#ecca53"/><rect x="64" y="126" width="292" height="62" rx="9" fill="#102b31" stroke="#17d684"/><rect x="86" y="148" width="96" height="10" rx="5" fill="#eef8f2"/><rect x="86" y="168" width="198" height="8" rx="4" fill="#83a09a"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">verification_rail</span>
+    <h4>Source Proof</h4>
+    <p>Show the originating source and evidence line.</p>
+    <p style="margin-top:10px"><code>source_proof</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <path d="M58 82h278" stroke="#17d684" stroke-width="5"/><circle cx="72" cy="82" r="12" fill="#17d684"/><circle cx="180" cy="82" r="12" fill="#17d684"/><circle cx="318" cy="82" r="12" fill="#ecca53"/><rect x="64" y="126" width="292" height="62" rx="9" fill="#102b31" stroke="#17d684"/><rect x="86" y="148" width="96" height="10" rx="5" fill="#eef8f2"/><rect x="86" y="168" width="198" height="8" rx="4" fill="#83a09a"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">verification_rail</span>
+    <h4>Evidence Quote</h4>
+    <p>Pull one source-backed proof sentence.</p>
+    <p style="margin-top:10px"><code>evidence_quote</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Proof chips</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="54" y="63" width="112" height="38" rx="19" fill="#102b31" stroke="#17d684"/><circle cx="76" cy="82" r="8" fill="#17d684"/><rect x="96" y="78" width="42" height="8" rx="4" fill="#eef8f2"/><rect x="181" y="63" width="112" height="38" rx="19" fill="#102b31" stroke="#17d684"/><circle cx="203" cy="82" r="8" fill="#17d684"/><rect x="223" y="78" width="42" height="8" rx="4" fill="#eef8f2"/><rect x="54" y="124" width="112" height="38" rx="19" fill="#102b31" stroke="#ecca53"/><circle cx="76" cy="143" r="8" fill="#ecca53"/><rect x="96" y="139" width="42" height="8" rx="4" fill="#eef8f2"/><rect x="181" y="124" width="112" height="38" rx="19" fill="#102b31" stroke="#17d684"/><circle cx="203" cy="143" r="8" fill="#17d684"/><rect x="223" y="139" width="42" height="8" rx="4" fill="#eef8f2"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">verification_rail</span>
+    <h4>Proof Chips</h4>
+    <p>Compress source, date, and tag proof.</p>
+    <p style="margin-top:10px"><code>proof_chips</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Validation rails</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <path d="M72 96h258" stroke="#17d684" stroke-width="5"/><circle cx="72" cy="96" r="12" fill="#17d684"/><rect x="38" y="128" width="68" height="38" rx="7" fill="#102b31" stroke="#31545a"/><circle cx="158" cy="96" r="12" fill="#17d684"/><rect x="124" y="128" width="68" height="38" rx="7" fill="#102b31" stroke="#31545a"/><circle cx="244" cy="96" r="12" fill="#17d684"/><rect x="210" y="128" width="68" height="38" rx="7" fill="#102b31" stroke="#31545a"/><circle cx="330" cy="96" r="12" fill="#ecca53"/><rect x="296" y="128" width="68" height="38" rx="7" fill="#102b31" stroke="#31545a"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">verification_rail</span>
+    <h4>Verification Rail</h4>
+    <p>Move through evidence stops.</p>
+    <p style="margin-top:10px"><code>verification_rail</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Timelines</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <path d="M92 62v116" stroke="#17d684" stroke-width="4"/><circle cx="92" cy="71" r="10" fill="#17d684"/><rect x="126" y="55" width="210" height="32" rx="7" fill="#102b31" stroke="#31545a"/><rect x="146" y="67" width="95" height="8" rx="4" fill="#eef8f2"/><circle cx="92" cy="117" r="10" fill="#17d684"/><rect x="126" y="101" width="210" height="32" rx="7" fill="#102b31" stroke="#31545a"/><rect x="146" y="113" width="95" height="8" rx="4" fill="#eef8f2"/><circle cx="92" cy="163" r="10" fill="#ecca53"/><rect x="126" y="147" width="210" height="32" rx="7" fill="#102b31" stroke="#31545a"/><rect x="146" y="159" width="95" height="8" rx="4" fill="#eef8f2"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">timeline_ribbon</span>
+    <h4>Timeline Ribbon</h4>
+    <p>Show milestones along a rail.</p>
+    <p style="margin-top:10px"><code>timeline_ribbon</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <path d="M92 62v116" stroke="#17d684" stroke-width="4"/><circle cx="92" cy="71" r="10" fill="#17d684"/><rect x="126" y="55" width="210" height="32" rx="7" fill="#102b31" stroke="#31545a"/><rect x="146" y="67" width="95" height="8" rx="4" fill="#eef8f2"/><circle cx="92" cy="117" r="10" fill="#17d684"/><rect x="126" y="101" width="210" height="32" rx="7" fill="#102b31" stroke="#31545a"/><rect x="146" y="113" width="95" height="8" rx="4" fill="#eef8f2"/><circle cx="92" cy="163" r="10" fill="#ecca53"/><rect x="126" y="147" width="210" height="32" rx="7" fill="#102b31" stroke="#31545a"/><rect x="146" y="159" width="95" height="8" rx="4" fill="#eef8f2"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">timeline_ribbon</span>
+    <h4>Milestone Stack</h4>
+    <p>Stack phase cards vertically.</p>
+    <p style="margin-top:10px"><code>milestone_stack</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <path d="M92 62v116" stroke="#17d684" stroke-width="4"/><circle cx="92" cy="71" r="10" fill="#17d684"/><rect x="126" y="55" width="210" height="32" rx="7" fill="#102b31" stroke="#31545a"/><rect x="146" y="67" width="95" height="8" rx="4" fill="#eef8f2"/><circle cx="92" cy="117" r="10" fill="#17d684"/><rect x="126" y="101" width="210" height="32" rx="7" fill="#102b31" stroke="#31545a"/><rect x="146" y="113" width="95" height="8" rx="4" fill="#eef8f2"/><circle cx="92" cy="163" r="10" fill="#ecca53"/><rect x="126" y="147" width="210" height="32" rx="7" fill="#102b31" stroke="#31545a"/><rect x="146" y="159" width="95" height="8" rx="4" fill="#eef8f2"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">timeline_ribbon</span>
+    <h4>Week Calendar</h4>
+    <p>Summarize week-level signals.</p>
+    <p style="margin-top:10px"><code>week_calendar</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Mechanisms</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="60" y="58" width="276" height="36" rx="8" fill="#102b31" stroke="#31545a"/><rect x="82" y="72" width="110" height="8" rx="4" fill="#eef8f2"/><rect x="78" y="104" width="240" height="36" rx="8" fill="#102b31" stroke="#31545a"/><rect x="100" y="118" width="110" height="8" rx="4" fill="#eef8f2"/><rect x="96" y="150" width="204" height="36" rx="8" fill="#102b31" stroke="#17d684"/><rect x="118" y="164" width="110" height="8" rx="4" fill="#eef8f2"/><path d="M210 94v12M210 140v12" stroke="#ecca53" stroke-width="4"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">mechanism_xray</span>
+    <h4>Mechanism X-Ray</h4>
+    <p>Reveal cause and effect layers.</p>
+    <p style="margin-top:10px"><code>mechanism_xray</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="60" y="58" width="276" height="36" rx="8" fill="#102b31" stroke="#31545a"/><rect x="82" y="72" width="110" height="8" rx="4" fill="#eef8f2"/><rect x="78" y="104" width="240" height="36" rx="8" fill="#102b31" stroke="#31545a"/><rect x="100" y="118" width="110" height="8" rx="4" fill="#eef8f2"/><rect x="96" y="150" width="204" height="36" rx="8" fill="#102b31" stroke="#17d684"/><rect x="118" y="164" width="110" height="8" rx="4" fill="#eef8f2"/><path d="M210 94v12M210 140v12" stroke="#ecca53" stroke-width="4"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">mechanism_xray</span>
+    <h4>Stack Layers</h4>
+    <p>Layer inputs, mechanism, and outcome.</p>
+    <p style="margin-top:10px"><code>stack_layers</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="60" y="58" width="276" height="36" rx="8" fill="#102b31" stroke="#31545a"/><rect x="82" y="72" width="110" height="8" rx="4" fill="#eef8f2"/><rect x="78" y="104" width="240" height="36" rx="8" fill="#102b31" stroke="#31545a"/><rect x="100" y="118" width="110" height="8" rx="4" fill="#eef8f2"/><rect x="96" y="150" width="204" height="36" rx="8" fill="#102b31" stroke="#17d684"/><rect x="118" y="164" width="110" height="8" rx="4" fill="#eef8f2"/><path d="M210 94v12M210 140v12" stroke="#ecca53" stroke-width="4"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">mechanism_xray</span>
+    <h4>Funnel</h4>
+    <p>Narrow inputs into one outcome.</p>
+    <p style="margin-top:10px"><code>funnel</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Comparisons</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="52" y="62" width="138" height="114" rx="10" fill="#102b31" stroke="#31545a"/><rect x="230" y="62" width="138" height="114" rx="10" fill="#102b31" stroke="#17d684"/><rect x="76" y="94" width="78" height="10" rx="5" fill="#83a09a"/><rect x="254" y="94" width="78" height="10" rx="5" fill="#eef8f2"/><path d="M195 119h31" stroke="#ecca53" stroke-width="5"/><path d="M218 108l12 11 -12 11" fill="none" stroke="#ecca53" stroke-width="5"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">before_after_surface</span>
+    <h4>Compare Split</h4>
+    <p>Compare two sides.</p>
+    <p style="margin-top:10px"><code>compare_split</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="52" y="62" width="138" height="114" rx="10" fill="#102b31" stroke="#31545a"/><rect x="230" y="62" width="138" height="114" rx="10" fill="#102b31" stroke="#17d684"/><rect x="76" y="94" width="78" height="10" rx="5" fill="#83a09a"/><rect x="254" y="94" width="78" height="10" rx="5" fill="#eef8f2"/><path d="M195 119h31" stroke="#ecca53" stroke-width="5"/><path d="M218 108l12 11 -12 11" fill="none" stroke="#ecca53" stroke-width="5"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">before_after_surface</span>
+    <h4>Before After</h4>
+    <p>Show old state versus new state.</p>
+    <p style="margin-top:10px"><code>before_after_surface</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Risk matrices</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="52" y="58" width="128" height="54" rx="9" fill="#102b31" stroke="#31545a"/><text x="72" y="90" font-size="16" font-weight="850" fill="#eef8f2">UP</text><rect x="214" y="58" width="128" height="54" rx="9" fill="#102b31" stroke="#31545a"/><text x="234" y="90" font-size="16" font-weight="850" fill="#eef8f2">RISK</text><rect x="52" y="132" width="128" height="54" rx="9" fill="#102b31" stroke="#31545a"/><text x="72" y="164" font-size="16" font-weight="850" fill="#eef8f2">OPEN</text><rect x="214" y="132" width="128" height="54" rx="9" fill="#102b31" stroke="#ecca53"/><text x="234" y="164" font-size="16" font-weight="850" fill="#eef8f2">CHECK</text>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">verification_rail</span>
+    <h4>Risk Matrix</h4>
+    <p>Separate upside, downside, unknowns, and checks.</p>
+    <p style="margin-top:10px"><code>risk_matrix</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Rankings</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <text x="58" y="74" font-size="16" font-weight="850" fill="#17d684">1</text><rect x="92" y="55" width="250" height="24" rx="7" fill="#102b31" stroke="#31545a"/><rect x="92" y="55" width="170" height="24" rx="7" fill="#17d684" opacity=".45"/><text x="58" y="112" font-size="16" font-weight="850" fill="#17d684">2</text><rect x="92" y="93" width="205" height="24" rx="7" fill="#102b31" stroke="#31545a"/><rect x="92" y="93" width="125" height="24" rx="7" fill="#17d684" opacity=".45"/><text x="58" y="150" font-size="16" font-weight="850" fill="#17d684">3</text><rect x="92" y="131" width="160" height="24" rx="7" fill="#102b31" stroke="#31545a"/><rect x="92" y="131" width="80" height="24" rx="7" fill="#17d684" opacity=".45"/><text x="58" y="188" font-size="16" font-weight="850" fill="#17d684">4</text><rect x="92" y="169" width="112" height="24" rx="7" fill="#102b31" stroke="#31545a"/><rect x="92" y="169" width="44" height="24" rx="7" fill="#17d684" opacity=".45"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">market_ledger</span>
+    <h4>Ranking Board</h4>
+    <p>Rank selected items.</p>
+    <p style="margin-top:10px"><code>ranking_board</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Watch lists</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <circle cx="72" cy="61" r="8" fill="#17d684"/><rect x="96" y="55" width="210" height="12" rx="6" fill="#eef8f2"/><circle cx="72" cy="101" r="8" fill="#17d684"/><rect x="96" y="95" width="188" height="12" rx="6" fill="#eef8f2"/><circle cx="72" cy="141" r="8" fill="#17d684"/><rect x="96" y="135" width="166" height="12" rx="6" fill="#eef8f2"/><circle cx="72" cy="181" r="8" fill="#ecca53"/><rect x="96" y="175" width="144" height="12" rx="6" fill="#eef8f2"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">signal_board</span>
+    <h4>Watchlist</h4>
+    <p>List what to watch next.</p>
+    <p style="margin-top:10px"><code>watchlist</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <circle cx="72" cy="61" r="8" fill="#17d684"/><rect x="96" y="55" width="210" height="12" rx="6" fill="#eef8f2"/><circle cx="72" cy="101" r="8" fill="#17d684"/><rect x="96" y="95" width="188" height="12" rx="6" fill="#eef8f2"/><circle cx="72" cy="141" r="8" fill="#17d684"/><rect x="96" y="135" width="166" height="12" rx="6" fill="#eef8f2"/><circle cx="72" cy="181" r="8" fill="#ecca53"/><rect x="96" y="175" width="144" height="12" rx="6" fill="#eef8f2"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">signal_board</span>
+    <h4>Next Watch</h4>
+    <p>End with concrete next checks.</p>
+    <p style="margin-top:10px"><code>next_watch</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Entity maps</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <circle cx="210" cy="123" r="40" fill="#102b31" stroke="#17d684" stroke-width="4"/><circle cx="106" cy="82" r="18" fill="#16393c" stroke="#ecca53" stroke-width="3"/><circle cx="314" cy="82" r="18" fill="#16393c" stroke="#17d684" stroke-width="3"/><circle cx="110" cy="178" r="18" fill="#16393c" stroke="#17d684" stroke-width="3"/><circle cx="318" cy="178" r="18" fill="#16393c" stroke="#ecca53" stroke-width="3"/><path d="M126 89l50 21M294 90l-50 21M128 170l48 -28M298 170l-52 -28" stroke="#31545a" stroke-width="4"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">runtime_lens</span>
+    <h4>Entity Map</h4>
+    <p>Show who is connected to the story.</p>
+    <p style="margin-top:10px"><code>entity_map</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <circle cx="210" cy="123" r="40" fill="#102b31" stroke="#17d684" stroke-width="4"/><circle cx="106" cy="82" r="18" fill="#16393c" stroke="#ecca53" stroke-width="3"/><circle cx="314" cy="82" r="18" fill="#16393c" stroke="#17d684" stroke-width="3"/><circle cx="110" cy="178" r="18" fill="#16393c" stroke="#17d684" stroke-width="3"/><circle cx="318" cy="178" r="18" fill="#16393c" stroke="#ecca53" stroke-width="3"/><path d="M126 89l50 21M294 90l-50 21M128 170l48 -28M298 170l-52 -28" stroke="#31545a" stroke-width="4"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">runtime_lens</span>
+    <h4>Geographic Map</h4>
+    <p>Place the story geographically or regionally.</p>
+    <p style="margin-top:10px"><code>geographic_map</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Product plates</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="86" y="52" width="248" height="142" rx="16" fill="#102b31" stroke="#17d684" stroke-width="3"/><circle cx="210" cy="122" r="42" fill="#16393c" stroke="#ecca53" stroke-width="4"/><rect x="164" y="201" width="92" height="10" rx="5" fill="#83a09a"/><path d="M110 126h56M254 126h56" stroke="#17d684" stroke-width="3"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">official_product_plate</span>
+    <h4>Product Plate</h4>
+    <p>Give a launch or object a premium slot.</p>
+    <p style="margin-top:10px"><code>product_plate</code></p>
+  </div>
+</article></div>
+</div>
+<div class="component-family">
+  <h3>Conclusions</h3>
+  <div class="component-grid"><article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="80" y="72" width="260" height="92" rx="12" fill="#102b31" stroke="#17d684" stroke-width="4"/><text x="210" y="116" text-anchor="middle" font-size="23" font-weight="900" fill="#17d684">VERDICT</text><rect x="122" y="134" width="176" height="10" rx="5" fill="#eef8f2"/><circle cx="108" cy="190" r="7" fill="#17d684"/><rect x="128" y="184" width="176" height="10" rx="5" fill="#83a09a"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">market_ledger</span>
+    <h4>Conclusion Stamp</h4>
+    <p>Land the verdict cleanly.</p>
+    <p style="margin-top:10px"><code>conclusion_stamp</code></p>
+  </div>
+</article>
+<article class="component-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Scene component sketch">
+  <rect width="420" height="250" fill="#071014"/>
+  <rect x="22" y="22" width="376" height="206" rx="12" fill="#0d2026" stroke="#203b40"/>
+  <rect x="80" y="72" width="260" height="92" rx="12" fill="#102b31" stroke="#17d684" stroke-width="4"/><text x="210" y="116" text-anchor="middle" font-size="23" font-weight="900" fill="#17d684">VERDICT</text><rect x="122" y="134" width="176" height="10" rx="5" fill="#eef8f2"/><circle cx="108" cy="190" r="7" fill="#17d684"/><rect x="128" y="184" width="176" height="10" rx="5" fill="#83a09a"/>
+</svg></div>
+  <div class="card-body">
+    <span class="pill">cinematic_anchor</span>
+    <h4>CTA End</h4>
+    <p>Close with one action or review prompt.</p>
+    <p style="margin-top:10px"><code>cta_end</code></p>
+  </div>
+</article></div>
+</div>
+    </section>
+    <section id="visual-themes">
+      <div class="section-head">
+        <h2>Visual Themes</h2>
+        <p>Themes change palette, contrast, and information mood without changing the underlying facts or source links.</p>
+      </div>
+      <div class="theme-grid">
+        <article class="theme-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Editorial Dark preview">
+  <rect width="420" height="250" fill="rgb(13, 18, 20)"/>
+  <rect x="24" y="24" width="372" height="202" rx="12" fill="rgb(24, 31, 34)" stroke="rgb(34, 42, 45)"/>
+  <rect x="46" y="49" width="94" height="18" rx="9" fill="rgb(70, 188, 172)"/>
+  <rect x="46" y="88" width="242" height="18" rx="5" fill="rgb(244, 242, 235)"/>
+  <rect x="46" y="118" width="176" height="12" rx="6" fill="rgb(160, 168, 166)"/>
+  <rect x="46" y="154" width="310" height="40" rx="8" fill="rgb(34, 42, 45)"/>
+  <rect x="68" y="168" width="84" height="12" rx="6" fill="rgb(244, 242, 235)"/>
+  <path d="M238 178l22 -11 19 13 28 -21 25 12" fill="none" stroke="rgb(230, 184, 91)" stroke-width="4"/>
+  <circle cx="344" cy="65" r="14" fill="rgb(219, 101, 83)"/>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>editorial_dark</span><span>Editorial Dark</span></div>
+    <h4>Editorial Dark</h4>
+    <p>Use for serious news, research notes, and night-editorial recaps.</p>
+    <div class="swatches"><span class="swatch" title="background" style="background:rgb(13, 18, 20)"></span>
+<span class="swatch" title="panel" style="background:rgb(24, 31, 34)"></span>
+<span class="swatch" title="foreground" style="background:rgb(244, 242, 235)"></span>
+<span class="swatch" title="accent" style="background:rgb(70, 188, 172)"></span>
+<span class="swatch" title="accent2" style="background:rgb(230, 184, 91)"></span>
+<span class="swatch" title="danger" style="background:rgb(219, 101, 83)"></span></div>
+  </div>
+</article>
+<article class="theme-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Executive Light preview">
+  <rect width="420" height="250" fill="rgb(246, 241, 231)"/>
+  <rect x="24" y="24" width="372" height="202" rx="12" fill="rgb(255, 251, 242)" stroke="rgb(235, 228, 215)"/>
+  <rect x="46" y="49" width="94" height="18" rx="9" fill="rgb(25, 103, 210)"/>
+  <rect x="46" y="88" width="242" height="18" rx="5" fill="rgb(13, 25, 38)"/>
+  <rect x="46" y="118" width="176" height="12" rx="6" fill="rgb(87, 99, 111)"/>
+  <rect x="46" y="154" width="310" height="40" rx="8" fill="rgb(235, 228, 215)"/>
+  <rect x="68" y="168" width="84" height="12" rx="6" fill="rgb(13, 25, 38)"/>
+  <path d="M238 178l22 -11 19 13 28 -21 25 12" fill="none" stroke="rgb(176, 122, 50)" stroke-width="4"/>
+  <circle cx="344" cy="65" r="14" fill="rgb(184, 75, 63)"/>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>executive_light</span><span>Executive Light</span></div>
+    <h4>Executive Light</h4>
+    <p>Use for boardroom explainers, weekly reviews, and clean business summaries.</p>
+    <div class="swatches"><span class="swatch" title="background" style="background:rgb(246, 241, 231)"></span>
+<span class="swatch" title="panel" style="background:rgb(255, 251, 242)"></span>
+<span class="swatch" title="foreground" style="background:rgb(13, 25, 38)"></span>
+<span class="swatch" title="accent" style="background:rgb(25, 103, 210)"></span>
+<span class="swatch" title="accent2" style="background:rgb(176, 122, 50)"></span>
+<span class="swatch" title="danger" style="background:rgb(184, 75, 63)"></span></div>
+  </div>
+</article>
+<article class="theme-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Market Terminal preview">
+  <rect width="420" height="250" fill="rgb(5, 13, 18)"/>
+  <rect x="24" y="24" width="372" height="202" rx="12" fill="rgb(11, 28, 35)" stroke="rgb(18, 44, 52)"/>
+  <rect x="46" y="49" width="94" height="18" rx="9" fill="rgb(23, 214, 132)"/>
+  <rect x="46" y="88" width="242" height="18" rx="5" fill="rgb(231, 247, 238)"/>
+  <rect x="46" y="118" width="176" height="12" rx="6" fill="rgb(124, 154, 146)"/>
+  <rect x="46" y="154" width="310" height="40" rx="8" fill="rgb(18, 44, 52)"/>
+  <rect x="68" y="168" width="84" height="12" rx="6" fill="rgb(231, 247, 238)"/>
+  <path d="M238 178l22 -11 19 13 28 -21 25 12" fill="none" stroke="rgb(236, 198, 83)" stroke-width="4"/>
+  <circle cx="344" cy="65" r="14" fill="rgb(234, 82, 82)"/>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>market_terminal</span><span>Market Terminal</span></div>
+    <h4>Market Terminal</h4>
+    <p>Use for finance, KPI recaps, market breadth, and dense numeric hierarchy.</p>
+    <div class="swatches"><span class="swatch" title="background" style="background:rgb(5, 13, 18)"></span>
+<span class="swatch" title="panel" style="background:rgb(11, 28, 35)"></span>
+<span class="swatch" title="foreground" style="background:rgb(231, 247, 238)"></span>
+<span class="swatch" title="accent" style="background:rgb(23, 214, 132)"></span>
+<span class="swatch" title="accent2" style="background:rgb(236, 198, 83)"></span>
+<span class="swatch" title="danger" style="background:rgb(234, 82, 82)"></span></div>
+  </div>
+</article>
+<article class="theme-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Product Keynote preview">
+  <rect width="420" height="250" fill="rgb(244, 246, 248)"/>
+  <rect x="24" y="24" width="372" height="202" rx="12" fill="rgb(255, 255, 255)" stroke="rgb(232, 238, 245)"/>
+  <rect x="46" y="49" width="94" height="18" rx="9" fill="rgb(55, 105, 246)"/>
+  <rect x="46" y="88" width="242" height="18" rx="5" fill="rgb(8, 16, 26)"/>
+  <rect x="46" y="118" width="176" height="12" rx="6" fill="rgb(92, 105, 120)"/>
+  <rect x="46" y="154" width="310" height="40" rx="8" fill="rgb(232, 238, 245)"/>
+  <rect x="68" y="168" width="84" height="12" rx="6" fill="rgb(8, 16, 26)"/>
+  <path d="M238 178l22 -11 19 13 28 -21 25 12" fill="none" stroke="rgb(116, 84, 240)" stroke-width="4"/>
+  <circle cx="344" cy="65" r="14" fill="rgb(204, 73, 73)"/>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>product_keynote</span><span>Product Keynote</span></div>
+    <h4>Product Keynote</h4>
+    <p>Use for product launches, workflow demos, and verified object-led stories.</p>
+    <div class="swatches"><span class="swatch" title="background" style="background:rgb(244, 246, 248)"></span>
+<span class="swatch" title="panel" style="background:rgb(255, 255, 255)"></span>
+<span class="swatch" title="foreground" style="background:rgb(8, 16, 26)"></span>
+<span class="swatch" title="accent" style="background:rgb(55, 105, 246)"></span>
+<span class="swatch" title="accent2" style="background:rgb(116, 84, 240)"></span>
+<span class="swatch" title="danger" style="background:rgb(204, 73, 73)"></span></div>
+  </div>
+</article>
+<article class="theme-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Data Magazine preview">
+  <rect width="420" height="250" fill="rgb(252, 248, 238)"/>
+  <rect x="24" y="24" width="372" height="202" rx="12" fill="rgb(241, 234, 218)" stroke="rgb(222, 212, 195)"/>
+  <rect x="46" y="49" width="94" height="18" rx="9" fill="rgb(18, 92, 129)"/>
+  <rect x="46" y="88" width="242" height="18" rx="5" fill="rgb(31, 30, 27)"/>
+  <rect x="46" y="118" width="176" height="12" rx="6" fill="rgb(97, 91, 82)"/>
+  <rect x="46" y="154" width="310" height="40" rx="8" fill="rgb(222, 212, 195)"/>
+  <rect x="68" y="168" width="84" height="12" rx="6" fill="rgb(31, 30, 27)"/>
+  <path d="M238 178l22 -11 19 13 28 -21 25 12" fill="none" stroke="rgb(196, 95, 43)" stroke-width="4"/>
+  <circle cx="344" cy="65" r="14" fill="rgb(168, 61, 58)"/>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>data_magazine</span><span>Data Magazine</span></div>
+    <h4>Data Magazine</h4>
+    <p>Use for analytical features, chart-led explainers, and slower editorial pacing.</p>
+    <div class="swatches"><span class="swatch" title="background" style="background:rgb(252, 248, 238)"></span>
+<span class="swatch" title="panel" style="background:rgb(241, 234, 218)"></span>
+<span class="swatch" title="foreground" style="background:rgb(31, 30, 27)"></span>
+<span class="swatch" title="accent" style="background:rgb(18, 92, 129)"></span>
+<span class="swatch" title="accent2" style="background:rgb(196, 95, 43)"></span>
+<span class="swatch" title="danger" style="background:rgb(168, 61, 58)"></span></div>
+  </div>
+</article>
+<article class="theme-card">
+  <div class="svg-wrap"><svg viewBox="0 0 420 250" role="img" aria-label="Social Pop preview">
+  <rect width="420" height="250" fill="rgb(18, 17, 26)"/>
+  <rect x="24" y="24" width="372" height="202" rx="12" fill="rgb(35, 31, 52)" stroke="rgb(50, 43, 74)"/>
+  <rect x="46" y="49" width="94" height="18" rx="9" fill="rgb(255, 198, 41)"/>
+  <rect x="46" y="88" width="242" height="18" rx="5" fill="rgb(255, 249, 238)"/>
+  <rect x="46" y="118" width="176" height="12" rx="6" fill="rgb(189, 180, 204)"/>
+  <rect x="46" y="154" width="310" height="40" rx="8" fill="rgb(50, 43, 74)"/>
+  <rect x="68" y="168" width="84" height="12" rx="6" fill="rgb(255, 249, 238)"/>
+  <path d="M238 178l22 -11 19 13 28 -21 25 12" fill="none" stroke="rgb(38, 205, 255)" stroke-width="4"/>
+  <circle cx="344" cy="65" r="14" fill="rgb(255, 95, 123)"/>
+</svg></div>
+  <div class="card-body">
+    <div class="meta"><span>social_pop</span><span>Social Pop</span></div>
+    <h4>Social Pop</h4>
+    <p>Use for countdowns, lighter recaps, and high-energy social packages.</p>
+    <div class="swatches"><span class="swatch" title="background" style="background:rgb(18, 17, 26)"></span>
+<span class="swatch" title="panel" style="background:rgb(35, 31, 52)"></span>
+<span class="swatch" title="foreground" style="background:rgb(255, 249, 238)"></span>
+<span class="swatch" title="accent" style="background:rgb(255, 198, 41)"></span>
+<span class="swatch" title="accent2" style="background:rgb(38, 205, 255)"></span>
+<span class="swatch" title="danger" style="background:rgb(255, 95, 123)"></span></div>
+  </div>
+</article>
+      </div>
+    </section>
+    <section id="composition-rule">
+      <div class="section-head">
+        <h2>Composition Rule</h2>
+        <p>One video direction is a simple product of three decisions.</p>
+      </div>
+      <div class="note">
+        Pick <strong>one story template</strong>, fill it with <strong>scene components</strong>, then apply <strong>one visual theme</strong>. Example: <code>market_radar</code> + <code>market_ledger / signal_grid / verification_rail</code> + <code>market_terminal</code> creates a public market recap without exposing private holdings or private source lists.
+      </div>
+    </section>
+    <footer>
+      Generated from <code>src/daily_video_pipeline/templates.py</code>. Regenerate with <code>daily-video build-gallery</code>.
+    </footer>
+  </div>
+</body>
+</html>

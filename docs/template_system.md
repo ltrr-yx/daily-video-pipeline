@@ -10,6 +10,19 @@ The repository now uses a composable video direction model instead of a few fixe
 
 This gives users many combinations without copying whole video scripts.
 
+## Gallery
+
+Use the gallery when choosing a direction:
+
+- [`gallery.html`](gallery.html) shows illustrated story template flows, scene component sketches, and visual theme previews.
+- [`gallery.md`](gallery.md) lists the same registry in a GitHub-readable format.
+
+Regenerate both files after changing the registry:
+
+```bash
+daily-video build-gallery
+```
+
 ## Runtime Behavior
 
 - `story.template` in config picks the narrative template.

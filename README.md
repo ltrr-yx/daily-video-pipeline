@@ -21,10 +21,16 @@ The public version ships with a composable direction system rather than a few fi
 - 30+ scene components for cover hooks, source proof, metric stacks, timeline ribbons, comparison splits, risk matrices, ledgers, product plates, and conclusion stamps.
 - 6 visual themes: editorial dark, executive light, market terminal, product keynote, data magazine, and social pop.
 
+Open the visual gallery to understand the combinations before rendering:
+
+- [`docs/gallery.html`](docs/gallery.html) for illustrated story flows, scene module sketches, and visual skin previews.
+- [`docs/gallery.md`](docs/gallery.md) for a GitHub-readable text index.
+
 List them locally:
 
 ```bash
 daily-video list-templates
+daily-video build-gallery
 ```
 
 ## Quick Start

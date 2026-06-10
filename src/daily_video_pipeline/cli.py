@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from .config import load_config
+from .gallery import write_gallery
 from .pipeline import run_pipeline
 from .privacy import load_extra_blocklist, scan_tree
 from .templates import SCENE_COMPONENTS, STORY_TEMPLATES, VISUAL_THEMES
@@ -30,6 +31,8 @@ def main(argv: list[str] | None = None) -> int:
         help="Ignored local file with personal source names, domains, topic labels, or holdings terms to block.",
     )
     subparsers.add_parser("list-templates", help="List built-in story templates, scene components, and visual themes.")
+    gallery_parser = subparsers.add_parser("build-gallery", help="Generate docs/gallery.html and docs/gallery.md.")
+    gallery_parser.add_argument("--output-dir", default="docs", help="Directory to write gallery files.")
 
     args = parser.parse_args(argv)
     if args.command == "run":
@@ -81,6 +84,12 @@ def main(argv: list[str] | None = None) -> int:
         print("\nVisual themes")
         for key, theme in VISUAL_THEMES.items():
             print(f"- {key}: {theme['name']}")
+        return 0
+
+    if args.command == "build-gallery":
+        html_path, md_path = write_gallery(args.output_dir)
+        print(f"Gallery HTML: {html_path}")
+        print(f"Gallery Markdown: {md_path}")
         return 0
 
     return 2
