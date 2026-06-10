@@ -18,9 +18,10 @@ def test_gallery_html_includes_registered_assets() -> None:
 def test_gallery_markdown_lists_three_layers() -> None:
     markdown = build_gallery_markdown()
 
-    assert "Story templates define narrative order." in markdown
-    assert "Scene components define the visual language" in markdown
-    assert "Visual themes define the commercial skin." in markdown
+    assert "Story Template / 叙事模板" in markdown
+    assert "Scene Component / 镜头类型" in markdown
+    assert "Visual Theme / 视觉皮肤" in markdown
+    assert "Composition Examples / 组合示例" in markdown
 
 
 def test_write_gallery_creates_html_and_markdown(tmp_path) -> None:
@@ -28,5 +29,5 @@ def test_write_gallery_creates_html_and_markdown(tmp_path) -> None:
 
     assert html_path.exists()
     assert md_path.exists()
-    assert "Template Gallery" in html_path.read_text(encoding="utf-8")
-    assert "# Template Gallery" in md_path.read_text(encoding="utf-8")
+    assert "三步选出视频方向" in html_path.read_text(encoding="utf-8")
+    assert "# Template Gallery / 模板图库" in md_path.read_text(encoding="utf-8")
