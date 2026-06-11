@@ -7,9 +7,9 @@ flowchart LR
   A["configs/project.local.yml"] --> B["fetch RSS/Atom sources"]
   B --> C["dedupe and score recent items"]
   C --> D["story template selection"]
-  D --> E["scene components + visual theme"]
+  D --> E["scene components + visual theme + motion grammar"]
   E --> F["beat frames + contact sheet"]
-  G["local BGM or demo tone"] --> H["audio mix"]
+  G["local BGM or demo musical bed"] --> H["audio mix"]
   I["optional narration"] --> H
   F --> J["ffmpeg video assembly"]
   H --> J

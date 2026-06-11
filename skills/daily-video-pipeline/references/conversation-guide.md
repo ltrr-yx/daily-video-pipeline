@@ -24,7 +24,7 @@ If the user gives only an audience:
 
 After topic, audience, and story shape are clear, ask for creative direction:
 
-> I have enough to choose a story structure. For the visual side, do you want this to feel more editorial and serious, product-keynote clean, data-heavy, or social and punchy? And should the motion feel calm and premium, evidence-tracing, or fast reveal?
+> I have enough to choose a story structure. For the visual side, do you want this to feel more editorial and serious, product-keynote clean, data-heavy, or social and punchy? Also, do you have access to an image generation model such as GPT Image? If yes, I can write scene-by-scene illustration prompts; if not, I will keep it fully template-rendered. Should the motion feel calm and premium, evidence-tracing, or fast reveal?
 
 Ask about BGM and voice as production choices, not as technical settings:
 
@@ -51,6 +51,17 @@ For visual tone:
 - charts and metrics -> `data_magazine` or `market_terminal`
 - more social -> `social_pop`
 
+For generated illustration use:
+
+- opening anchor -> full-bleed or cropped hero illustration behind deterministic title text
+- proof/evidence -> abstract source desk, document cutaway, or verification still; keep citations as renderer text
+- metric/data -> atmospheric backdrop or small thematic object; keep numbers and charts deterministic
+- mechanism/process -> layered cutaway, x-ray metaphor, or system diagram background
+- product/object -> clean hero object or material render; avoid fake UI unless the user provides licensed screenshots
+- map/context -> regional texture, city/industry context, or entity network backdrop
+- comparison -> two visual worlds separated by a clear divider
+- conclusion -> symbolic stamp, checkpoint, or final watch-object background
+
 For motion:
 
 - calm premium -> `soft_assembly`
@@ -75,8 +86,16 @@ Avoid saying:
 - "The visual grammar is leaking."
 - "The prompt notes are visible."
 
+When offering image prompts, make it clear that they are production prompts, not final audience copy. A concise handoff can look like:
+
+> If you can generate images, I will give you three prompts: a 9:16 opening hero, one mechanism cutaway, and one conclusion background. The video text, source labels, and numbers will stay in the renderer so the art does not need to draw exact words or charts.
+
 ## When the User Is Unsure
 
 Choose a default and explain it briefly:
 
 > Since this is for a public repo launch, I would use a product-launch structure, product-keynote visuals, calm premium motion, Chinese narration, and a quiet licensed BGM bed. That gives it a commercial launch feel without turning it into an ad that overpromises.
+
+If the user is unsure about image generation, default to no generated art:
+
+> We can keep this template-rendered first. If you later have GPT Image or another image model available, I can add prompt packets for the opening, mechanism, and ending scenes without changing the factual script.

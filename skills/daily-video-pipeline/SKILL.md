@@ -1,6 +1,6 @@
 ---
 name: daily-video-pipeline
-description: "Operate the Daily Video Pipeline repository through Codex or CodeBuddy. Use when a user wants to make a vertical daily/source/video/product-launch clip, configure RSS/Atom or local inputs and BGM, choose narrative/visual/motion direction through natural conversation, run the daily-video CLI, review contact sheets, check narration pronunciation/TTS risk, produce publishing copy, or protect private inputs while using this repo."
+description: "Operate the Daily Video Pipeline repository through Codex or CodeBuddy. Use when a user wants to make a vertical daily/source/video/product-launch clip, configure RSS/Atom or local inputs and BGM, choose narrative/visual/scene/motion direction, write optional image-generation prompts for illustrated scenes, run the daily-video CLI, review contact sheets, check narration pronunciation/TTS risk, produce publishing copy, or protect private inputs while using this repo."
 ---
 
 # Daily Video Pipeline
@@ -15,7 +15,7 @@ Do not present this repo as a black-box "paste any broadcast script and get a fi
 
 Guide the user with active invisibility: keep the next step clear without exposing a rigid checklist. Ask only the next useful cluster of questions, use conversational phrasing, and make a sensible default recommendation when the user is unsure.
 
-Avoid numbered questionnaires unless the user asks for a form. For the first reply to "I want to make a video", ask naturally for topic, audience, and narrative direction. After that answer, ask for visual design, motion feel, font needs, BGM mood, and voice/narration preferences.
+Avoid numbered questionnaires unless the user asks for a form. For the first reply to "I want to make a video", ask naturally for topic, audience, and narrative direction. After that answer, ask for visual design, motion feel, illustration capability, font needs, BGM mood, and voice/narration preferences.
 
 Load [references/conversation-guide.md](references/conversation-guide.md) when shaping a multi-turn intake, recovering from vague requests, or deciding how to phrase questions.
 
@@ -25,7 +25,7 @@ Load [references/conversation-guide.md](references/conversation-guide.md) when s
    Ask what the video is about, who it is for, and what story shape it should have: daily brief, product launch, evidence chain, market radar, comparison, timeline, risk watch, ranking, or weekly review. Use friendly language; keep internal template keys out of user-facing copy.
 
 2. Establish creative direction.
-   Ask about visual surface, motion rhythm, language, font constraints, narration, and BGM. Recommend a direction if the user gives a weak answer, then let them accept or adjust it.
+   Ask about visual surface, scene type, motion rhythm, language, font constraints, narration, and BGM. When discussing scene type, ask whether the user has access to an image generation model such as GPT Image or another licensed image tool. If they do, offer to write scene-specific illustration prompts that match the chosen template, theme, and motion. Recommend a direction if the user gives a weak answer, then let them accept or adjust it.
 
 3. Establish inputs and privacy.
    Identify whether the user has RSS/Atom sources, a local item list, pasted source material, an existing script, or only an idea. Keep real feeds, account names, BGM paths, strategy notes, and outputs in ignored local files. Never commit private config or generated videos.
@@ -54,6 +54,25 @@ If the user brings pasted material or a finished script, be honest about this bo
 - Convert the material into structured local items and use a local/private runner if the user wants a one-off video.
 - Propose or implement a durable repo feature such as `daily-video run --items local_items.json` or `daily-video render --script script.md` if the user wants this to become product behavior.
 - Use the material only as creative direction while the actual run still comes from configured sources.
+
+The public CLI also does not automatically call GPT Image, OpenAI image generation, or any third-party image model. Treat generated illustration as an optional production assist:
+
+- If the user has an image generation model available, help them write prompts for the selected scene types and visual theme.
+- If the current agent session has an authorized image-generation tool, ask whether they want you to generate draft illustrations. Save generated files locally and keep them out of git unless the user explicitly wants public sample assets.
+- If no image model is available, still provide copy-ready prompts and continue with the deterministic template renderer.
+- Do not invent model access, API keys, or automatic CLI support that the repo does not have.
+
+## Illustration Prompt Support
+
+When the user wants richer visuals, create one prompt packet per illustrated scene instead of a generic art prompt. Each packet should include:
+
+- Scene role: opening anchor, proof cutaway, metric backdrop, mechanism illustration, product object, map/context, comparison side, or conclusion stamp.
+- Prompt: concrete subject, composition, lighting, material, camera/framing, and mood.
+- Style lock: match the chosen visual theme, typography density, palette, and vertical 9:16 video layout.
+- Negative constraints: no legible text, logos, watermarks, fake UI, fake charts, extra faces, or private source details unless the user explicitly provided licensed material.
+- Integration note: explain whether the art should sit as a full-bleed background, cropped hero object, side plate, translucent texture, card thumbnail, or masked cutaway behind deterministic text.
+
+Use illustrations to support the facts, not replace them. Keep source links, numbers, captions, and factual claims deterministic in the renderer or script. Do not ask an image model to produce exact charts, citations, quotes, UI screenshots, or sensitive private entities.
 
 ## Commands
 

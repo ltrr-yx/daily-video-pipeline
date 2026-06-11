@@ -19,12 +19,15 @@ The public version ships with a composable direction system rather than a few fi
 
 - 12 story templates for daily briefs, product launches, evidence chains, market radar, comparisons, timelines, risk watches, rankings, and weekly reviews.
 - 30+ scene components for cover hooks, source proof, metric stacks, timeline ribbons, comparison splits, risk matrices, ledgers, product plates, and conclusion stamps.
+- Optional illustration guidance for users who have GPT Image or another image generation model: the skill can write scene-by-scene prompts while the renderer keeps text, numbers, and sources deterministic.
 - 6 visual themes: editorial dark, executive light, market terminal, product keynote, data magazine, and social pop.
+- 6 motion grammars: soft assembly, evidence trace, product reveal, data tween, mechanism scan, and verdict lock. Use `video.motion: auto` to let scene families pick the right entrance logic.
 
 Open the visual gallery to understand the combinations before rendering:
 
 - [`docs/gallery.html`](docs/gallery.html) for illustrated story flows, scene module sketches, and visual skin previews.
 - [`docs/gallery.md`](docs/gallery.md) for a GitHub-readable text index.
+- [`docs/production_principles.md`](docs/production_principles.md) for the audience-output boundary: internal editorial guidance stays out of final frames, narration, and publishing copy.
 
 List them locally:
 
@@ -77,9 +80,14 @@ Before committing:
 ```bash
 daily-video privacy-scan
 # or: python scripts/privacy_scan.py
+
+daily-video pronunciation-scan --file outputs/YYYY-MM-DD/project/script.md
+# or: python scripts/pronunciation_scan.py --file outputs/YYYY-MM-DD/project/script.md
 ```
 
 For personal source domains, topic labels, account names, or private terms you never want to leak, put one term per line in `.privacy-blocklist.local`. That file is ignored by git.
+
+Run the pronunciation scan before TTS or publishing. It flags Chinese polyphonic words that local or online TTS voices may read incorrectly, such as `命令行` where `行` should be read as `hang2`.
 
 ## Suggested Public Structure
 

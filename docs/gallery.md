@@ -2,11 +2,13 @@
 
 Open [`docs/gallery.html`](gallery.html) for the visual gallery.
 
-制作视频的方向由三层决定：
+制作视频的方向由四层决定：
 
 - Story Template / 叙事模板：决定故事顺序。
 - Scene Component / 镜头类型：决定每个画面怎么表达。
+- Optional Illustration / 可选插图：如果用户有图片生成模型，可为部分镜头补充插图提示词。
 - Visual Theme / 视觉皮肤：决定颜色、质感和商业气质。
+- Motion Grammar / 出场语法：决定元素如何进入、组装、强调和退出。
 
 ## Story Templates / 叙事模板
 
@@ -193,14 +195,130 @@ Open [`docs/gallery.html`](gallery.html) for the visual gallery.
 - `conclusion_stamp` - 结论印章 / Conclusion Stamp: 把最后判断落得很清楚。 Visual grammar: `market_ledger`.
 - `cta_end` - 行动收尾 / CTA End: 引导下一步查看、复盘或订阅。 Visual grammar: `cinematic_anchor`.
 
+## Optional Illustration / 可选插图
+
+如果用户有 GPT Image 或其他图片生成模型，可以把插图当作可选生产素材；事实、数字、来源和最终文字仍由脚本与渲染器确定。
+
+### 开场主视觉 / Hero anchor
+
+- Scene: `cover_hook` - 开场钩子 / Cover Hook
+- Fit: 用一张有气氛的竖版插图先建立对象、场景和情绪，标题、日期和来源仍由渲染器叠加。
+- Prompt role: 9:16 cinematic editorial hero background, one clear subject, strong negative space, no text.
+- Integration: Full-bleed background or masked hero object behind the deterministic hook text.
+
+### 证据切片 / Evidence cutaway
+
+- Scene: `source_proof` - 来源证明 / Source Proof
+- Fit: 把来源证明做得更像真实审稿桌面或资料切片，但引用、日期和链接不要让生图模型绘制。
+- Prompt role: abstract research desk, paper stack, verification marks, soft depth of field, no readable words.
+- Integration: Small side plate or translucent cutaway beside source labels rendered by code.
+
+### 指标氛围 / Metric atmosphere
+
+- Scene: `metric_stack` - 指标堆栈 / Metric Stack
+- Fit: 为数字镜头增加材质、空间和行业暗示，让密集数据不显得像裸表格。
+- Prompt role: premium data-room backdrop, luminous abstract bars, finance or product context, no exact chart labels.
+- Integration: Low-contrast backdrop; exact numbers, charts, and captions stay deterministic.
+
+### 机制透视 / Mechanism x-ray
+
+- Scene: `mechanism_xray` - 机制透视 / Mechanism X-Ray
+- Fit: 把抽象过程画成分层结构，帮助观众理解输入、机制和结果之间的关系。
+- Prompt role: clean layered x-ray cutaway of a system, translucent materials, arrows implied by composition, no text.
+- Integration: Masked center illustration with code-rendered labels and connector lines on top.
+
+### 产品物件 / Product object
+
+- Scene: `product_plate` - 产品主视觉 / Product Plate
+- Fit: 在产品发布或功能说明里给对象一个更高级的材质镜头，减少纯文字发布会感。
+- Prompt role: minimal premium product render on a clean stage, soft reflections, accurate object mood, no fake UI.
+- Integration: Cropped object plate with callouts, proof chips, and CTA rendered separately.
+
+### 对比世界 / Comparison worlds
+
+- Scene: `compare_split` - 对比分屏 / Compare Split
+- Fit: 让左右两侧拥有不同色温、材质或空间隐喻，帮助观众一眼读出前后或 A/B 差异。
+- Prompt role: two contrasting vertical environments divided clearly, old versus new mood, no text or icons.
+- Integration: Split background; deterministic labels and comparison metrics sit above both halves.
+
+### 结论符号 / Verdict symbol
+
+- Scene: `conclusion_stamp` - 结论印章 / Conclusion Stamp
+- Fit: 用一个象征性收束画面强化记忆点，但不让模型生成最终判断文字。
+- Prompt role: symbolic final checkpoint, sealed decision object, premium editorial lighting, no words.
+- Integration: Dimmed end-card background behind the final watch item or verdict stamp.
+
 ## Visual Themes / 视觉皮肤
 
 - `editorial_dark` - 深色编辑部 / Editorial Dark: 适合严肃新闻、研究札记、夜间复盘。
+  - Type: Noto Serif SC / Source Han Serif SC + Newsreader / Georgia
+  - Scale: 标题 76 / 正文 40 / 标签 24
+  - Text/media: 文字 64% / 画面 36%
+  - Ornament: 青绿色小色块，配少量金色证据点。
+  - Emphasis: 只给关键判断加一条短强调线。
 - `executive_light` - 高管浅色 / Executive Light: 适合周报、简报、面向决策者的解释。
+  - Type: Noto Sans SC / Source Han Sans SC + Inter / SF Pro
+  - Scale: 标题 68 / 正文 38 / 标签 24
+  - Text/media: 文字 56% / 画面 44%
+  - Ornament: 克制蓝色标签，配少量金色确认点。
+  - Emphasis: 只在结论行下方放一条细蓝线。
 - `market_terminal` - 市场终端 / Market Terminal: 适合金融、KPI、市场宽度和密集数字。
+  - Type: Noto Sans Mono CJK SC / Sarasa Gothic SC + IBM Plex Mono / SF Mono
+  - Scale: 标题 60 / 正文 34 / 标签 22
+  - Text/media: 文字 48% / 画面 52%
+  - Ornament: 终端括号、状态点和紧凑数据轨。
+  - Emphasis: 用绿色指标轨强调正在变化的数值。
 - `product_keynote` - 产品发布会 / Product Keynote: 适合产品、功能、硬件和对象主视觉。
+  - Type: Noto Sans SC / HarmonyOS Sans SC + Inter / Helvetica
+  - Scale: 标题 82 / 正文 40 / 标签 24
+  - Text/media: 文字 42% / 画面 58%
+  - Ornament: 蓝色舞台标签，配漂浮式证明点。
+  - Emphasis: 在功能名下方使用更粗的短下划线。
 - `data_magazine` - 数据杂志 / Data Magazine: 适合图表型专题和慢一点的编辑节奏。
+  - Type: Noto Serif SC / Source Han Serif SC + IBM Plex Serif / Georgia
+  - Scale: 标题 72 / 正文 38 / 标签 23
+  - Text/media: 文字 58% / 画面 42%
+  - Ornament: 杂志页码、暖色小标签和图表注释。
+  - Emphasis: 用赭色线条强调一条证据短语。
 - `social_pop` - 社媒高能 / Social Pop: 适合榜单、轻快盘点和更鲜明的社交包装。
+  - Type: Noto Sans SC Black / Source Han Sans Heavy + Space Grotesk / Arial Black
+  - Scale: 标题 84 / 正文 42 / 标签 26
+  - Text/media: 文字 50% / 画面 50%
+  - Ornament: 高饱和贴纸标签和强数字标记。
+  - Emphasis: 用荧光笔式下划线强调情绪钩子。
+
+## Motion Grammars / 出场语法
+
+- `soft_assembly` - Soft Assembly: A calm commercial default: shell first, title second, cards or proof details stagger into a readable hold.
+  - Default families: cover, context, grid
+  - Entrance: soft fade with a small upward settle
+  - Emphasis: staggered content assembly
+  - Exit: short fade-through
+- `evidence_trace` - Evidence Trace: Proof-oriented motion: draw the rail or path first, then reveal stops, labels, and evidence cards in sequence.
+  - Default families: proof, chips, rail, timeline
+  - Entrance: rail draw-on before nodes
+  - Emphasis: node and card stagger
+  - Exit: source line holds before fade-through
+- `product_reveal` - Product Reveal: A product or object gets a premium reveal with a soft plate entrance, light camera push, and restrained callouts.
+  - Default families: product, map
+  - Entrance: matte-like plate reveal with gentle scale
+  - Emphasis: callout pins after the anchor is visible
+  - Exit: slow push into the final product read
+- `data_tween` - Data Tween: Numbers, rows, and tiny charts animate as evidence changes rather than appearing as static slides.
+  - Default families: metric, ledger, ranking
+  - Entrance: metric rows stagger in
+  - Emphasis: value and sparkline fill
+  - Exit: final values hold long enough to read
+- `mechanism_scan` - Mechanism Scan: Layered explanations reveal structure before claims, then use a scan or connector pass to show causality.
+  - Default families: mechanism, split, matrix
+  - Entrance: layer peel or split reveal
+  - Emphasis: focus rail, divider, or scan pass
+  - Exit: consequence layer settles last
+- `verdict_lock` - Verdict Lock: Conclusion motion compresses supporting details into a final practical watch item or verdict.
+  - Default families: list, stamp
+  - Entrance: verdict plate enters after the setup
+  - Emphasis: supporting checks stagger below
+  - Exit: final stamp hold
 
 ## Composition Examples / 组合示例
 

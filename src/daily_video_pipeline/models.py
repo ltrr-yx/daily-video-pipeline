@@ -40,6 +40,7 @@ class ScriptScene:
     source_label: str
     component: str = "insight_stack"
     visual_grammar: str = "signal_board"
+    motion_grammar: str = "soft_assembly"
     eyebrow: str = ""
     proof: str = ""
     source_url: str = ""

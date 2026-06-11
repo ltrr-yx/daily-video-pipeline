@@ -29,6 +29,9 @@ video:
   # Built-in themes: editorial_dark, executive_light, market_terminal,
   # product_keynote, data_magazine, social_pop.
   theme: "editorial_dark"
+  # Built-in motion grammars: auto, soft_assembly, evidence_trace,
+  # product_reveal, data_tween, mechanism_scan, verdict_lock.
+  motion: "auto"
   seconds_per_scene: 5
   # Optional: set a local font path if your language needs a specific font.
   font_path: ""
@@ -47,8 +50,8 @@ music:
   # Use your own licensed BGM path in configs/project.local.yml.
   path: ""
   volume: 0.18
-  # Demo mode can synthesize a plain tone so the render path includes BGM audio.
-  generate_demo_tone_if_missing: true
+  # Demo mode can synthesize a simple musical bed so the render path includes BGM audio.
+  generate_demo_bgm_if_missing: true
 
 sources:
   - name: "Example RSS feed"
