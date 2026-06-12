@@ -16,6 +16,15 @@ story:
   # comparison, timeline, risk_watch, top_five, weekly_review.
   template: "daily_briefing"
   seconds_per_scene: 5
+  # Optional: override motion per scene component key or scene family.
+  # Component keys win over family keys. Common family keys include proof,
+  # product, metric, timeline, mechanism, split, list, and stamp.
+  # `conclusion` is accepted as a readable alias for the stamp family.
+  # motion_overrides:
+  #   source_proof: "evidence_trace"
+  #   proof: "evidence_trace"
+  #   product: "product_reveal"
+  #   conclusion: "verdict_lock"
 
 privacy:
   # Terms here are excluded from generated scripts. Keep personal terms in a
@@ -31,6 +40,7 @@ video:
   theme: "editorial_dark"
   # Built-in motion grammars: auto, soft_assembly, evidence_trace,
   # product_reveal, data_tween, mechanism_scan, verdict_lock.
+  # Set the global default here; use story.motion_overrides for per-scene control.
   motion: "auto"
   seconds_per_scene: 5
   # Optional: set a local font path if your language needs a specific font.
@@ -45,6 +55,15 @@ narration:
   enabled: false
   engine: "auto"  # auto, edge-tts, say
   voice: "zh-CN-YunyangNeural"
+  # Optional Edge TTS prosody controls, for example: rate: "+6%", pitch: "+2Hz".
+  rate: ""
+  pitch: ""
+  volume: ""
+  # When Edge TTS subtitles are available, use subtitle cue starts as the
+  # source of truth for scene durations before rendering frames.
+  timing:
+    enabled: true
+    strict: false
 
 music:
   # Use your own licensed BGM path in configs/project.local.yml.

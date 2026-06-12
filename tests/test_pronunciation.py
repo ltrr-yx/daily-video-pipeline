@@ -18,6 +18,13 @@ def test_pronunciation_scan_passes_plain_text() -> None:
     assert scan_text("然后在终端里生成视频。") == []
 
 
+def test_pronunciation_scan_flags_daily_update_shorthand() -> None:
+    findings = scan_text("这个仓库适合日日更。")
+
+    assert [finding.term for finding in findings] == ["日日更"]
+    assert "每天更新" in findings[0].suggestion
+
+
 def test_pronunciation_cli_returns_nonzero_for_warning(tmp_path: Path, capsys) -> None:
     script_path = tmp_path / "voiceover.txt"
     script_path.write_text("你可以直接跑命令行。", encoding="utf-8")

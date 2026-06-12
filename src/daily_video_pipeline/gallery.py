@@ -128,32 +128,53 @@ STYLE_SPEC_LABELS = (
     ("字体", "font"),
     ("字号", "scale"),
     ("图文", "ratio"),
+    ("颜色", "color"),
+    ("对比", "contrast"),
+    ("密度", "density"),
     ("装饰", "ornament"),
     ("划线", "underline"),
 )
 
 THEME_STYLE_I18N = {
     "editorial_dark": {
+        "color": "深色克制：墨色信息场，青绿色表示来源状态，金色只做证据确认。",
+        "contrast": "正文保持高对比，辅助文字用带绿色倾向的灰，不用发白灰。",
+        "density": "偏编辑部，一屏只讲一个来源支撑的判断。",
         "ornament": "青绿色小色块，配少量金色证据点。",
         "underline": "只给关键判断加一条短强调线。",
     },
     "executive_light": {
+        "color": "冷中性浅底，蓝色只给动作和当前选择，金色只做确认。",
+        "contrast": "深墨正文优先，辅助文字不低于可读灰阶。",
+        "density": "偏简报，一眼能读完标题、正文和检查点。",
         "ornament": "克制蓝色标签，配少量金色确认点。",
         "underline": "只在结论行下方放一条细蓝线。",
     },
     "market_terminal": {
+        "color": "深色终端，绿色表示状态，黄色表示异常或重点。",
+        "contrast": "数据文字亮，标签文字不过度压暗。",
+        "density": "密集数字和短标签，适合快读。",
         "ornament": "终端括号、状态点和紧凑数据轨。",
         "underline": "用绿色指标轨强调正在变化的数值。",
     },
     "product_keynote": {
-        "ornament": "蓝色舞台标签，配漂浮式证明点。",
-        "underline": "在功能名下方使用更粗的短下划线。",
+        "color": "冷中性色承载主体，青绿色表示同步状态，紫色只表示时间轴。",
+        "contrast": "标题用深墨，正文用深灰，不再用白块压在浅底上。",
+        "density": "三屏产品更新，少卡片，多轨道和状态读法。",
+        "ornament": "青绿色状态标签，配紫色时间轨和少量复查点。",
+        "underline": "只有功能名或时间轴需要强调时使用短紫线。",
     },
     "data_magazine": {
+        "color": "真正中性纸面，蓝绿色做证据，赤陶色做编辑强调。",
+        "contrast": "文字前景保持深色，不靠浅暖底制造质感。",
+        "density": "慢一点的数据专题，图表比装饰更重要。",
         "ornament": "杂志页码、暖色小标签和图表注释。",
         "underline": "用赭色线条强调一条证据短语。",
     },
     "social_pop": {
+        "color": "完整调色板：深紫底、黄色钩子、青色动效、粉色风险。",
+        "contrast": "大字强对比，辅助文字也要保证移动端可读。",
+        "density": "短句、高能、强标签。",
         "ornament": "高饱和贴纸标签和强数字标记。",
         "underline": "用荧光笔式下划线强调情绪钩子。",
     },
@@ -348,6 +369,8 @@ def build_gallery_markdown() -> str:
         "- Visual Theme / 视觉皮肤：决定颜色、质感和商业气质。",
         "- Motion Grammar / 出场语法：决定元素如何进入、组装、强调和退出。",
         "",
+        "设计质量检查：所有主题都必须先说明颜色策略、文字对比、信息密度、字体字号和装饰角色。不要把视觉主题简化成背景色加卡片。",
+        "",
         "## Story Templates / 叙事模板",
         "",
     ]
@@ -413,6 +436,9 @@ def build_gallery_markdown() -> str:
         lines.append(f"  - Type: {style['font']}")
         lines.append(f"  - Scale: {style['scale']}")
         lines.append(f"  - Text/media: {style['ratio']}")
+        lines.append(f"  - Color: {style['color']}")
+        lines.append(f"  - Contrast: {style['contrast']}")
+        lines.append(f"  - Density: {style['density']}")
         lines.append(f"  - Ornament: {style['ornament']}")
         lines.append(f"  - Emphasis: {style['underline']}")
 
@@ -455,18 +481,18 @@ def build_gallery_html() -> str:
   <title>Daily Video Pipeline - Gallery / 模板图库</title>
   <style>
     :root {{
-      --bg: #eef3f6;
+      --bg: #edf3f6;
       --surface: #ffffff;
-      --surface-2: #f6f9fa;
+      --surface-2: #f4f8fa;
       --ink: #111821;
       --text: #26343d;
-      --muted: #63717b;
-      --line: #d5e0e6;
-      --line-strong: #b8c7d0;
-      --green: #247a74;
-      --green-dark: #17615e;
-      --blue: #2467d8;
-      --gold: #b7791f;
+      --muted: #556873;
+      --line: #cfdae1;
+      --line-strong: #aebdc7;
+      --green: #006c70;
+      --green-dark: #00565a;
+      --blue: #565bd2;
+      --gold: #9a6924;
       --red: #c64f45;
       --radius: 8px;
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -486,7 +512,7 @@ def build_gallery_html() -> str:
     }}
     .hero {{
       color: var(--ink);
-      background: linear-gradient(180deg, #ffffff 0%, #f5f8fa 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #f4f8fa 100%);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 24px;
@@ -520,8 +546,8 @@ def build_gallery_html() -> str:
       align-items: baseline;
       gap: 8px;
       padding: 8px 10px;
-      background: #f1f6f6;
-      border: 1px solid #d7e3e5;
+      background: #edf7f6;
+      border: 1px solid #c9dddf;
       border-radius: var(--radius);
       color: #455761;
       font-size: 13px;
@@ -535,8 +561,8 @@ def build_gallery_html() -> str:
       min-height: 0;
       padding: 10px 12px;
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, .82);
-      border: 1px solid #d8e3e8;
+      background: rgba(250, 252, 253, .88);
+      border: 1px solid #d5e2e8;
       position: relative;
       display: grid;
       grid-template-columns: 30px minmax(0, 1fr);
@@ -559,8 +585,8 @@ def build_gallery_html() -> str:
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      color: #0d4f4b;
-      background: #dff1ef;
+      color: #00565a;
+      background: #dff2f1;
       font-weight: 850;
     }}
     .process-step h2 {{
@@ -629,9 +655,9 @@ def build_gallery_html() -> str:
     }}
     nav.gallery-filter a:hover,
     nav.gallery-filter a:focus-visible {{
-      color: #0b6d51;
-      background: #eef7f2;
-      border-color: rgba(14, 159, 110, .20);
+      color: var(--green-dark);
+      background: #edf7f6;
+      border-color: rgba(0, 108, 112, .24);
       outline: none;
     }}
     .nav-en {{
@@ -765,8 +791,8 @@ def build_gallery_html() -> str:
     .sample-line {{
       padding: 10px 12px;
       border-radius: var(--radius);
-      background: #eef7f2;
-      color: #254338;
+      background: #edf7f6;
+      color: #243f42;
       font-size: 13px;
       line-height: 1.48;
     }}
@@ -835,8 +861,8 @@ def build_gallery_html() -> str:
       padding: 5px 8px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: #f4f8f7;
-      color: #31424a;
+      background: #f0f6f7;
+      color: #273f46;
       font-size: 11px;
       font-weight: 800;
       overflow-wrap: anywhere;
@@ -1023,8 +1049,8 @@ def build_gallery_html() -> str:
       line-height: 1.5;
     }}
     code {{
-      color: #0f513d;
-      background: #e6f3ec;
+      color: #00565a;
+      background: #e0f2f1;
       padding: 2px 5px;
       border-radius: 5px;
       font-size: 12px;
@@ -1259,6 +1285,9 @@ def _theme_style_values(key: str, style: dict[str, Any]) -> dict[str, str]:
         "font": f"{style['font_zh']} + {style['font_en']}",
         "scale": f"标题 {style['headline_size']} / 正文 {style['body_size']} / 标签 {style['label_size']}",
         "ratio": f"文字 {style['text_ratio']}% / 画面 {style['media_ratio']}%",
+        "color": str(style.get("color_strategy") or localized["color"]),
+        "contrast": str(style.get("contrast") or localized["contrast"]),
+        "density": str(style.get("density") or localized["density"]),
         "ornament": localized["ornament"],
         "underline": localized["underline"],
     }
@@ -1850,10 +1879,13 @@ def _theme_svg(key: str, theme: dict[str, Any]) -> str:
     media_bar = ratio_total - text_bar
     media_x = 470 + text_bar + 6
     underline_w = max(38, min(100, round(122 * text_ratio / 70)))
+    radius = int(style.get("card_radius", 10))
+    top_rule = int(style.get("top_rule_height", 6))
     return f"""<svg viewBox="0 0 640 420" role="img" aria-label="{name} preview" style="font-family:{font_stack}">
   <rect width="640" height="420" fill="{bg}"/>
-  <rect x="32" y="24" width="232" height="372" rx="14" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
-  <rect x="32" y="24" width="232" height="7" rx="3.5" fill="{accent}"/>
+  <rect x="32" y="24" width="232" height="372" rx="{radius}" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <rect x="32" y="24" width="232" height="{top_rule}" rx="{top_rule / 2}" fill="{accent}"/>
+  <rect x="212" y="24" width="52" height="{top_rule}" rx="{top_rule / 2}" fill="{accent2}"/>
   <rect x="50" y="45" width="58" height="6" rx="3" fill="{muted}"/>
   <circle cx="216" cy="48" r="3" fill="{accent}"/>
   <circle cx="228" cy="48" r="3" fill="{accent2}"/>
@@ -1862,15 +1894,15 @@ def _theme_svg(key: str, theme: dict[str, Any]) -> str:
   <text x="52" y="120" font-size="{body_size}" font-weight="650" fill="{muted}">type scale / 字号</text>
   <rect x="52" y="129" width="{underline_w}" height="3" rx="1.5" fill="{accent2}"/>
   <path d="M52 139h172M52 229h172M52 319h172" stroke="{panel_alt}" stroke-width="1"/>
-  <rect x="52" y="154" width="172" height="52" rx="8" fill="{panel_alt}"/>
+  <rect x="52" y="154" width="172" height="52" rx="{max(6, radius - 2)}" fill="{panel_alt}"/>
   <text x="68" y="175" font-size="10" font-weight="800" fill="{accent}">01</text>
   <text x="94" y="173" font-size="{label_size}" font-weight="820" fill="{fg}">label chip</text>
   <rect x="94" y="184" width="{text_bar}" height="5" rx="2.5" fill="{muted}"/>
   <rect x="66" y="192" width="36" height="5" rx="2.5" fill="{accent2}"/>
   <rect x="158" y="192" width="42" height="5" rx="2.5" fill="{danger}"/>
-  <rect x="52" y="246" width="78" height="48" rx="7" fill="{panel_alt}"/>
+  <rect x="52" y="246" width="78" height="48" rx="{max(6, radius - 2)}" fill="{panel_alt}"/>
   <path d="M66 276l16 -10 14 12 18 -19 10 8" fill="none" stroke="{accent2}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="144" y="246" width="80" height="48" rx="7" fill="{panel_alt}"/>
+  <rect x="144" y="246" width="80" height="48" rx="{max(6, radius - 2)}" fill="{panel_alt}"/>
   <rect x="158" y="262" width="{max(38, media_bar + 24)}" height="5" rx="2.5" fill="{fg}"/>
   <rect x="158" y="278" width="34" height="5" rx="2.5" fill="{muted}"/>
   <circle cx="208" cy="280" r="5" fill="{accent}"/>
@@ -1880,35 +1912,35 @@ def _theme_svg(key: str, theme: dict[str, Any]) -> str:
   <rect x="52" y="360" width="172" height="1" fill="{panel_alt}"/>
   <rect x="52" y="376" width="72" height="5" rx="2.5" fill="{muted}"/>
   <rect x="152" y="376" width="72" height="5" rx="2.5" fill="{accent2}"/>
-  <rect x="292" y="40" width="142" height="88" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <rect x="292" y="40" width="142" height="88" rx="{radius}" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
   <text x="312" y="66" font-size="11" font-weight="800" fill="{fg}">type system</text>
   <text x="312" y="86" font-size="{label_size}" font-weight="760" fill="{accent}">{font_zh}</text>
   <text x="312" y="105" font-size="{label_size}" font-weight="760" fill="{muted}">{font_en}</text>
   <rect x="312" y="113" width="84" height="3" rx="1.5" fill="{accent2}"/>
-  <rect x="446" y="40" width="142" height="88" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <rect x="446" y="40" width="142" height="88" rx="{radius}" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
   <text x="466" y="66" font-size="11" font-weight="800" fill="{fg}">text / media</text>
   <rect x="470" y="82" width="{text_bar}" height="16" rx="5" fill="{fg}"/>
   <rect x="{media_x}" y="82" width="{media_bar}" height="16" rx="5" fill="{accent2}"/>
   <text x="470" y="113" font-size="9" font-weight="760" fill="{muted}">{text_ratio}% / {media_ratio}%</text>
   <circle cx="570" cy="112" r="5" fill="{danger}"/>
-  <rect x="292" y="150" width="296" height="112" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
-  <text x="314" y="178" font-size="12" font-weight="800" fill="{fg}">decor + underline</text>
+  <rect x="292" y="150" width="296" height="112" rx="{radius}" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="314" y="178" font-size="12" font-weight="800" fill="{fg}">color + contrast</text>
   <path d="M314 202h230M314 226h230" stroke="{panel_alt}" stroke-width="1"/>
   <rect x="314" y="194" width="52" height="5" rx="2.5" fill="{accent}"/>
-  <rect x="382" y="194" width="74" height="5" rx="2.5" fill="{muted}"/>
+  <rect x="382" y="194" width="74" height="5" rx="2.5" fill="{fg}"/>
   <rect x="494" y="194" width="38" height="5" rx="2.5" fill="{accent2}"/>
   <rect x="314" y="218" width="86" height="5" rx="2.5" fill="{muted}"/>
   <rect x="424" y="218" width="48" height="5" rx="2.5" fill="{danger}"/>
   <rect x="314" y="234" width="{underline_w}" height="4" rx="2" fill="{accent2}"/>
   <path d="M314 246l26 -12 22 10 32 -28 26 18 38 -30 34 20 32 -26" fill="none" stroke="{accent2}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="292" y="284" width="142" height="80" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
-  <text x="312" y="312" font-size="12" font-weight="800" fill="{fg}">scene rhythm</text>
+  <rect x="292" y="284" width="142" height="80" rx="{radius}" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="312" y="312" font-size="12" font-weight="800" fill="{fg}">density</text>
   <rect x="312" y="328" width="24" height="18" rx="4" fill="{accent}"/>
   <rect x="342" y="328" width="24" height="18" rx="4" fill="{panel_alt}"/>
   <rect x="372" y="328" width="24" height="18" rx="4" fill="{accent2}"/>
   <rect x="402" y="328" width="14" height="18" rx="4" fill="{muted}"/>
-  <rect x="446" y="284" width="142" height="80" rx="10" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
-  <text x="466" y="312" font-size="12" font-weight="800" fill="{fg}">scale map</text>
+  <rect x="446" y="284" width="142" height="80" rx="{radius}" fill="{panel}" stroke="{panel_alt}" stroke-width="1.5"/>
+  <text x="466" y="312" font-size="12" font-weight="800" fill="{fg}">radius + scale</text>
   <text x="466" y="331" font-size="8.5" font-weight="700" fill="{muted}">{scale}</text>
   <rect x="524" y="328" width="44" height="5" rx="2.5" fill="{accent}"/>
   <rect x="466" y="344" width="102" height="5" rx="2.5" fill="{panel_alt}"/>

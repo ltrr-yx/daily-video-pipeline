@@ -1,5 +1,5 @@
 project:
-  name: "Commercial Demo Brief"
+  name: "Motion Overrides Demo"
   language: "zh-CN"
   timezone: "Asia/Shanghai"
   output_dir: "outputs"
@@ -12,6 +12,18 @@ selection:
 story:
   template: "product_launch"
   seconds_per_scene: 5
+  # Family-level overrides for product, proof, and conclusion scenes.
+  # In this template, product applies to product_plate, proof applies to
+  # verification_rail, and conclusion applies to cta_end.
+  motion_overrides:
+    product: "product_reveal"
+    proof: "evidence_trace"
+    conclusion: "verdict_lock"
+  # Exact component keys are also supported when one scene needs a special rule:
+  # motion_overrides:
+  #   product_plate: "product_reveal"
+  #   verification_rail: "evidence_trace"
+  #   cta_end: "verdict_lock"
 
 privacy:
   blocked_terms: []
@@ -21,6 +33,7 @@ video:
   height: 1920
   fps: 30
   theme: "product_keynote"
+  # Keep the global motion automatic; story.motion_overrides handles selected scenes.
   motion: "auto"
   seconds_per_scene: 5
   font_path: ""
@@ -28,12 +41,7 @@ video:
 narration:
   enabled: false
   engine: "auto"
-  voice: "zh-CN-XiaoxiaoNeural"
-  rate: "+6%"
-  pitch: "+2Hz"
-  timing:
-    enabled: true
-    strict: false
+  voice: "zh-CN-YunyangNeural"
 
 music:
   path: ""

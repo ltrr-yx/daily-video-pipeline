@@ -24,6 +24,9 @@ def test_gallery_html_shows_visual_style_dimensions() -> None:
     assert "字体" in html
     assert "字号" in html
     assert "图文" in html
+    assert "颜色" in html
+    assert "对比" in html
+    assert "密度" in html
     assert "划线" in html
 
 
@@ -59,6 +62,9 @@ def test_gallery_markdown_lists_direction_layers() -> None:
     assert "GPT Image" in markdown
     assert "Prompt role:" in markdown
     assert "Text/media:" in markdown
+    assert "Color:" in markdown
+    assert "Contrast:" in markdown
+    assert "Density:" in markdown
     assert "Emphasis:" in markdown
     assert "Entrance:" in markdown
 

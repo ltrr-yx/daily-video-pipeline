@@ -52,6 +52,12 @@ DEFAULT_RULES: tuple[PronunciationRule, ...] = (
         suggestion="For narration, rewrite as 多排 or 多个文本行 if needed.",
     ),
     PronunciationRule(
+        term="日日更",
+        expected="日日更：建议改说 每天更新",
+        reason="This shorthand can sound clipped, heavy, or collapse in TTS pacing.",
+        suggestion="For narration, rewrite as 每天更新 or 天天更新.",
+    ),
+    PronunciationRule(
         term="单行",
         expected="单行：行读 hang2",
         reason="Layout/code row contexts can be misread as xing2.",

@@ -18,6 +18,7 @@ Guide the user with active invisibility: keep the next step clear without exposi
 Avoid numbered questionnaires unless the user asks for a form. For the first reply to "I want to make a video", ask naturally for topic, audience, and narrative direction. After that answer, ask for visual design, motion feel, illustration capability, font needs, BGM mood, and voice/narration preferences.
 
 Load [references/conversation-guide.md](references/conversation-guide.md) when shaping a multi-turn intake, recovering from vague requests, or deciding how to phrase questions.
+Load [references/design-guide.md](references/design-guide.md) when choosing visual direction for update clips, promo pieces, or any video that should feel more like a designed piece than a raw template render.
 
 ## Workflow
 
@@ -41,6 +42,12 @@ Load [references/conversation-guide.md](references/conversation-guide.md) when s
 
 7. Review artifacts with the user.
    Inspect `script.md`, `manifest.json`, `review_contact_sheet.jpg`, and the final MP4. Run `daily-video pronunciation-scan --file <script-or-voiceover-file>` before TTS or publishing, then rewrite flagged phrases such as `命令行` to safer narration like `终端命令` or `CLI 命令`. Summarize what looks ready and what needs iteration. Do not expose authoring jargon such as template keys, component names, `visual_grammar`, or prompt notes in final audience copy.
+
+   For short repo-update or promo clips, prefer a lighter, more conversational Mandarin voice such as `zh-CN-XiaoxiaoNeural` with a small positive rate or pitch bump when the narrator sounds too heavy. Avoid `日日更` in spoken copy; rewrite it as `每天更新` or `天天更新` so TTS pacing stays natural.
+
+   For BGM on public-facing clips, use a licensed local music file with a light corporate, technology explainer, or optimistic product-demo feel. Keep it low under narration, usually around `volume: 0.08` to `0.12`, and write attribution into the output folder when required. Do not hand off a generated demo bed as a finished publishing track.
+
+   When reviewing timing, compare the spoken text with visible text density. If a mechanism, timeline, proof, or matrix screen has short bullets that are not in the body narration, add a natural bridge sentence instead of letting the frame cut as soon as the title/body audio ends. If the visible text is too long to speak naturally, split or simplify the scene.
 
 8. Finalize safely.
    Produce paths for the MP4, contact sheet, script, manifest, publishing copy, and music attribution. Run `daily-video privacy-scan` or `PYTHONPATH=src python scripts/privacy_scan.py` before any commit or public handoff.

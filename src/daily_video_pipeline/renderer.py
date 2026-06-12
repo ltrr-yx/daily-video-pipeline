@@ -12,8 +12,15 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 from .models import ScriptScene
-from .script_writer import narration_text
+from .script_writer import narration_text, scene_readability_snapshot
 from .templates import get_component, get_theme
+from .timing import (
+    TimelineAlignmentError,
+    apply_scene_timing,
+    build_subtitle_scene_timeline,
+    parse_vtt,
+    timeline_to_dict,
+)
 
 
 def render_video(
@@ -32,13 +39,34 @@ def render_video(
     seconds_per_scene = float(video_config.get("seconds_per_scene", 5))
     fps = int(video_config.get("fps", 30))
 
+    baseline_duration = max(sum(max(float(scene.duration or seconds_per_scene), 2.4) for scene in scenes), 1.0)
+    narration_path, subtitles_path = _build_narration(scenes, output_dir, narration_config, baseline_duration)
+    media_duration = _probe_duration(narration_path)
+    scenes, timing_payload = _align_scenes_to_narration(
+        scenes,
+        subtitles_path=subtitles_path,
+        narration_path=narration_path,
+        media_duration=media_duration,
+        video_config=video_config,
+        narration_config=narration_config,
+    )
+    if timing_payload:
+        _attach_readability_audit(timing_payload, scenes)
+        (output_dir / "audio_timeline.json").write_text(
+            json.dumps(timing_payload, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+    timing_config = narration_config.get("timing") if isinstance(narration_config.get("timing"), dict) else {}
+    min_scene_duration = 0.3 if timing_payload and timing_payload.get("status") == "synced" else 2.4
+    min_scene_duration = max(0.1, float(timing_config.get("min_scene_seconds", min_scene_duration)))
     frame_dir = output_dir / "frames"
     frame_dir.mkdir(parents=True, exist_ok=True)
     frame_paths: list[Path] = []
     frame_durations: list[float] = []
     review_paths: list[Path] = []
     for index, scene in enumerate(scenes):
-        scene_duration = max(float(scene.duration or seconds_per_scene), 2.4)
+        scene_duration = max(float(scene.duration or seconds_per_scene), min_scene_duration)
         frame_count = _motion_frame_count(scene_duration, video_config)
         frame_duration = scene_duration / frame_count
         for frame_index in range(frame_count):
@@ -56,7 +84,7 @@ def render_video(
                 total_frames=frame_count,
             )
             frame_paths.append(frame_path)
-            frame_durations.append(round(frame_duration, 3))
+            frame_durations.append(round(frame_duration, 6))
         review_paths.append(frame_paths[-1])
 
     duration = max(sum(frame_durations), 1.0)
@@ -86,7 +114,6 @@ def render_video(
         ]
     )
 
-    narration_path = _build_narration(scenes, output_dir, narration_config, duration)
     audio_path = _build_audio(output_dir, music_config, narration_path, duration)
     video_path = output_dir / "daily-video.mp4"
     _run(
@@ -132,14 +159,15 @@ def _draw_scene(
 
     image = Image.new("RGB", (width, height), bg)
     draw = ImageDraw.Draw(image)
+    style = theme.get("style", {})
     fonts = {
-        "caption": _font(video_config.get("font_path"), 26),
-        "small": _font(video_config.get("font_path"), 30),
-        "label": _font(video_config.get("font_path"), 34),
-        "body": _font(video_config.get("font_path"), 42),
-        "title": _font(video_config.get("font_path"), 72),
-        "hero": _font(video_config.get("font_path"), 88),
-        "metric": _font(video_config.get("font_path"), 96),
+        "caption": _font(video_config.get("font_path"), int(style.get("caption_size", 25))),
+        "small": _font(video_config.get("font_path"), max(24, int(style.get("label_size", 24)) + 3)),
+        "label": _font(video_config.get("font_path"), max(29, int(style.get("label_size", 24)) + 8)),
+        "body": _font(video_config.get("font_path"), int(style.get("body_size", 40))),
+        "title": _font(video_config.get("font_path"), int(style.get("headline_size", 72))),
+        "hero": _font(video_config.get("font_path"), min(86, int(style.get("headline_size", 72)) + 10)),
+        "metric": _font(video_config.get("font_path"), max(84, int(style.get("headline_size", 72)) + 16)),
     }
 
     margin = int(width * 0.075)
@@ -187,14 +215,33 @@ def _theme(video_config: dict) -> dict:
     return theme
 
 
+def _attach_readability_audit(timing_payload: dict, scenes: list[ScriptScene]) -> None:
+    timing_scenes = timing_payload.get("scenes")
+    if not isinstance(timing_scenes, list):
+        return
+    for item, scene in zip(timing_scenes, scenes):
+        if isinstance(item, dict):
+            readability = scene_readability_snapshot(scene)
+            duration = item.get("duration")
+            if isinstance(duration, (int, float)):
+                readability["timed_duration_seconds"] = round(float(duration), 3)
+                readability["timed_gap_seconds"] = round(
+                    max(0.0, float(readability["visual_seconds"]) - float(duration)),
+                    3,
+                )
+            item["readability"] = readability
+
+
 def _draw_background_grid(draw: ImageDraw.ImageDraw, width: int, height: int, theme: dict) -> None:
     panel_alt = theme["panel_alt"]
     accent = theme["accent"]
+    accent2 = theme["accent2"]
     for x in range(80, width, 180):
-        draw.line((x, 0, x, height), fill=_blend(theme["background"], panel_alt, 0.18), width=1)
+        draw.line((x, 0, x, height), fill=_blend(theme["background"], panel_alt, 0.12), width=1)
     for y in range(160, height, 220):
-        draw.line((0, y, width, y), fill=_blend(theme["background"], panel_alt, 0.14), width=1)
-    draw.rectangle((0, 0, width, 18), fill=accent)
+        draw.line((0, y, width, y), fill=_blend(theme["background"], panel_alt, 0.10), width=1)
+    draw.rectangle((0, 0, width, int(theme.get("style", {}).get("top_rule_height", 7))), fill=accent)
+    draw.rectangle((width - 175, 0, width, int(theme.get("style", {}).get("top_rule_height", 7))), fill=accent2)
 
 
 def _draw_header(
@@ -209,10 +256,11 @@ def _draw_header(
 ) -> None:
     accent = theme["accent"]
     top = 86
-    tag = _audience_header_label(scene).upper()
-    tag_width = min(420, max(220, _text_width(draw, tag, fonts["small"]) + 58))
+    tag = _audience_header_label(scene)
+    tag_width = min(450, max(230, _text_width(draw, tag, fonts["small"]) + 62))
     _pill(draw, (margin, top, margin + tag_width, top + 52), tag, fonts["small"], theme)
-    draw.text((width - margin - 52, top + 8), f"{index + 1:02d}", font=fonts["label"], fill=accent)
+    draw.line((width - margin - 125, top + 26, width - margin - 62, top + 26), fill=_blend(theme["panel_alt"], accent, 0.62), width=3)
+    draw.text((width - margin - 52, top + 8), f"{index + 1:02d}", font=fonts["label"], fill=_blend(theme["foreground"], accent, 0.18))
 
 
 def _audience_header_label(scene: ScriptScene) -> str:
@@ -236,7 +284,7 @@ def _draw_footer(
     y = height - 205
     muted = theme["muted"]
     accent = theme["accent"]
-    draw.line((margin, y, width - margin, y), fill=_blend(muted, theme["background"], 0.28), width=2)
+    draw.line((margin, y, width - margin, y), fill=_blend(theme["background"], theme["panel_alt"], 0.54), width=2)
     source_alpha = _stage(progress, 0.72, 0.86)
     if source_alpha > 0:
         _draw_text(draw, scene.source_label, margin, y + 35, width - margin * 2 - 170, fonts["label"], _fade(theme, muted, source_alpha), max_lines=1)
@@ -254,22 +302,38 @@ def _render_cover(draw: ImageDraw.ImageDraw, scene: ScriptScene, box: tuple[int,
     fg = theme["foreground"]
     muted = theme["muted"]
     shell = _stage(progress, 0.04, 0.22)
-    draw.rounded_rectangle((x1, y1 + 420, x2, y2 - 120), radius=28, outline=_fade(theme, accent, shell * 0.55), width=3)
+    stage_box = (x1, y1 + 404, x2, y2 - 118)
+    draw.rounded_rectangle(stage_box, radius=_card_radius(theme) + 4, fill=_fade(theme, theme["panel"], shell * 0.36), outline=_fade(theme, accent, shell * 0.35), width=2)
     arc = _stage(progress, 0.14, 0.46)
-    draw.arc((x2 - 360, y1 + 70, x2 + 240, y1 + 670), 120, 120 + int(210 * arc), fill=_fade(theme, accent2, 0.35), width=18)
+    draw.arc((x2 - 390, y1 + 76, x2 + 250, y1 + 716), 120, 120 + int(205 * arc), fill=_fade(theme, accent2, 0.46), width=14)
+    draw.line((x1 + 28, y1 + 426, x1 + 140, y1 + 426), fill=_fade(theme, accent, shell), width=5)
 
     eyebrow = _stage(progress, 0.08, 0.24)
     if eyebrow > 0:
         draw.text((x1, y1 + 40 + int(18 * (1 - eyebrow))), _audience_header_label(scene), font=fonts["label"], fill=_fade(theme, accent, eyebrow))
     title = _stage(progress, 0.22, 0.52)
     if title > 0:
-        _draw_text(draw, scene.title, x1, y1 + 130 + int(38 * (1 - title)), x2 - x1 - 50, fonts["hero"], _fade(theme, fg, title), line_gap=20, max_lines=4)
+        _draw_text(draw, scene.title, x1, y1 + 128 + int(34 * (1 - title)), x2 - x1 - 50, fonts["hero"], _fade(theme, fg, title), line_gap=18, max_lines=4)
     body = _stage(progress, 0.50, 0.72)
     if body > 0:
-        _draw_text(draw, scene.body, x1, y1 + 560 + int(24 * (1 - body)), x2 - x1 - 80, fonts["body"], _fade(theme, muted, body), line_gap=16, max_lines=4)
+        _draw_text(draw, scene.body, x1 + 30, y1 + 555 + int(24 * (1 - body)), x2 - x1 - 95, fonts["body"], _fade(theme, fg, body * 0.9), line_gap=15, max_lines=4)
+    rail = _stage(progress, 0.60, 0.86)
+    if scene.bullets and rail > 0:
+        rail_x = x1 + 42
+        rail_y = y1 + 745
+        rail_w = x2 - x1 - 110
+        draw.line((rail_x, rail_y, rail_x + int(rail_w * rail), rail_y), fill=_fade(theme, accent, rail * 0.72), width=4)
+        span = rail_w / max(len(scene.bullets[:3]) - 1, 1)
+        for idx, bullet in enumerate(scene.bullets[:3]):
+            reveal = _stage(progress, 0.62 + idx * 0.07, 0.80 + idx * 0.07)
+            if reveal <= 0:
+                continue
+            cx = int(rail_x + idx * span)
+            draw.ellipse((cx - 12, rail_y - 12, cx + 12, rail_y + 12), fill=_fade(theme, accent2 if idx == 1 else accent, reveal))
+            _draw_text(draw, bullet, cx - 82, rail_y + 38, 164, fonts["small"], _fade(theme, muted, reveal), max_lines=1, align="center")
     metrics = _stage(progress, 0.70, 0.92)
     if scene.metrics and metrics > 0:
-        _metric_row(draw, scene.metrics[:3], x1, y2 - 250 + int(22 * (1 - metrics)), x2 - x1, fonts, theme, progress=metrics)
+        _metric_row(draw, scene.metrics[:3], x1 + 18, y2 - 250 + int(22 * (1 - metrics)), x2 - x1 - 36, fonts, theme, progress=metrics)
 
 
 def _render_grid(draw: ImageDraw.ImageDraw, scene: ScriptScene, box: tuple[int, int, int, int], fonts: dict, theme: dict, progress: float) -> None:
@@ -328,7 +392,7 @@ def _render_proof(draw: ImageDraw.ImageDraw, scene: ScriptScene, box: tuple[int,
         quote_box = (x1, y1 + 780, x2, min(y2 - 90, y1 + 1150))
         quote_box = _shift_box(quote_box, int(24 * (1 - quote)))
         _card(draw, quote_box, theme, outline=True, alpha=quote)
-        draw.text((quote_box[0] + 36, quote_box[1] + 26), "SOURCE EVIDENCE", font=fonts["small"], fill=_fade(theme, theme["accent"], quote))
+        draw.text((quote_box[0] + 36, quote_box[1] + 26), "Source evidence", font=fonts["small"], fill=_fade(theme, theme["accent"], quote))
         _draw_text(draw, scene.proof or scene.body, quote_box[0] + 36, quote_box[1] + 88, quote_box[2] - quote_box[0] - 72, fonts["body"], _fade(theme, theme["foreground"], quote), max_lines=5)
 
 
@@ -344,7 +408,7 @@ def _render_metric(draw: ImageDraw.ImageDraw, scene: ScriptScene, box: tuple[int
         card = (x1, top + idx * 190 + int(26 * (1 - reveal)), x2, top + idx * 190 + 150 + int(26 * (1 - reveal)))
         _card(draw, card, theme, outline=idx == 0, alpha=reveal)
         draw.text((card[0] + 34, card[1] + 30), value, font=fonts["metric"], fill=_fade(theme, theme["accent"] if idx == 0 else theme["foreground"], reveal))
-        draw.text((card[0] + 360, card[1] + 58), label.upper(), font=fonts["label"], fill=_fade(theme, theme["muted"], reveal))
+        draw.text((card[0] + 360, card[1] + 58), _label_case(label), font=fonts["label"], fill=_fade(theme, theme["muted"], reveal))
         _sparkline(draw, (card[0] + 640, card[1] + 44, card[2] - 34, card[3] - 34), theme, idx, progress=reveal)
     body = _stage(progress, 0.78, 0.94)
     if body > 0:
@@ -363,13 +427,13 @@ def _render_split(draw: ImageDraw.ImageDraw, scene: ScriptScene, box: tuple[int,
     if left_reveal > 0:
         left_box = _shift_box(left, int(28 * (1 - left_reveal)))
         _card(draw, left_box, theme, alpha=left_reveal)
-        draw.text((left_box[0] + 30, left_box[1] + 30), "BEFORE", font=fonts["small"], fill=_fade(theme, theme["muted"], left_reveal))
+        draw.text((left_box[0] + 30, left_box[1] + 30), "Before", font=fonts["small"], fill=_fade(theme, theme["muted"], left_reveal))
         _draw_text(draw, labels[0], left_box[0] + 30, left_box[1] + 115, left_box[2] - left_box[0] - 60, fonts["body"], _fade(theme, theme["foreground"], left_reveal), max_lines=6)
     right_reveal = _stage(progress, 0.52, 0.76)
     if right_reveal > 0:
         right_box = _shift_box(right, int(28 * (1 - right_reveal)))
         _card(draw, right_box, theme, outline=True, alpha=right_reveal)
-        draw.text((right_box[0] + 30, right_box[1] + 30), "AFTER", font=fonts["small"], fill=_fade(theme, theme["accent"], right_reveal))
+        draw.text((right_box[0] + 30, right_box[1] + 30), "After", font=fonts["small"], fill=_fade(theme, theme["accent"], right_reveal))
         _draw_text(draw, labels[min(1, len(labels) - 1)], right_box[0] + 30, right_box[1] + 115, right_box[2] - right_box[0] - 60, fonts["body"], _fade(theme, theme["foreground"], right_reveal), max_lines=6)
     divider = _stage(progress, 0.74, 0.92)
     if divider > 0:
@@ -413,7 +477,7 @@ def _render_matrix(draw: ImageDraw.ImageDraw, scene: ScriptScene, box: tuple[int
         cx = x1 + (idx % 2) * (card_w + 28)
         cy = y1 + 440 + (idx // 2) * (card_h + 28) + int(24 * (1 - reveal))
         _card(draw, (cx, cy, cx + card_w, cy + card_h), theme, outline=idx == 3, alpha=reveal)
-        draw.text((cx + 28, cy + 28), label.upper(), font=fonts["small"], fill=_fade(theme, theme["accent"] if idx != 2 else theme["danger"], reveal))
+        draw.text((cx + 28, cy + 28), label, font=fonts["small"], fill=_fade(theme, theme["accent"] if idx != 2 else theme["danger"], reveal))
         _draw_text(draw, bullets[min(idx, len(bullets) - 1)], cx + 28, cy + 88, card_w - 56, fonts["label"], _fade(theme, theme["foreground"], reveal), max_lines=3)
 
 
@@ -428,10 +492,24 @@ def _render_mechanism(draw: ImageDraw.ImageDraw, scene: ScriptScene, box: tuple[
         if reveal <= 0:
             continue
         y = top + idx * 245 + int(28 * (1 - reveal))
-        _card(draw, (x1 + idx * 34, y, x2 - idx * 34, y + band_h), theme, outline=idx == 2, alpha=reveal)
-        draw.text((x1 + idx * 34 + 32, y + 28), label.upper(), font=fonts["small"], fill=_fade(theme, theme["accent"], reveal))
+        band = (x1 + idx * 34, y, x2 - idx * 34, y + band_h)
+        _card(draw, band, theme, outline=idx == 2, alpha=reveal)
+        draw.text((band[0] + 32, y + 28), label, font=fonts["small"], fill=_fade(theme, theme["accent"], reveal))
         body = scene.proof if idx == 1 else scene.body
-        _draw_text(draw, body, x1 + idx * 34 + 32, y + 86, x2 - x1 - 110, fonts["label"], _fade(theme, theme["foreground"], reveal), max_lines=2)
+        _draw_text_in_box(
+            draw,
+            body,
+            band[0] + 32,
+            y + 86,
+            band[2] - band[0] - 64,
+            band_h - 112,
+            [
+                (fonts["label"], 6, 2),
+                (fonts["small"], 5, 3),
+                (fonts["caption"], 4, 3),
+            ],
+            _fade(theme, theme["foreground"], reveal),
+        )
         arrow = _stage(progress, 0.50 + idx * 0.14, 0.64 + idx * 0.14)
         if idx < 2 and arrow > 0:
             cx = (x1 + x2) // 2
@@ -464,11 +542,11 @@ def _render_product_or_map(draw: ImageDraw.ImageDraw, scene: ScriptScene, box: t
     _card(draw, plate_box, theme, outline=True, alpha=plate_reveal)
     cx = (plate_box[0] + plate_box[2]) // 2
     cy = (plate_box[1] + plate_box[3]) // 2
-    draw.ellipse((cx - 92, cy - 92, cx + 92, cy + 92), outline=_fade(theme, theme["accent"], plate_reveal), width=5)
-    draw.rounded_rectangle((cx - 165, cy - 42, cx + 165, cy + 42), radius=24, fill=_blend(theme["panel"], theme["accent"], 0.25 * plate_reveal), outline=_fade(theme, theme["accent"], plate_reveal))
+    draw.ellipse((cx - 92, cy - 92, cx + 92, cy + 92), outline=_fade(theme, theme["accent2"], plate_reveal), width=5)
+    draw.rounded_rectangle((cx - 165, cy - 42, cx + 165, cy + 42), radius=18, fill=_blend(theme["panel_alt"], theme["accent"], 0.20 * plate_reveal), outline=_fade(theme, theme["accent"], plate_reveal))
     callout = _stage(progress, 0.54, 0.78)
     if callout > 0:
-        draw.text((plate_box[0] + 48, plate_box[1] + 42), "VISUAL ANCHOR", font=fonts["small"], fill=_fade(theme, theme["accent"], callout))
+        draw.text((plate_box[0] + 48, plate_box[1] + 42), "Visual anchor", font=fonts["small"], fill=_fade(theme, theme["accent"], callout))
         draw.line((plate_box[0] + 90, cy, cx - 178, cy), fill=_fade(theme, theme["accent"], callout), width=3)
         draw.line((cx + 178, cy, plate_box[2] - 90, cy), fill=_fade(theme, theme["accent"], callout), width=3)
         _draw_text(draw, scene.proof, plate_box[0] + 70, plate_box[3] - 112, plate_box[2] - plate_box[0] - 140, fonts["small"], _fade(theme, theme["muted"], callout), max_lines=2, align="center")
@@ -487,20 +565,26 @@ def _render_stamp(draw: ImageDraw.ImageDraw, scene: ScriptScene, box: tuple[int,
     _section_title(draw, scene, box, fonts, theme, progress)
     stamp_reveal = _stage(progress, 0.36, 0.66)
     if stamp_reveal > 0:
-        stamp = (x1 + 60, y1 + 500, x2 - 60, y1 + 900)
+        stamp = (x1 + 36, y1 + 500, x2 - 36, y1 + 800)
         stamp = _shift_box(stamp, int(26 * (1 - stamp_reveal)))
-        _card(draw, stamp, theme, outline=True, alpha=stamp_reveal)
-        draw.text((stamp[0] + 42, stamp[1] + 42), "VERDICT", font=fonts["small"], fill=_fade(theme, theme["accent"], stamp_reveal))
-        _draw_text(draw, scene.body, stamp[0] + 42, stamp[1] + 110, stamp[2] - stamp[0] - 84, fonts["body"], _fade(theme, theme["foreground"], stamp_reveal), max_lines=4)
+        fill = _fade(theme, _blend(theme["background"], theme["accent"], 0.20), stamp_reveal)
+        line = _fade(theme, _blend(theme["accent"], theme["foreground"], 0.08), stamp_reveal)
+        draw.rounded_rectangle(stamp, radius=_card_radius(theme), fill=fill, outline=line, width=2)
+        draw.rectangle((stamp[0], stamp[1], stamp[2], stamp[1] + 7), fill=_fade(theme, theme["accent"], stamp_reveal))
+        draw.text((stamp[0] + 42, stamp[1] + 44), "Ready to use", font=fonts["small"], fill=_fade(theme, theme["accent"], stamp_reveal))
+        _draw_text(draw, scene.body, stamp[0] + 42, stamp[1] + 116, stamp[2] - stamp[0] - 84, fonts["body"], _fade(theme, theme["foreground"], stamp_reveal), max_lines=2)
+        draw.line((stamp[0] + 42, stamp[3] - 58, stamp[2] - 42, stamp[3] - 58), fill=_fade(theme, theme["accent2"], stamp_reveal * 0.60), width=4)
     checks = _stage(progress, 0.62, 0.94)
     if checks > 0:
         for idx, bullet in enumerate(scene.bullets[:4]):
             reveal = _stage(progress, 0.62 + idx * 0.06, 0.78 + idx * 0.06)
             if reveal <= 0:
                 continue
-            y = y1 + 980 + idx * 92 + int(14 * (1 - reveal))
-            draw.ellipse((x1 + 15, y + 15, x1 + 43, y + 43), fill=_fade(theme, theme["accent2"] if idx == 3 else theme["accent"], reveal))
-            _draw_text(draw, bullet, x1 + 70, y, x2 - x1 - 90, fonts["label"], _fade(theme, theme["muted"], reveal), max_lines=1)
+            y = y1 + 910 + idx * 102 + int(14 * (1 - reveal))
+            row = (x1 + 36, y, x2 - 36, y + 76)
+            draw.rounded_rectangle(row, radius=_card_radius(theme), fill=_fade(theme, _blend(theme["background"], theme["panel_alt"], 0.34), reveal), outline=_fade(theme, theme["panel_alt"], reveal))
+            draw.ellipse((row[0] + 28, y + 24, row[0] + 52, y + 48), fill=_fade(theme, theme["accent2"] if idx == len(scene.bullets[:4]) - 1 else theme["accent"], reveal))
+            _draw_text(draw, bullet, row[0] + 78, y + 19, row[2] - row[0] - 102, fonts["label"], _fade(theme, theme["foreground"], reveal), max_lines=1)
 
 
 def _section_title(
@@ -544,7 +628,7 @@ def _metric_row(
         cy = y + int(16 * (1 - reveal))
         _card(draw, (left, cy, left + card_w, cy + 145), theme, alpha=reveal)
         draw.text((left + 22, cy + 24), value, font=fonts["title"], fill=_fade(theme, theme["accent"], reveal))
-        draw.text((left + 22, cy + 96), label.upper(), font=fonts["small"], fill=_fade(theme, theme["muted"], reveal))
+        draw.text((left + 22, cy + 96), _label_case(label), font=fonts["small"], fill=_fade(theme, theme["muted"], reveal))
 
 
 def _sparkline(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], theme: dict, offset: int, *, progress: float = 1.0) -> None:
@@ -564,19 +648,36 @@ def _sparkline(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], theme:
 
 
 def _card(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], theme: dict, *, outline: bool = False, alpha: float = 1.0) -> None:
-    fill = _blend(theme["background"], theme["panel"], _clamp(alpha))
-    line_base = theme["accent"] if outline else _blend(theme["muted"], theme["background"], 0.22)
+    style = theme.get("style", {})
+    mix = float(style.get("card_surface_mix", 0.56))
+    fill = _blend(theme["background"], theme["panel"], _clamp(alpha) * mix)
+    line_base = _blend(theme["accent"], theme["foreground"], 0.10) if outline else _blend(theme["panel_alt"], theme["foreground"], 0.16)
     line = _fade(theme, line_base, alpha)
-    draw.rounded_rectangle(box, radius=18, fill=fill, outline=line, width=3 if outline else 1)
+    draw.rounded_rectangle(box, radius=_card_radius(theme), fill=fill, outline=line, width=2 if outline else 1)
 
 
 def _pill(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], text: str, font: ImageFont.ImageFont, theme: dict) -> None:
-    draw.rounded_rectangle(box, radius=(box[3] - box[1]) // 2, fill=_blend(theme["accent"], theme["panel"], 0.22), outline=theme["accent"])
+    fill = _blend(theme["background"], theme["accent"], 0.12)
+    line = _blend(theme["accent"], theme["background"], 0.18)
+    draw.rounded_rectangle(box, radius=(box[3] - box[1]) // 2, fill=fill, outline=line)
     text = _fit_text(draw, text, font, box[2] - box[0] - 30)
     tw = _text_width(draw, text, font)
     x = box[0] + max(16, (box[2] - box[0] - tw) // 2)
     y = box[1] + max(6, (box[3] - box[1] - 28) // 2)
     draw.text((x, y), text, font=font, fill=theme["accent"])
+
+
+def _label_case(value: str) -> str:
+    text = value.replace("_", " ").strip()
+    if not text:
+        return text
+    if any("\u4e00" <= char <= "\u9fff" for char in text):
+        return text
+    return text[:1].upper() + text[1:]
+
+
+def _card_radius(theme: dict) -> int:
+    return int(theme.get("style", {}).get("card_radius", 10))
 
 
 def _draw_text(
@@ -823,9 +924,67 @@ def _write_concat_file(path: Path, frames: list[Path], durations: list[float]) -
     lines: list[str] = []
     for frame, duration in zip(frames, durations):
         lines.append(f"file '{frame.resolve().as_posix()}'")
-        lines.append(f"duration {duration}")
+        lines.append(f"duration {duration:.6f}")
     lines.append(f"file '{frames[-1].resolve().as_posix()}'")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _align_scenes_to_narration(
+    scenes: list[ScriptScene],
+    *,
+    subtitles_path: Path | None,
+    narration_path: Path,
+    media_duration: float | None,
+    video_config: dict,
+    narration_config: dict,
+) -> tuple[list[ScriptScene], dict | None]:
+    raw_timing_config = narration_config.get("timing")
+    if raw_timing_config is None:
+        raw_timing_config = video_config.get("narration_timing", {})
+    if raw_timing_config is False:
+        return scenes, None
+    timing_config = raw_timing_config if isinstance(raw_timing_config, dict) else {}
+    enabled = bool(timing_config.get("enabled", narration_config.get("sync_to_subtitles", True)))
+    if not enabled:
+        return scenes, None
+    if not narration_config.get("enabled", False):
+        return scenes, None
+    if subtitles_path is None or not subtitles_path.exists():
+        return scenes, timeline_to_dict(
+            [],
+            subtitle_path=str(subtitles_path) if subtitles_path else None,
+            audio_path=str(narration_path),
+            media_duration=media_duration,
+            status="fallback",
+            reason="subtitle file was not produced",
+        )
+
+    try:
+        timings = build_subtitle_scene_timeline(
+            scenes,
+            parse_vtt(subtitles_path),
+            media_duration=media_duration,
+            min_anchor_chars=int(timing_config.get("min_anchor_chars", 8)),
+            max_anchor_chars=int(timing_config.get("max_anchor_chars", 48)),
+        )
+    except TimelineAlignmentError as exc:
+        if bool(timing_config.get("strict", False)):
+            raise RuntimeError(f"Narration timing alignment failed: {exc}") from exc
+        return scenes, timeline_to_dict(
+            [],
+            subtitle_path=str(subtitles_path),
+            audio_path=str(narration_path),
+            media_duration=media_duration,
+            status="fallback",
+            reason=str(exc),
+        )
+
+    return apply_scene_timing(scenes, timings), timeline_to_dict(
+        timings,
+        subtitle_path=str(subtitles_path),
+        audio_path=str(narration_path),
+        media_duration=media_duration,
+    )
 
 
 def _build_narration(
@@ -833,10 +992,10 @@ def _build_narration(
     output_dir: Path,
     narration_config: dict,
     duration: float,
-) -> Path:
+) -> tuple[Path, Path | None]:
     narration_path = output_dir / "narration.m4a"
     if not narration_config.get("enabled", False):
-        return _silent_audio(narration_path, duration)
+        return _silent_audio(narration_path, duration), None
 
     engine = str(narration_config.get("engine", "auto"))
     voice = str(narration_config.get("voice", "zh-CN-YunyangNeural"))
@@ -845,21 +1004,27 @@ def _build_narration(
 
     if engine in {"auto", "edge-tts"}:
         edge_output = output_dir / "narration_edge.mp3"
+        subtitle_output = output_dir / "narration_edge.srt"
+        edge_cmd = [
+            sys.executable,
+            "-m",
+            "edge_tts",
+            "--voice",
+            voice,
+            "--text",
+            text_path.read_text(encoding="utf-8"),
+            "--write-media",
+            str(edge_output),
+            "--write-subtitles",
+            str(subtitle_output),
+        ]
+        for config_key, cli_key in (("rate", "--rate"), ("volume", "--volume"), ("pitch", "--pitch")):
+            value = narration_config.get(config_key)
+            if value not in (None, ""):
+                edge_cmd.extend([cli_key, str(value)])
         try:
-            _run(
-                [
-                    sys.executable,
-                    "-m",
-                    "edge_tts",
-                    "--voice",
-                    voice,
-                    "--text",
-                    text_path.read_text(encoding="utf-8"),
-                    "--write-media",
-                    str(edge_output),
-                ]
-            )
-            return edge_output
+            _run(edge_cmd)
+            return edge_output, subtitle_output if subtitle_output.exists() else None
         except Exception:
             if engine == "edge-tts":
                 raise
@@ -869,9 +1034,9 @@ def _build_narration(
         aiff_path = output_dir / "narration.aiff"
         _run([say, "-o", str(aiff_path), "-f", str(text_path)])
         _run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", str(aiff_path), str(narration_path)])
-        return narration_path
+        return narration_path, None
 
-    return _silent_audio(narration_path, duration)
+    return _silent_audio(narration_path, duration), None
 
 
 def _build_audio(output_dir: Path, music_config: dict, narration_path: Path, duration: float) -> Path:
@@ -887,6 +1052,8 @@ def _build_audio(output_dir: Path, music_config: dict, narration_path: Path, dur
 
     if music_path and Path(str(music_path)).expanduser().exists():
         bgm_path = Path(str(music_path)).expanduser()
+        fade_duration = min(0.8, max(duration / 4, 0.1))
+        fade_out_start = max(duration - fade_duration, 0)
         _run(
             [
                 "ffmpeg",
@@ -903,7 +1070,13 @@ def _build_audio(output_dir: Path, music_config: dict, narration_path: Path, dur
                 "-t",
                 str(duration),
                 "-filter_complex",
-                f"[0:a]volume={volume}[bgm];[1:a]volume=1.0[narr];[bgm][narr]amix=inputs=2:duration=first:dropout_transition=2[a]",
+                (
+                    f"[0:a]volume={volume},"
+                    f"afade=t=in:st=0:d={fade_duration:.3f},"
+                    f"afade=t=out:st={fade_out_start:.3f}:d={fade_duration:.3f}[bgm];"
+                    "[1:a]volume=1.0[narr];"
+                    "[bgm][narr]amix=inputs=2:duration=first:dropout_transition=2[a]"
+                ),
                 "-map",
                 "[a]",
                 "-c:a",
@@ -938,7 +1111,23 @@ def _build_audio(output_dir: Path, music_config: dict, narration_path: Path, dur
         )
         return audio_path
 
-    return _silent_audio(audio_path, duration)
+    _run(
+        [
+            "ffmpeg",
+            "-y",
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-i",
+            str(narration_path),
+            "-t",
+            str(duration),
+            "-c:a",
+            "aac",
+            str(audio_path),
+        ]
+    )
+    return audio_path
 
 
 def _write_demo_bgm(path: Path, duration: float, volume: float, sample_rate: int = 44100) -> Path:
@@ -1039,6 +1228,34 @@ def _silent_audio(path: Path, duration: float) -> Path:
         ]
     )
     return path
+
+
+def _probe_duration(path: Path) -> float | None:
+    if not path.exists():
+        return None
+    try:
+        proc = subprocess.run(
+            [
+                "ffprobe",
+                "-v",
+                "error",
+                "-show_entries",
+                "format=duration",
+                "-of",
+                "default=nokey=1:noprint_wrappers=1",
+                str(path),
+            ],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return None
+    try:
+        return float(proc.stdout.strip())
+    except ValueError:
+        return None
 
 
 def _run(cmd: list[str]) -> None:

@@ -39,7 +39,10 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Return exit code 0 even when pronunciation warnings are found.",
     )
-    subparsers.add_parser("list-templates", help="List built-in story templates, scene components, and visual themes.")
+    subparsers.add_parser(
+        "list-templates",
+        help="List built-in story templates, scene components, visual themes, and motion controls.",
+    )
     gallery_parser = subparsers.add_parser("build-gallery", help="Generate docs/gallery.html and docs/gallery.md.")
     gallery_parser.add_argument("--output-dir", default="docs", help="Directory to write gallery files.")
 
@@ -51,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
         config = load_config(args.config)
         demo_path = None
         if args.demo:
-            demo_path = Path(__file__).resolve().parents[2] / "examples" / "demo_items.json"
+            demo_path = _repo_file("examples", "demo_items.json")
         try:
             artifacts = run_pipeline(config, run_date=args.date, demo_items_path=demo_path, skip_video=args.skip_video)
         except RuntimeError as exc:
@@ -118,6 +121,17 @@ def main(argv: list[str] | None = None) -> int:
         print("\nMotion grammars")
         for key, motion in MOTION_GRAMMARS.items():
             print(f"- {key}: {motion.name} / {motion.entrance}")
+        print("\nMotion overrides")
+        print("- Configure story.motion_overrides with scene component keys or scene family keys.")
+        print("- Component keys win over family keys.")
+        print("- Family keys include proof, product, metric, timeline, mechanism, split, list, stamp.")
+        print("- Aliases: conclusion -> stamp; proof also covers proof-like rail/chip scenes.")
+        print("Example:")
+        print("  story:")
+        print("    motion_overrides:")
+        print("      proof: evidence_trace")
+        print("      product: product_reveal")
+        print("      conclusion: verdict_lock")
         return 0
 
     if args.command == "build-gallery":
@@ -129,6 +143,16 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     return 2
+
+
+def _repo_file(*parts: str) -> Path:
+    source_tree_path = Path(__file__).resolve().parents[2].joinpath(*parts)
+    if source_tree_path.exists():
+        return source_tree_path
+    cwd_path = Path.cwd().joinpath(*parts)
+    if cwd_path.exists():
+        return cwd_path
+    return source_tree_path
 
 
 if __name__ == "__main__":

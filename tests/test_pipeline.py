@@ -44,6 +44,41 @@ def test_demo_pipeline_writes_manifest_and_script(tmp_path: Path) -> None:
     assert '"motion": "auto"' in manifest_text
 
 
+def test_motion_overrides_example_writes_scene_motion_manifest(tmp_path: Path) -> None:
+    config = load_config("configs/motion-overrides.example.yml")
+    patched = config.__class__(
+        name=config.name,
+        timezone=config.timezone,
+        language=config.language,
+        output_dir=tmp_path / "outputs",
+        max_items=config.max_items,
+        freshness_hours=24 * 365,
+        keywords=config.keywords,
+        blocked_terms=config.blocked_terms,
+        sources=config.sources,
+        story=config.story,
+        video=config.video,
+        narration=config.narration,
+        music=config.music,
+    )
+
+    artifacts = run_pipeline(
+        patched,
+        run_date="2026-06-09",
+        demo_items_path=Path("examples/demo_items.json"),
+        skip_video=True,
+    )
+
+    manifest = json.loads(Path(artifacts.manifest_path).read_text(encoding="utf-8"))
+    motion_by_component = {scene["component"]: scene["motion_grammar"] for scene in manifest["scenes"]}
+    assert manifest["story"]["motion_overrides"]["product"] == "product_reveal"
+    assert manifest["story"]["motion_overrides"]["proof"] == "evidence_trace"
+    assert manifest["story"]["motion_overrides"]["conclusion"] == "verdict_lock"
+    assert motion_by_component["product_plate"] == "product_reveal"
+    assert motion_by_component["verification_rail"] == "evidence_trace"
+    assert motion_by_component["cta_end"] == "verdict_lock"
+
+
 def test_pipeline_blocks_narration_render_when_pronunciation_is_risky(tmp_path: Path) -> None:
     config = load_config("configs/project.example.yml")
     risky_items_path = tmp_path / "risky_items.json"

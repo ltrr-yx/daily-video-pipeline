@@ -11,6 +11,7 @@ This repository intentionally does not include private feeds, watchlists, holdin
 - Writes a source-linked script packet.
 - Renders a 1080x1920 MP4 from composable commercial story templates.
 - Mixes local licensed BGM under narration or a silent track.
+- Aligns scene durations to narration subtitles when Edge TTS timing is available.
 - Includes a privacy scan before commit/publish.
 
 ## Commercial Template System
@@ -21,7 +22,7 @@ The public version ships with a composable direction system rather than a few fi
 - 30+ scene components for cover hooks, source proof, metric stacks, timeline ribbons, comparison splits, risk matrices, ledgers, product plates, and conclusion stamps.
 - Optional illustration guidance for users who have GPT Image or another image generation model: the skill can write scene-by-scene prompts while the renderer keeps text, numbers, and sources deterministic.
 - 6 visual themes: editorial dark, executive light, market terminal, product keynote, data magazine, and social pop.
-- 6 motion grammars: soft assembly, evidence trace, product reveal, data tween, mechanism scan, and verdict lock. Use `video.motion: auto` to let scene families pick the right entrance logic.
+- 6 motion grammars: soft assembly, evidence trace, product reveal, data tween, mechanism scan, and verdict lock. Use `video.motion: auto` to let scene families pick the right entrance logic, or `story.motion_overrides` to pin motion grammar for specific scene components or families.
 
 Open the visual gallery to understand the combinations before rendering:
 
@@ -59,10 +60,44 @@ Run the richer commercial-style demo:
 daily-video run --config configs/commercial.example.yml --demo
 ```
 
+Run the motion override demo:
+
+```bash
+daily-video run --config configs/motion-overrides.example.yml --demo
+```
+
+Use `story.motion_overrides` when one story needs different motion language by scene:
+
+```yaml
+story:
+  template: "product_launch"
+  motion_overrides:
+    proof: "evidence_trace"
+    product: "product_reveal"
+    conclusion: "verdict_lock"
+```
+
+Override keys can be exact scene component keys, such as `source_proof`, `product_plate`, or `conclusion_stamp`, or scene family keys, such as `proof`, `product`, `metric`, `timeline`, `mechanism`, `split`, `list`, and `stamp`. The readable alias `conclusion` maps to the `stamp` family. Exact component keys take priority over family keys.
+
 Run with your own sources:
 
 ```bash
 daily-video run --config configs/project.local.yml
+```
+
+## Narration Timing
+
+When narration is enabled with `edge-tts`, the renderer asks Edge TTS to write a local subtitle file beside the audio. Those subtitle cue starts become the timing source for each scene, so the picture changes when the spoken scene begins instead of relying on equal fixed slide lengths. The run writes `audio_timeline.json` with the derived starts, ends, durations, and source subtitle text.
+
+This path does not call paid ASR APIs. If subtitles are unavailable, the renderer falls back to configured scene durations unless you set:
+
+```yaml
+narration:
+  voice: "zh-CN-XiaoxiaoNeural"
+  rate: "+6%"
+  pitch: "+2Hz"
+  timing:
+    strict: true
 ```
 
 ## Codex / CodeBuddy Skill
